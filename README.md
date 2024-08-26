@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Note:
 
-## Getting Started
+- routing:
+1. folder () tidak masuk kedalam route jadi gaada /backend atau /frontend
+contoh: (backend) dan (fronted) ga bisa diakses /backend /frontend
 
-First, run the development server:
+2. folder [] adalah folder dynamic jadi folder yang ada ini nya namanya bisa berubah sesuai dengan route yang ingin diakses
+contoh: [id], route nya bukan /api/id, tapi tergantung misal di passing id = 1, jadinya /api/1
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+3. folder yang gaada bracket itu static routing jadi bisa diakses dan gabisa diubah
+contoh: /api/utils
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. page.js dipakai buat halaman yang akan diliat
+contoh: /routing
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+5. route.js dipakai buat nulis api, jadi walaupun diketik url /api/classroom gabakal bisa dikasi tampilan, cuma bisa di hit api nya aja
+contoh: /api/user gabakal ada tampilan
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+6. layout.js dipakai buat layout jadi semua yg jadi subfolder atau childrennya bakal kebawa
 
-## Learn More
+Penting:
+1. sebisa mungkin semua styling pakai className diisi tailwind kecuali buat animasi aneh2
+2. semua penulisan yang bukan tampilan pakai bahasa inggris camelCase
+3. sebisa mungkin pakai antd buat mempercepat dev
+4. fe konek ke be via hit api nanti ada var nya dibuat di utils
+5. usahakan code readable
+6. baca dokumentasi next 14, karena versi dibawahnya bakalan lumayan beda routingnya
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
