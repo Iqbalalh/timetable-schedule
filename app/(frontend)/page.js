@@ -58,7 +58,7 @@ const App = () => {
           <Space>
             {/* <SubmitButton form={form}>Submit</SubmitButton> */}
             <Button type="primary">
-              <Link href="/routing">Menuju Ke "/routing"</Link>
+              <Link href="/user">Menuju Ke Tabel User</Link>
             </Button>
           </Space>
         </Form.Item>
