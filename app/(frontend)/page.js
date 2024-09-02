@@ -3,24 +3,6 @@ import React from "react";
 import { Button, Form, Input, Space } from "antd";
 import Link from "next/link";
 
-const SubmitButton = ({ form, children }) => {
-  const [submittable, setSubmittable] = React.useState(false);
-  const values = Form.useWatch([], form);
-  React.useEffect(() => {
-    form
-      .validateFields({
-        validateOnly: true,
-      })
-      .then(() => setSubmittable(true))
-      .catch(() => setSubmittable(false));
-  }, [form, values]);
-  return (
-    <Button type="primary" htmlType="submit" disabled={!submittable}>
-      {children}
-    </Button>
-  );
-};
-
 const App = () => {
   const [form] = Form.useForm();
   return (
@@ -58,7 +40,7 @@ const App = () => {
           <Space>
             {/* <SubmitButton form={form}>Submit</SubmitButton> */}
             <Button type="primary">
-              <Link href="/user">Menuju Ke Tabel User</Link>
+              <Link href="/dashboard">Login</Link>
             </Button>
           </Space>
         </Form.Item>
