@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Table, message, Layout } from 'antd';
 import axios from 'axios';
+import { API_USER } from '@/app/(backend)/lib/endpoint';
 
 const { Content } = Layout;
 
@@ -12,7 +13,7 @@ const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('/api/user');
+      const response = await axios.get(API_USER);
       setUsers(response.data);
       setLoading(false);
       console.log(users)
