@@ -13,12 +13,173 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String       @default(cuid()) @id
-  name          String?
-  email         String?   @unique
-  password      String
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @updatedAt @map(name: "updated_at")
-  @@map(name: "users")
+model Department {
+  id             Int            @id @default(autoincrement())
+  departmentName String
+  facultyName    String?
+  universityName String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  studyPrograms  StudyProgram[]
+  rooms          Room[]
+  lecturers      Lecturer[]
+
+  @@map(name: "departments")
+}
+
+model StudyProgram {
+  id               Int        @id @default(autoincrement())
+  studyProgramName String
+  idDepartment     Int
+  department       Department @relation(fields: [idDepartment], references: [id])
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  subjects         Subject[]
+
+  @@map(name: "studyPrograms")
+}
+
+model AcademicPeriod {
+  id         Int       @id @default(autoincrement())
+  periodName String    @unique
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  subjects   Subject[]
+
+  @@map(name: "academicPeriods")
+}
+
+model Subject {
+  id               Int            @id @default(autoincrement())
+  subjectCode      String         @unique
+  subjectName      String
+  subjectSKS       Int
+  idAcademicPeriod Int
+  academicPeriod   AcademicPeriod @relation(fields: [idAcademicPeriod], references: [id])
+  idStudyProgram   Int
+  studyProgram     StudyProgram   @relation(fields: [idStudyProgram], references: [id])
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  subSubjects      SubSubject[]
+
+  @@map(name: "subjects")
+}
+
+model SubjectType {
+  id          Int          @id @default(autoincrement())
+  typeName    String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  subSubjects SubSubject[]
+  rooms       Room[]
+
+  @@map(name: "subjectTypes")
+}
+
+model SubSubject {
+  id            Int         @id @default(autoincrement())
+  idSubjectType Int
+  subjectType   SubjectType @relation(fields: [idSubjectType], references: [id])
+  idSubject     Int
+  subject       Subject     @relation(fields: [idSubject], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  classes       Class[]
+
+  @@map(name: "subSubjects")
+}
+
+model Room {
+  id            Int         @id @default(autoincrement())
+  roomName      String      @unique
+  capacity      Int
+  idSubjectType Int
+  subjectType   SubjectType @relation(fields: [idSubjectType], references: [id])
+  idDepartment  Int
+  department    Department  @relation(fields: [idDepartment], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  schedules     Schedule[]
+
+  @@map(name: "rooms")
+}
+
+model Class {
+  id             Int             @id @default(autoincrement())
+  className      String
+  classCapacity  Int
+  idSubSubject   Int
+  subSubject     SubSubject      @relation(fields: [idSubSubject], references: [id])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  classLecturers ClassLecturer[]
+
+  @@map(name: "classes")
+}
+
+model Lecturer {
+  id             Int             @id @default(autoincrement())
+  lecturerName   String
+  lecturerNIP    String          @unique
+  lecturerEmail  String          @unique
+  idDepartment   Int
+  department     Department      @relation(fields: [idDepartment], references: [id])
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  classLecturers ClassLecturer[]
+  admins         Admin[]
+
+  @@map(name: "lecturers")
+}
+
+model ClassLecturer {
+  id         Int        @id @default(autoincrement())
+  idLecturer Int
+  lecturer   Lecturer   @relation(fields: [idLecturer], references: [id])
+  idClass    Int
+  class      Class      @relation(fields: [idClass], references: [id])
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  schedules  Schedule[]
+
+  @@map(name: "classLecturers")
+}
+
+model Admin {
+  id         String   @id @default(cuid())
+  username   String   @unique
+  password   String
+  idLecturer Int
+  lecturer   Lecturer @relation(fields: [idLecturer], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map(name: "admins")
+}
+
+model ScheduleSession {
+  id            Int        @id @default(autoincrement())
+  startTime     String
+  endTime       String
+  sessionNumber Int        @unique
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+  schedules     Schedule[]
+
+  @@map(name: "scheduleSessions")
+}
+
+model Schedule {
+  id                Int             @id @default(autoincrement())
+  day               String
+  idClassLecturer   Int
+  classLecturer     ClassLecturer   @relation(fields: [idClassLecturer], references: [id])
+  idRoom            Int
+  room              Room            @relation(fields: [idRoom], references: [id])
+  idScheduleSession Int
+  scheduleSession   ScheduleSession @relation(fields: [idScheduleSession], references: [id])
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@map(name: "schedules")
 }
