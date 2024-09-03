@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { Table, message, Layout } from "antd";
+import { FaBookmark, FaDownload, FaUser } from "react-icons/fa";
 import DashboardCard from "../../(component)/DashboardCard";
 
 const { Content } = Layout;
@@ -10,15 +11,15 @@ const Dashboard = () => {
   return (
     <Layout style={{ padding: "24px" }}>
       <Content>
-        <div className="flex justify-between w-full gap-8">
+        <div className="flex justify-between w-full gap-8 mb-12">
           <div className="w-1/3">
-            <DashboardCard title={"tet"} icon={"test"} content={"test"} bgColor={"bg-red-400"} />
+            <DashboardCard title={"Total Dosen"} icon={<FaUser />} content={"120"} bgColor={"bg-pink-600"} />
           </div>
           <div className="w-1/3">
-            <DashboardCard title={"tet"} icon={"test"} content={"test"} bgColor={"bg-gray-600"} />
+            <DashboardCard title={"Total Unduh"} icon={<FaDownload />} content={"1300"} bgColor={"bg-green-500"} />
           </div>
           <div className="w-1/3">
-            <DashboardCard title={"tet"} icon={"test"} content={"test"} bgColor={"bg-red-500"} />
+            <DashboardCard title={"Total Jadwal"} icon={<FaBookmark />} content={"150"} bgColor={"bg-gray-900"} />
           </div>
         </div>
 
