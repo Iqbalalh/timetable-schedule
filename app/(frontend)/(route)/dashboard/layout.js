@@ -2,42 +2,62 @@
 import React, { useEffect, useState } from "react";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { Button, Layout, Menu, Dropdown, Space, theme } from "antd";
-import Link from "next/link";
-import { useRouter } from 'nextjs-toploader/app';
+import { IoLogOutOutline } from "react-icons/io5";
+import { FaUserCircle, FaHome, FaUser , FaBookmark} from "react-icons/fa";
+import { useRouter } from "nextjs-toploader/app";
+import { usePathname } from "next/navigation";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const DashboardLayout = ({ children }) => {
- 
+  const pathname = usePathname();
   const router = useRouter();
-  const [keySelected, setKeySelected] = useState(window.location.pathname)
+  const [keySelected, setKeySelected] = useState(pathname);
   const items = [
     {
       key: "/dashboard",
-      icon: <UserOutlined />,
-      label: <div onClick={() => {
-        router.push("/dashboard")
-        setKeySelected("/dashboard")
-      }}>Beranda</div>,
+      icon: <FaHome size={16} />,
+      label: (
+        <div
+          onClick={() => {
+            router.push("/dashboard");
+            setKeySelected("/dashboard");
+          }}
+        >
+          Beranda
+        </div>
+      ),
     },
     {
       key: "/dashboard/schedule",
-      icon: <UserOutlined />,
-      label: <div onClick={() => {
-        router.push("/dashboard/schedule")
-        setKeySelected("/dashboard/schedule")
-      }}>Jadwal</div>,
+      icon: <FaBookmark />,
+      label: (
+        <div
+          onClick={() => {
+            router.push("/dashboard/schedule");
+            setKeySelected("/dashboard/schedule");
+          }}
+        >
+          Jadwal
+        </div>
+      ),
     },
     {
       key: "/dashboard/user",
-      icon: <UserOutlined />,
-      label: <div onClick={() => {
-        router.push("/dashboard/user")
-        setKeySelected("/dashboard/user")
-      }}>Pengguna</div>,
+      icon: <FaUser />,
+      label: (
+        <div
+          onClick={() => {
+            router.push("/dashboard/user");
+            setKeySelected("/dashboard/user");
+          }}
+        >
+          Pengguna
+        </div>
+      ),
     },
   ];
-  
+
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -47,7 +67,15 @@ const DashboardLayout = ({ children }) => {
       items={[
         {
           key: 1,
-          label: <div onClick={() => router.push("/")}>Logout</div>,
+          label: (
+            <div
+              className="text-red-600 rounded-lg flex font-bold items-center"
+              onClick={() => router.push("/")}
+            >
+              <IoLogOutOutline size={24} className="mr-1" />
+              Logout
+            </div>
+          ),
         },
       ]}
     />
@@ -69,7 +97,7 @@ const DashboardLayout = ({ children }) => {
         }}
       >
         <div className="text-white border-b border-gray-600 h-16 flex">
-          <div className="flex items-center justify-center w-full font-bold">
+          <div className="items-center flex lg:flex hidden justify-center w-full font-bold">
             PENJADWALAN
           </div>
         </div>
@@ -77,6 +105,7 @@ const DashboardLayout = ({ children }) => {
         <Menu
           theme="dark"
           mode="inline"
+          defaultSelectedKeys={keySelected}
           selectedKeys={keySelected}
           items={items}
         />
@@ -102,8 +131,10 @@ const DashboardLayout = ({ children }) => {
                   placement="bottomLeft"
                   trigger={["click"]}
                 >
-                  <Button>
-                    Hi, Iqbal Al Hafidzu <DownOutlined />
+                  <Button className="font-semibold flex items-center justify-between">
+                    <FaUserCircle size={16} className="my-auto" />
+                    Admin | 
+                    Iqbal Al Hafidzu <DownOutlined className="mt-[2px]" />
                   </Button>
                 </Dropdown>
               </Space>
