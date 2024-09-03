@@ -3,16 +3,33 @@ import React, { useEffect, useState } from "react";
 import { UserOutlined, DownOutlined } from "@ant-design/icons";
 import { Button, Layout, Menu, Dropdown, Space, theme } from "antd";
 import { IoLogOutOutline } from "react-icons/io5";
-import { FaUserCircle, FaHome, FaUser , FaBookmark} from "react-icons/fa";
+import {
+  FaUserCircle,
+  FaHome,
+  FaUser,
+  FaBookmark,
+  FaClock,
+} from "react-icons/fa";
 import { useRouter } from "nextjs-toploader/app";
 import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const DashboardLayout = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
+  const user = JSON.parse(localStorage.getItem("user"))
   const [keySelected, setKeySelected] = useState(pathname);
+
+  console.log(user?.userRole)
+
+  const handleLogout = () => {
+    signOut({
+      callbackUrl: "/", // Redirect to the home page or any other page after logout
+    });
+  };
+
   const items = [
     {
       key: "/dashboard",
@@ -45,16 +62,35 @@ const DashboardLayout = ({ children }) => {
     {
       key: "/dashboard/user",
       icon: <FaUser />,
-      label: (
-        <div
-          onClick={() => {
-            router.push("/dashboard/user");
-            setKeySelected("/dashboard/user");
-          }}
-        >
-          Pengguna
-        </div>
-      ),
+      label: "Kelola Data",
+      children: [
+        {
+          key: "/dashboard/periods",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/periods");
+                setKeySelected("/dashboard/periods");
+              }}
+            >
+              Periode
+            </div>
+          ),
+        },
+        {
+          key: "/dashboard/faculty",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/faculty");
+                setKeySelected("/dashboard/faculty");
+              }}
+            >
+              Fakultas
+            </div>
+          ),
+        },
+      ],
     },
   ];
 
@@ -70,7 +106,7 @@ const DashboardLayout = ({ children }) => {
           label: (
             <div
               className="text-red-600 rounded-lg flex font-bold items-center"
-              onClick={() => router.push("/")}
+              onClick={() => handleLogout()}
             >
               <IoLogOutOutline size={24} className="mr-1" />
               Logout
@@ -97,8 +133,14 @@ const DashboardLayout = ({ children }) => {
         }}
       >
         <div className="text-white border-b border-gray-600 h-16 flex">
-          <div className="items-center flex lg:flex hidden justify-center w-full font-bold">
-            PENJADWALAN
+          <div className="flex mx-auto gap-2">
+            <img src="logo-unila.png" className="my-3" />
+            <div className="items-center text-md flex lg:flex hidden justify-center w-full font-bold">
+              <div className="block">
+                Penjadwalan
+                <div className="text-gray-400 text-xs font-normal">UNILA</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -123,7 +165,8 @@ const DashboardLayout = ({ children }) => {
           }}
           className="border-b border-gray-200"
         >
-          <div className="ml-auto">
+          <div className="lg:flex hidden text-lg font-semibold"><div className="font-normal">Selamat Datang, &nbsp;</div>{user?.lecturer.lecturerName}</div>
+          <div className="ml-auto mt-2">
             <Space direction="vertical">
               <Space wrap>
                 <Dropdown
@@ -131,11 +174,12 @@ const DashboardLayout = ({ children }) => {
                   placement="bottomLeft"
                   trigger={["click"]}
                 >
-                  <Button className="font-semibold flex items-center justify-between">
-                    <FaUserCircle size={16} className="my-auto" />
-                    Admin |
-                    <div className="lg:block hidden">Iqbal Al Hafidzu </div>
-                    <DownOutlined className="mt-[2px]" />
+                  <Button
+                    type="text"
+                    className="font-semibold flex items-center mt-2 justify-center"
+                  >
+                    <FaUserCircle size={20} />|<div>{user?.userRole.toUpperCase()}</div>
+                    <DownOutlined />
                   </Button>
                 </Dropdown>
               </Space>
