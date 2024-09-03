@@ -133,8 +133,9 @@ const DashboardLayout = ({ children }) => {
                 >
                   <Button className="font-semibold flex items-center justify-between">
                     <FaUserCircle size={16} className="my-auto" />
-                    Admin | 
-                    Iqbal Al Hafidzu <DownOutlined className="mt-[2px]" />
+                    Admin |
+                    <div className="lg:block hidden">Iqbal Al Hafidzu </div>
+                    <DownOutlined className="mt-[2px]" />
                   </Button>
                 </Dropdown>
               </Space>
@@ -144,8 +145,8 @@ const DashboardLayout = ({ children }) => {
         <Content
           style={{
             margin: "24px 16px 0",
-            overflow: "initial",
           }}
+          className="overflow-x-auto"
         >
           {children}
         </Content>
