@@ -13,11 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Faculty {
+  id          Int          @id @default(autoincrement())
+  facultyName String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  departments Department[]
+
+  @@map(name: "faculties")
+}
+
 model Department {
   id             Int            @id @default(autoincrement())
   departmentName String
-  facultyName    String?
-  universityName String?
+  idFaculty      Int
+  faculty        Faculty        @relation(fields: [idFaculty], references: [id])
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   studyPrograms  StudyProgram[]
@@ -145,16 +155,17 @@ model ClassLecturer {
   @@map(name: "classLecturers")
 }
 
-model Admin {
+model User {
   id         String   @id @default(cuid())
   username   String   @unique
   password   String
   idLecturer Int
   lecturer   Lecturer @relation(fields: [idLecturer], references: [id])
+  userRole   String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  @@map(name: "admins")
+  @@map(name: "users")
 }
 
 model ScheduleSession {
