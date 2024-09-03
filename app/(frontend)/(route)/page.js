@@ -35,7 +35,7 @@ const App = () => {
         if (user.userRole === "admin") {
           router.push("/dashboard");
         } else if (user.userRole === "lecturer") {
-          router.push("/dashboard-lectruer");
+          router.push("/lecturer");
         }
       }
     } else {

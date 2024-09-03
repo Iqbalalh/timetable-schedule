@@ -7,7 +7,7 @@ async function hashPassword(password) {
 }
 
 // Replace 'your-password-here' with the password you want to hash
-const passwordToHash = 'iqbal123';
+const passwordToHash = 'cindy123';
 
 hashPassword(passwordToHash)
   .then(() => {
