@@ -137,7 +137,7 @@ model Lecturer {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   classLecturers ClassLecturer[]
-  admins         Admin[]
+  users          User[]
 
   @@map(name: "lecturers")
 }
