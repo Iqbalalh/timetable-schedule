@@ -102,7 +102,7 @@ model SubSubject {
 model Room {
   id            Int         @id @default(autoincrement())
   roomName      String      @unique
-  capacity      Int
+  roomCapacity  Int
   idSubjectType Int
   subjectType   SubjectType @relation(fields: [idSubjectType], references: [id])
   idDepartment  Int

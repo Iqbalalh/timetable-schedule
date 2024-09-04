@@ -19,14 +19,14 @@ export async function POST(req) {
         return NextResponse.json({ error: "Faculty name is required" }, { status: 400 });
       }
   
-      // Create a new academic period
-      const newFaculties = await prisma.faculty.create({
+      // Create a new faculty
+      const newFaculty = await prisma.faculty.create({
         data: {
           facultyName,
         },
       });
   
-      return NextResponse.json(newFaculties, { status: 201 });
+      return NextResponse.json(newFaculty, { status: 201 });
     } catch (error) {
       console.error("Error creating faculty:", error);
       return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
