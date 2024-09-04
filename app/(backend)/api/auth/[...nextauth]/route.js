@@ -21,7 +21,7 @@ const handler = NextAuth({
         });
 
         if (!user) {
-          throw new Error("No user found!");
+          throw new Error("User tidak ditemukan!");
         }
 
         const isValid = await verifyPassword(
@@ -30,7 +30,7 @@ const handler = NextAuth({
         );
 
         if (!isValid) {
-          throw new Error("Username and password didn't match");
+          throw new Error("Password anda salah!");
         }
 
         const currentUser = {

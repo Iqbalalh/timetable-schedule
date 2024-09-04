@@ -13,17 +13,18 @@ const Dashboard = () => {
       <Content>
         <div className="flex justify-between w-full gap-8 mb-12">
           <div className="w-1/3">
-            <DashboardCard title={"Total Dosen"} icon={<FaUser />} content={"120"} bgColor={"bg-pink-600"} />
+            <DashboardCard title={"Total Dosen"} icon={<FaUser />} content={"120"} bgColor={"bg-pink-500"} />
           </div>
           <div className="w-1/3">
             <DashboardCard title={"Total Unduh"} icon={<FaDownload />} content={"1300"} bgColor={"bg-green-500"} />
           </div>
           <div className="w-1/3">
-            <DashboardCard title={"Total Jadwal"} icon={<FaBookmark />} content={"150"} bgColor={"bg-gray-900"} />
+            <DashboardCard title={"Total Jadwal"} icon={<FaBookmark />} content={"150"} bgColor={"bg-gray-800"} />
           </div>
         </div>
 
         <BarChart
+        className="w-full"
           series={[
             { data: [35, 44, 24, 34] },
             { data: [51, 6, 49, 30] },

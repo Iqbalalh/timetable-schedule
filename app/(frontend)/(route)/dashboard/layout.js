@@ -19,12 +19,21 @@ const { Header, Content, Footer, Sider } = Layout;
 const DashboardLayout = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
-  const user = JSON.parse(localStorage.getItem("user"))
+  const [user, setUser] = useState(null); // Default state is null
   const [keySelected, setKeySelected] = useState(pathname);
+  const [collapsed, setCollapsed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  console.log(user?.userRole)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      // Access localStorage only on the client side
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      setUser(storedUser);
+    }
+  }, []);
 
   const handleLogout = () => {
+    setIsLoading(true);
     signOut({
       callbackUrl: "/", // Redirect to the home page or any other page after logout
     });
@@ -33,7 +42,15 @@ const DashboardLayout = ({ children }) => {
   const items = [
     {
       key: "/dashboard",
-      icon: <FaHome size={16} />,
+      icon: (
+        <FaHome
+          onClick={() => {
+            router.push("/dashboard");
+            setKeySelected("/dashboard");
+          }}
+          size={16}
+        />
+      ),
       label: (
         <div
           onClick={() => {
@@ -47,7 +64,14 @@ const DashboardLayout = ({ children }) => {
     },
     {
       key: "/dashboard/schedule",
-      icon: <FaBookmark />,
+      icon: (
+        <FaBookmark
+          onClick={() => {
+            router.push("/dashboard/schedule");
+            setKeySelected("/dashboard/schedule");
+          }}
+        />
+      ),
       label: (
         <div
           onClick={() => {
@@ -105,6 +129,7 @@ const DashboardLayout = ({ children }) => {
           key: 1,
           label: (
             <div
+              type="text"
               className="text-red-600 rounded-lg flex font-bold items-center"
               onClick={() => handleLogout()}
             >
@@ -131,12 +156,21 @@ const DashboardLayout = ({ children }) => {
           scrollbarWidth: "thin",
           scrollbarColor: "unset",
         }}
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
       >
         <div className="text-white border-b border-gray-600 h-16 flex">
           <div className="flex mx-auto gap-2">
             <img src="logo-unila.png" className="my-3" />
-            <div className="items-center text-md flex lg:flex hidden justify-center w-full font-bold">
-              <div className="block">
+            <div
+              className={`items-center text-md ${
+                collapsed
+                  ? "lg:hidden opacity-0 translate-x-[-20px]"
+                  : "lg:flex opacity-100 translate-x-0"
+              } hidden justify-center w-full font-bold transition-all duration-500 ease-in-out`}
+            >
+              <div className="block text-lg">
                 Penjadwalan
                 <div className="text-gray-400 text-xs font-normal">UNILA</div>
               </div>
@@ -152,7 +186,11 @@ const DashboardLayout = ({ children }) => {
           items={items}
         />
       </Sider>
-      <Layout className="lg:ml-[200px] ml-20">
+      <Layout
+        className={`${
+          !collapsed ? "ml-[200px]" : "ml-20"
+        } transition-all duration-400`}
+      >
         <Header
           style={{
             position: "sticky",
@@ -165,7 +203,10 @@ const DashboardLayout = ({ children }) => {
           }}
           className="border-b border-gray-200"
         >
-          <div className="lg:flex hidden text-lg font-semibold"><div className="font-normal">Selamat Datang, &nbsp;</div>{user?.lecturer.lecturerName}</div>
+          <div className="lg:flex hidden text-lg font-semibold">
+            <div className="font-normal">Selamat Datang, &nbsp;</div>
+            {user?.lecturer.lecturerName}
+          </div>
           <div className="ml-auto mt-2">
             <Space direction="vertical">
               <Space wrap>
@@ -176,9 +217,11 @@ const DashboardLayout = ({ children }) => {
                 >
                   <Button
                     type="text"
+                    loading={isLoading}
                     className="font-semibold flex items-center mt-2 justify-center"
                   >
-                    <FaUserCircle size={20} />|<div>{user?.userRole.toUpperCase()}</div>
+                    <FaUserCircle size={20} />|
+                    <div>{user?.userRole.toUpperCase()}</div>
                     <DownOutlined />
                   </Button>
                 </Dropdown>
@@ -194,11 +237,7 @@ const DashboardLayout = ({ children }) => {
         >
           {children}
         </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
+        <Footer className="bg-white h-12 flex text-center items-center justify-center">
           Penjadwalan Unila ©{new Date().getFullYear()} Created by Iqbal Al
           Hafidzu Rahman
         </Footer>
