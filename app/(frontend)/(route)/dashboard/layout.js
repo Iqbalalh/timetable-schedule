@@ -143,7 +143,7 @@ const DashboardLayout = ({ children }) => {
   );
 
   return (
-    <Layout hasSider className="min-h-screen">
+    <Layout hasSider className="min-h-screen w-full">
       <Sider
         breakpoint="lg"
         style={{
@@ -201,7 +201,7 @@ const DashboardLayout = ({ children }) => {
             alignItems: "center",
             background: colorBgContainer,
           }}
-          className="border-b border-gray-200"
+          className="border-b pr-4 pl-8 border-gray-200"
         >
           <div className="lg:flex hidden text-lg font-semibold">
             <div className="font-normal">Selamat Datang, &nbsp;</div>
@@ -229,14 +229,7 @@ const DashboardLayout = ({ children }) => {
             </Space>
           </div>
         </Header>
-        <Content
-          style={{
-            margin: "24px 16px 0",
-          }}
-          className="overflow-x-auto"
-        >
-          {children}
-        </Content>
+        <Content className="overflow-auto lg:m-8 md:m-8 m-4">{children}</Content>
         <Footer className="bg-white h-12 flex text-center items-center justify-center">
           Penjadwalan Unila ©{new Date().getFullYear()} Created by Iqbal Al
           Hafidzu Rahman

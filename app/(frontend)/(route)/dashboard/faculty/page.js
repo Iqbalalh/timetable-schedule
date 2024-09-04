@@ -1,8 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Table, message, Layout, Button } from "antd";
+import { Table, message, Layout, Button, Input, Form } from "antd";
 import axios from "axios";
 import { API_FACULTY } from "@/app/(backend)/lib/endpoint";
+import PostModal from "@/app/(frontend)/(component)/PostModal";
 
 const { Content } = Layout;
 
@@ -10,6 +11,7 @@ const Faculty = () => {
   const [faculty, setFaculty] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -19,16 +21,38 @@ const Faculty = () => {
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to fetch faculties");
+      message.error("Gagal memuat data!");
       setIsLoading(false);
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleAddData = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleSuccess = () => {
+    fetchData();
+  };
+
+  const postFacultyData = async (values) => {
+    const data = { facultyName: values.facultyName };
+
+    const response = await axios.post(API_FACULTY, data);
+    if (response.status !== 201) {
+      throw new Error("Gagal menambahkan fakultas");
+    }
+    handleSuccess();
+  };
+
   const columns = [
     {
-      title: "ID",
-      dataIndex: "id",
-      key: "id",
+      title: "No.",
+      key: "index",
+      render: (text, record, index) => index + 1 + ".",
     },
     {
       title: "Fakultas",
@@ -36,13 +60,31 @@ const Faculty = () => {
       key: "facultyName",
     },
     {
-      title: "Dibuat Pada",
+      title: "Waktu Dibuat",
       dataIndex: "createdAt",
       key: "createdAt",
       render: (text) => new Date(text).toLocaleString(),
     },
     {
-      title: "",
+      title: "Waktu Diperbarui",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (text) => new Date(text).toLocaleString(),
+    },
+    {
+      title: (
+        <div className="flex justify-end">
+          <Button
+            type="primary"
+            disabled={isDisabled}
+            shape="round"
+            className="font-semibold py-4 bg-blue-500 text-white"
+            onClick={handleAddData}
+          >
+            Tambah Data
+          </Button>
+        </div>
+      ),
       dataIndex: "id",
       key: "action",
       render: () => {
@@ -73,44 +115,42 @@ const Faculty = () => {
       },
     },
   ];
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  
 
   return (
-    <Layout style={{ padding: "24px" }}>
-      <Content>
-        <div className="mb-16">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold mb-4 flex">
-              <div className="bg-blue-500 px-1 mr-2">&nbsp;</div>Fakultas
-            </h1>
-            <div className="flex">
-              <Button
-                type="primary"
-                disabled={isDisabled}
-                shape="round"
-                className="font-semibold py-4 bg-blue-500 text-white"
-                onClick={() => {
-                  setIsDisabled(true);
-                }}
-              >
-                + Data
-              </Button>
-            </div>
-          </div>
-
-          <Table
-            columns={columns}
-            dataSource={faculty}
-            rowKey="id"
-            loading={isLoading}
-            pagination={{ pageSize: 10 }}
-          />
+    <>
+      <div>
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold mb-4 flex">
+            <div className="bg-blue-500 px-1 mr-2">&nbsp;</div>Fakultas
+          </h1>
         </div>
-      </Content>
-    </Layout>
+
+        <Table
+          columns={columns}
+          dataSource={faculty}
+          rowKey="id"
+          loading={isLoading}
+          pagination={{ pageSize: 10 }}
+        />
+      </div>
+
+      <PostModal
+        postApi={API_FACULTY}
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        postPayload={postFacultyData}
+        title="Tambah Fakultas"
+      >
+        <Form.Item
+          label="Nama Fakultas"
+          name="facultyName"
+          rules={[{ required: true, message: "Harus diisi!" }]}
+        >
+          <Input placeholder="cth. Matematika dan Ilmu Pengetahuan Alam" />
+        </Form.Item>
+      </PostModal>
+    </>
   );
 };
 

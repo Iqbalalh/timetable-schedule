@@ -12,10 +12,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { roomName } = await req.json();
-      const { roomCapacity } = await req.json();
-      const { idSubjectType } = await req.json();
-      const { idDepartment } = await req.json();
+      const { roomName, roomCapacity, idSubjectType, idDepartment } = await req.json();
   
       // Validate input
       if (!roomName) {

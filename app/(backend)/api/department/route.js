@@ -12,8 +12,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { departmentName } = await req.json();
-      const { idFaculty } = await req.json();
+      const { departmentName, idFaculty } = await req.json();
   
       // Validate input
       if (!departmentName) {

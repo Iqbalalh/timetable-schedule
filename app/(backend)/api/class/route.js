@@ -12,9 +12,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { className } = await req.json();
-      const { classCapacity } = await req.json();
-      const { idSubSubject } = await req.json();
+      const { className, classCapacity, idSubSubject } = await req.json();
   
       // Validate input
       if (!className) {

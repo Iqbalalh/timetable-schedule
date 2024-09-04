@@ -12,9 +12,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { startTime } = await req.json();
-      const { endTime } = await req.json();
-      const { sessionNumber } = await req.json();
+      const { startTime, endTime, sessionNumber } = await req.json();
   
       // Validate input
       if (!sessionNumber) {

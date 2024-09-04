@@ -12,8 +12,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { idSubjectType } = await req.json();
-      const { idSubject } = await req.json();
+      const { idSubjectType, idSubject } = await req.json();
   
       // Validate input
       if (!idSubjectType) {

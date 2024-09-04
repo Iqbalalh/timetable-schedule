@@ -12,12 +12,8 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { subjectCode } = await req.json();
-      const { subjectName } = await req.json();
-      const { subjectSKS } = await req.json();
-      const { idStudyProgram } = await req.json();
-      const { idAcademicPeriod } = await req.json();
-  
+      const { subjectCode, subjectName, subjectSKS, idStudyProgram, idAcademicPeriod } = await req.json();
+      
       // Validate input
       if (!subjectCode) {
         return NextResponse.json({ error: "Subject code is required" }, { status: 400 });

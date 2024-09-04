@@ -12,10 +12,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { day } = await req.json();
-      const { idClassLecturer } = await req.json();
-      const { idRoom } = await req.json();
-      const { idScheduleSession } = await req.json();
+      const { day, idClassLecturer, idRoom, idScheduleSession } = await req.json();
   
       // Validate input
       if (!day) {

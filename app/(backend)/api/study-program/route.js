@@ -12,9 +12,7 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { studyProgramName } = await req.json();
-      const { idDepartment } = await req.json();
-  
+      const { studyProgramName, idDepartment } = await req.json();
       // Validate input
       if (!studyProgramName) {
         return NextResponse.json({ error: "Study program name is required" }, { status: 400 });

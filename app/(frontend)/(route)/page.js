@@ -9,6 +9,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const router = useRouter();
+  const [form] = Form.useForm();
 
   const handleSubmission = async (values) => {
     if (values.username === "" || values.password === "") {
@@ -48,30 +49,25 @@ const App = () => {
     }
   };
 
-  const [form] = Form.useForm();
   return (
     <main
-      className="flex min-h-screen bg-cover bg-center"
+      className="flex lg:h-screen h-full lg:bg-cover lg:bg-center"
       style={{
         backgroundImage: `url('background-blue.jpg')`,
       }}
     >
       <div className="w-full lg:mx-40 lg:my-20 m-12 bg-blue-800 rounded-xl shadow-xl lg:flex block items-center justify center">
         <div
-          className="lg:w-3/5 w-full h-full p-20 lg:rounded-l-xl flex lg:rounded-r-none"
+          className="lg:w-3/5 w-full bg-cover bg-center bg-no-repeat lg:min-h-full rounded-t-xl min-h-screen p-20 lg:rounded-l-xl flex lg:rounded-r-none"
           style={{
-            backgroundImage: `url('rektorat-unila.jpg')`,
-            backgroundSize: "120%", // or use '80%' for a custom size
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            opacity: "50%",
+            backgroundImage: `url('rektorat-unila.png')`,
           }}
         >
           Download
         </div>
-        <div className="lg:w-2/5 w-full h-full bg-white lg:rounded-r-xl flex lg:rounded-l-none shadow-xl items-center justify-center">
-          <div className="block w-full px-20">
-            <div className="text-center flex flex-col items-center">
+        <div className="lg:w-2/5 w-full lg:h-full h-min bg-white lg:rounded-r-xl rounded-b-xl flex lg:rounded-l-none shadow-xl items-center justify-center">
+          <div className="block w-full lg:px-20 md:px-12 px-8">
+            <div className="text-center lg:mt-0 mt-8 flex flex-col items-center">
               <img src="logo-unila.png" width={100} />
               <p className="text-xl font-medium text-gray-500 mt-4 mb-12">
                 Masuk untuk kelola jadwal
@@ -122,7 +118,7 @@ const App = () => {
               {errorMsg && <p className="text-red-500">{errorMsg}</p>}
               <Form.Item className="w-full">
                 <Button
-                  className="w-full rounded-3xl mt-8 shadow-xl"
+                  className="w-full rounded-3xl lg:mb-0 mb-12 mt-8 shadow-xl"
                   size="large"
                   type="primary"
                   htmlType="submit"

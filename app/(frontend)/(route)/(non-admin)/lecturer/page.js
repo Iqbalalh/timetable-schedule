@@ -9,7 +9,7 @@ const { Content } = Layout;
 
 const Dashboard = () => {
   return (
-    <Layout style={{ padding: "24px" }}>
+    <Layout>
       <Content>
         <div>nonadmin</div>
         <div className="flex justify-between w-full gap-8 mb-12">
