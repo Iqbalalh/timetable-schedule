@@ -114,6 +114,19 @@ const DashboardLayout = ({ children }) => {
             </div>
           ),
         },
+        {
+          key: "/dashboard/lecturer",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/lecturer");
+                setKeySelected("/dashboard/lecturer");
+              }}
+            >
+              Dosen
+            </div>
+          ),
+        },
       ],
     },
   ];
@@ -168,7 +181,7 @@ const DashboardLayout = ({ children }) => {
                 collapsed
                   ? "lg:hidden opacity-0 translate-x-[-20px]"
                   : "lg:flex opacity-100 translate-x-0"
-              } hidden justify-center w-full font-bold transition-all duration-500 ease-in-out`}
+              } hidden justify-center w-full font-bold transition-all duration-400 ease-in-out`}
             >
               <div className="block text-lg">
                 Penjadwalan
@@ -189,7 +202,7 @@ const DashboardLayout = ({ children }) => {
       <Layout
         className={`${
           !collapsed ? "ml-[200px]" : "ml-20"
-        } transition-all duration-400`}
+        } transition-all ease-in-out duration-400`}
       >
         <Header
           style={{

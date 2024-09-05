@@ -10,9 +10,15 @@ import {
   Row,
   Col,
   Select,
+  Spin,
 } from "antd";
 import axios from "axios";
-import { API_LECTURER, API_DEPARTMENT } from "@/app/(backend)/lib/endpoint";
+import {
+  API_LECTURER,
+  API_DEPARTMENT,
+  API_FACULTY,
+  API_DEPARTMENT_BY_FACULTY,
+} from "@/app/(backend)/lib/endpoint";
 import PostModal from "@/app/(frontend)/(component)/PostModal";
 
 const { Content } = Layout;
@@ -22,9 +28,13 @@ const Lecturer = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [dep, setDep] = useState([]);
-  const [depLoading, setDepLoading] = useState(false); // Separate loading state for departments
+  const [dep, setDep] = useState(null);
+  const [faculty, setFaculty] = useState(null);
+  const [faculties, setFaculties] = useState([]);
+  const [depLoading, setDepLoading] = useState(false);
+  const [facultyLoading, setFacultyLoading] = useState(false); // Added a loading state for faculties
 
+  // Fetch lecturers
   const fetchData = async () => {
     setIsLoading(true);
     try {
@@ -33,15 +43,16 @@ const Lecturer = () => {
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Gagal memuat data!");
+      message.error("Failed to load lecturers data!");
       setIsLoading(false);
     }
   };
 
-  const fetchDepartments = async () => {
+  // Fetch departments based on selected faculty
+  const fetchDepartments = async (facultyId) => {
     setDepLoading(true);
     try {
-      const response = await axios.get(API_DEPARTMENT);
+      const response = await axios.get(API_DEPARTMENT_BY_FACULTY(facultyId));
       const departments = response.data.map((dept) => ({
         value: dept.id,
         label: dept.departmentName,
@@ -49,8 +60,25 @@ const Lecturer = () => {
       setDep(departments);
       setDepLoading(false);
     } catch (error) {
-      message.error("Gagal memuat data jurusan!");
+      message.error("Failed to load departments data!");
       setDepLoading(false);
+    }
+  };
+
+  // Fetch faculties
+  const fetchFaculty = async () => {
+    setFacultyLoading(true);
+    try {
+      const response = await axios.get(API_FACULTY);
+      const faculties = response.data.map((fac) => ({
+        value: fac.id,
+        label: fac.facultyName,
+      }));
+      setFaculties(faculties);
+      setFacultyLoading(false);
+    } catch (error) {
+      message.error("Failed to load faculties data!");
+      setFacultyLoading(false);
     }
   };
 
@@ -79,9 +107,9 @@ const Lecturer = () => {
         "Content-Type": "application/json",
       },
     });
-    
+
     if (response.status !== 201) {
-      throw new Error("Gagal menambahkan dosen");
+      throw new Error("Failed to add lecturer");
     }
     handleSuccess();
   };
@@ -226,24 +254,52 @@ const Lecturer = () => {
           </Col>
         </Row>
         <Form.Item
+          label="Fakultas"
+          className="mb-2"
+          name="idFaculty"
+          rules={[{ required: true, message: "Harus diisi!" }]}
+        >
+          <Select
+            showSearch
+            placeholder="Pilih salah satu"
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={faculties}
+            loading={facultyLoading}
+            onDropdownVisibleChange={(open) => {
+              if (open && faculties.length === 0) {
+                fetchFaculty(); // Fetch faculties when the dropdown is opened for the first time
+              }
+            }}
+            onSelect={(value) => {
+              setFaculty(value); // Set the selected faculty
+              fetchDepartments(value); // Fetch departments based on the selected faculty ID
+            }}
+            notFoundContent={facultyLoading ? <Spin size="small" /> : null}
+          />
+        </Form.Item>
+        <Form.Item
           label="Jurusan"
           className="mb-2"
           name="idDepartment"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
-            loading={depLoading}
             showSearch
+            disabled={!faculty}
             placeholder="Pilih salah satu"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             options={dep}
-            onDropdownVisibleChange={(open) => {
-              if (open && dep.length === 0) {
-                fetchDepartments();
-              }
-            }}
+            notFoundContent={
+              depLoading ? (
+                <Spin size="small" />
+              ) : dep.length === 0 ? (
+                "Tidak Ada Data"
+              ) : null
+            } // Show custom message if dep is empty
           />
         </Form.Item>
       </PostModal>
