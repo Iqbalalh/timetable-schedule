@@ -100,16 +100,16 @@ model SubSubject {
 }
 
 model Room {
-  id            Int         @id @default(autoincrement())
-  roomName      String      @unique
+  id            Int            @id @default(autoincrement())
+  roomName      String         @unique
   roomCapacity  Int
   idSubjectType Int
-  subjectType   SubjectType @relation(fields: [idSubjectType], references: [id])
+  subjectType   SubjectType    @relation(fields: [idSubjectType], references: [id])
   idDepartment  Int
-  department    Department  @relation(fields: [idDepartment], references: [id])
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  schedules     Schedule[]
+  department    Department     @relation(fields: [idDepartment], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  scheduleRooms ScheduleRoom[]
 
   @@map(name: "rooms")
 }
@@ -180,17 +180,39 @@ model ScheduleSession {
   @@map(name: "scheduleSessions")
 }
 
+model ScheduleDay {
+  id        Int        @id @default(autoincrement())
+  day       String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  schedules Schedule[]
+
+  @@map(name: "scheduleDays")
+}
+
 model Schedule {
   id                Int             @id @default(autoincrement())
-  day               String
+  idDay             Int
+  scheduleDay       ScheduleDay     @relation(fields: [idDay], references: [id])
   idClassLecturer   Int
   classLecturer     ClassLecturer   @relation(fields: [idClassLecturer], references: [id])
-  idRoom            Int
-  room              Room            @relation(fields: [idRoom], references: [id])
   idScheduleSession Int
   scheduleSession   ScheduleSession @relation(fields: [idScheduleSession], references: [id])
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  scheduleRooms     ScheduleRoom[]
 
   @@map(name: "schedules")
+}
+
+model ScheduleRoom {
+  id         Int      @id @default(autoincrement())
+  idRooms    Int
+  room       Room     @relation(fields: [idRooms], references: [id])
+  idSchedule Int
+  schedule   Schedule @relation(fields: [idSchedule], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map(name: "scheduleRooms")
 }
