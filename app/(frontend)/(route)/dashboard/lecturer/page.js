@@ -288,7 +288,7 @@ const Lecturer = () => {
           <Select
             showSearch
             disabled={!faculty}
-            placeholder="Pilih salah satu"
+            placeholder={!faculty ? "Pilih fakultas terlebih dahulu" : "Pilih salah satu"}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
@@ -296,10 +296,10 @@ const Lecturer = () => {
             notFoundContent={
               depLoading ? (
                 <Spin size="small" />
-              ) : dep.length === 0 ? (
+              ) : dep == null ? (
                 "Tidak Ada Data"
               ) : null
-            } // Show custom message if dep is empty
+            }
           />
         </Form.Item>
       </PostModal>
