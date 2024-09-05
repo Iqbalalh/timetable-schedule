@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, message, Layout } from "antd";
 import axios from "axios";
-import { API_USER } from "@/app/(backend)/lib/endpoint";
+import { API_DEPARTMENT } from "@/app/(backend)/lib/endpoint";
 
 const { Content } = Layout;
 
@@ -13,7 +13,7 @@ const Users = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(API_USER);
+      const response = await axios.get(API_DEPARTMENT);
       setUsers(response.data);
       setLoading(false);
     } catch (error) {
