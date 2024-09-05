@@ -3,7 +3,15 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req) {
   try {
-    const departments = await prisma.department.findMany();
+    const departments = await prisma.department.findMany({
+      include: {
+        faculty: {
+          select: {
+            facultyName: true
+          }
+        },
+      },
+    });
     return NextResponse.json(departments, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

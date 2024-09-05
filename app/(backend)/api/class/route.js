@@ -3,7 +3,25 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req) {
   try {
-    const classes = await prisma.class.findMany();
+    const classes = await prisma.class.findMany({
+      include: {
+        subSubject: {
+          select: {
+            subject: {
+              select: {
+                subjectCode: true,
+                subjectName: true
+              },
+            },
+            subjectType: {
+              select: {
+                typeName: true,
+              },
+            },
+          },
+        },
+      },
+    });
     return NextResponse.json(classes, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });

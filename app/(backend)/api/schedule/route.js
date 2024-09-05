@@ -3,7 +3,49 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req) {
   try {
-    const schedules = await prisma.schedule.findMany();
+    const schedules = await prisma.schedule.findMany({
+      include: {
+        classLecturer: {
+          select: {
+            lecturer: {
+              select: {
+                lecturerName: true
+              },
+            },
+            class: {
+              select: {
+                className: true,
+                subSubject: {
+                  select: {
+                    subject: {
+                      select: {
+                        subjectName: true
+                      },
+                    },
+                    subjectType: {
+                      select: {
+                        typeName: true
+                      },
+                    },
+                  },
+                },
+              }
+            }
+          }
+        },
+        scheduleDay: {
+          select: {
+            day: true
+          }
+        },
+        scheduleSession: {
+          select: {
+            startTime: true,
+            endTime: true
+          }
+        }
+      }
+    });
     return NextResponse.json(schedules, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
@@ -12,17 +54,14 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { day, idClassLecturer, idRoom, idScheduleSession } = await req.json();
+      const { idScheduleDay, idClassLecturer, idScheduleSession } = await req.json();
   
       // Validate input
-      if (!day) {
+      if (!idScheduleDay) {
         return NextResponse.json({ error: "Day is required" }, { status: 400 });
       }
       if (!idClassLecturer) {
         return NextResponse.json({ error: "Class lecturer ID is required" }, { status: 400 });
-      }
-      if (!idRoom) {
-        return NextResponse.json({ error: "Room ID is required" }, { status: 400 });
       }
       if (!idScheduleSession) {
         return NextResponse.json({ error: "Schedule session ID is required" }, { status: 400 });
@@ -31,9 +70,8 @@ export async function POST(req) {
       // Create a new schedule
       const newSchedule = await prisma.schedule.create({
         data: {
-          day,
-          idClassLecturer,
-          idRoom,
+          idScheduleDay,
+          idClassLecturer
           idScheduleSession
         },
       });
