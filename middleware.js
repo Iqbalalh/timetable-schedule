@@ -4,15 +4,17 @@ import { getToken } from 'next-auth/jwt';
 export async function middleware(req) {
   const { pathname } = req.nextUrl;
 
-  // Define paths based on user roles
+  // Define protected paths based on user roles
   const adminPaths = ['/dashboard'];
   const nonAdminPaths = ['/lecturer'];
+  const apiPaths = ['/api'];
 
-  // Check if the request is for a protected route
+  // Check if the request is for a protected route (API or pages)
   const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
   const isNonAdminPath = nonAdminPaths.some((path) => pathname.startsWith(path));
+  const isApiPath = apiPaths.some((path) => pathname.startsWith(path));
 
-  // Get the token from the request
+  // Get the token from the request (using next-auth JWT)
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
   if (token) {
@@ -30,11 +32,21 @@ export async function middleware(req) {
       return NextResponse.redirect(forbiddenUrl);
     }
 
+    // Allow API access only for logged-in users
+    if (isApiPath) {
+      return NextResponse.next();
+    }
+
     // Continue to the requested route if the user has appropriate access
     return NextResponse.next();
   }
 
-  // If no token is present and the request is for a protected route
+  // If no token is present and the request is for an API route
+  if (isApiPath) {
+    return new NextResponse('Unauthorized', { status: 401 });
+  }
+
+  // If no token is present and the request is for a protected page route
   if (isAdminPath || isNonAdminPath) {
     const loginUrl = new URL('/', req.url);
     return NextResponse.redirect(loginUrl);
@@ -43,6 +55,7 @@ export async function middleware(req) {
   return NextResponse.next();
 }
 
+// Match both page routes and API routes
 export const config = {
-  matcher: ['/dashboard/:path*', '/lecturer/:path*'],
+  matcher: ['/dashboard/:path*', '/lecturer/:path*', '/api/:path*'],
 };
