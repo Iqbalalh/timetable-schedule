@@ -288,7 +288,7 @@ const Lecturer = () => {
           <Select
             showSearch
             disabled={!faculty}
-            placeholder="Pilih salah satu"
+            placeholder={!faculty ? "Pilih fakultas terlebih dahulu" : "Pilih salah satu"}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }

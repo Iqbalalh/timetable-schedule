@@ -53,14 +53,14 @@ const App = () => {
     <main
       className="flex lg:h-screen h-full lg:bg-cover lg:bg-center"
       style={{
-        backgroundImage: `url('background-blue.jpg')`,
+        backgroundImage: `url('/background-blue.jpg')`,
       }}
     >
       <div className="w-full lg:mx-40 lg:my-20 m-12 bg-blue-800 rounded-xl shadow-xl lg:flex block items-center justify center">
         <div
           className="lg:w-3/5 w-full bg-cover bg-center bg-no-repeat lg:min-h-full rounded-t-xl min-h-screen p-20 lg:rounded-l-xl flex lg:rounded-r-none"
           style={{
-            backgroundImage: `url('rektorat-unila.png')`,
+            backgroundImage: `url('/rektorat-unila.png')`,
           }}
         >
           Download
@@ -68,7 +68,7 @@ const App = () => {
         <div className="lg:w-2/5 w-full lg:h-full h-min bg-white lg:rounded-r-xl rounded-b-xl flex lg:rounded-l-none shadow-xl items-center justify-center">
           <div className="block w-full lg:px-20 md:px-12 px-8">
             <div className="text-center lg:mt-0 mt-8 flex flex-col items-center">
-              <img src="logo-unila.png" width={100} />
+              <img src="/logo-unila.png" width={100} />
               <p className="text-xl font-medium text-gray-500 mt-4 mb-12">
                 Masuk untuk kelola jadwal
               </p>

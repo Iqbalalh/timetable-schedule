@@ -175,7 +175,7 @@ const DashboardLayout = ({ children }) => {
       >
         <div className="text-white border-b border-gray-600 h-16 flex">
           <div className="flex mx-auto gap-2">
-            <img src="logo-unila.png" className="my-3" />
+            <img src="/logo-unila.png" className="my-3" />
             <div
               className={`items-center text-md ${
                 collapsed

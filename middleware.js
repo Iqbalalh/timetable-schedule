@@ -8,14 +8,21 @@ export async function middleware(req) {
   const adminPaths = ['/dashboard'];
   const nonAdminPaths = ['/lecturer'];
   const apiPaths = ['/api'];
+  const publicApiPaths = ['/api/auth'];
 
   // Check if the request is for a protected route (API or pages)
   const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
   const isNonAdminPath = nonAdminPaths.some((path) => pathname.startsWith(path));
   const isApiPath = apiPaths.some((path) => pathname.startsWith(path));
+  const isPublicApiPath = publicApiPaths.some((path) => pathname.startsWith(path));
 
   // Get the token from the request (using next-auth JWT)
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  // Allow access to public API routes without authentication
+  if (isPublicApiPath) {
+    return NextResponse.next();
+  }
 
   if (token) {
     const { userRole } = token;
