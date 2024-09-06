@@ -71,7 +71,7 @@ export async function POST(req) {
       const newSchedule = await prisma.schedule.create({
         data: {
           idScheduleDay,
-          idClassLecturer
+          idClassLecturer,
           idScheduleSession
         },
       });
