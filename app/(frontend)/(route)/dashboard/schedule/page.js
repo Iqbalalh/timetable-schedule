@@ -42,7 +42,7 @@ const Users = () => {
       title: "Created At",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => new Date(text).toLocaleString("id-ID"),
     },
   ];
 

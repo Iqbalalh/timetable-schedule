@@ -145,13 +145,13 @@ const Lecturer = () => {
       title: "Waktu Dibuat",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => new Date(text).toLocaleString("id-ID"),
     },
     {
       title: "Waktu Diperbarui",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => new Date(text).toLocaleString("id-ID"),
     },
     {
       title: (
@@ -237,9 +237,19 @@ const Lecturer = () => {
               label="NIP"
               className="mb-2"
               name="lecturerNIP"
-              rules={[{ required: true, message: "Harus diisi!" }]}
+              rules={[
+                { required: true, message: "Harus diisi!" },
+                {
+                  max: 18,
+                  message: "Maksimal 18 karakter!"
+                },
+                {
+                  min: 17,
+                  message: "Format belum sesuai!"
+                }
+              ]}
             >
-              <Input placeholder="cth. 1231232131231" />
+              <Input type="number" placeholder="cth. 20241212202412224" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -247,7 +257,10 @@ const Lecturer = () => {
               label="Email"
               className="mb-2"
               name="lecturerEmail"
-              rules={[{ required: true, message: "Harus diisi!" }]}
+              rules={[
+                { required: true, message: "Harus diisi!" },
+                { type: "email", message: "Format tidak sesuai!" },
+              ]}
             >
               <Input placeholder="cth. iqbal@fmipa.ac.id" />
             </Form.Item>
@@ -288,7 +301,9 @@ const Lecturer = () => {
           <Select
             showSearch
             disabled={!faculty}
-            placeholder={!faculty ? "Pilih fakultas terlebih dahulu" : "Pilih salah satu"}
+            placeholder={
+              !faculty ? "Pilih fakultas terlebih dahulu" : "Pilih salah satu"
+            }
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
@@ -296,9 +311,7 @@ const Lecturer = () => {
             notFoundContent={
               depLoading ? (
                 <Spin size="small" />
-              ) : dep == null ? (
-                "Tidak Ada Data"
-              ) : null
+              ) : "Tidak ada data!"
             }
           />
         </Form.Item>

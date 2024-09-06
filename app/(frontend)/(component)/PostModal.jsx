@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, Form, message } from 'antd';
 
-const PostModal = ({ isOpen, setIsOpen, postPayload, children, title = "Basic Modal" }) => {
+const PostModal = ({ isOpen, setIsOpen, postPayload, children, title = "Modal" }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [msg, setMsg] = useState("");
 

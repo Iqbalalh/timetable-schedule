@@ -1,17 +1,18 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from "react";
-import { Table, message, Layout, Button, Input, Form } from "antd";
+import { Table, message, Layout, Button, Input, Form, Modal } from "antd";
 import axios from "axios";
-import { API_FACULTY } from "@/app/(backend)/lib/endpoint";
+import { API_FACULTY, API_FACULTY_BY_ID } from "@/app/(backend)/lib/endpoint";
 import PostModal from "@/app/(frontend)/(component)/PostModal";
-
-const { Content } = Layout;
+import PatchModal from "@/app/(frontend)/(component)/PatchModal";
 
 const Faculty = () => {
   const [faculty, setFaculty] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [currentFaculty, setCurrentFaculty] = useState(null);
 
   const fetchData = async () => {
     setIsLoading(true);
@@ -48,6 +49,47 @@ const Faculty = () => {
     handleSuccess();
   };
 
+  const patchFacultyData = async (values) => {
+    const data = { facultyName: values.facultyName };
+
+    const response = await axios.put(API_FACULTY_BY_ID(currentFaculty?.id), data);
+    if (response.status !== 200) {
+      throw new Error("Gagal memperbarui fakultas");
+    }
+    handleSuccess();
+  };
+
+  const handleEdit = (record) => {
+    setCurrentFaculty(record);
+    setIsEditOpen(true);
+  };
+
+  // Delete faculty data
+  const deleteFacultyData = async (id) => {
+    try {
+      const response = await axios.delete(API_FACULTY_BY_ID(id));
+      if (response.status !== 200) {
+        throw new Error("Gagal menghapus fakultas");
+      }
+      message.success("Fakultas berhasil dihapus!");
+      handleSuccess();
+    } catch (error) {
+      message.error(error.message || "Gagal menghapus fakultas");
+    }
+  };
+
+  // Handle delete modal
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: "Apakah Anda yakin ingin menghapus fakultas ini?",
+      content: "Tindakan ini tidak dapat dibatalkan.",
+      okText: "Ya, Hapus",
+      okType: "danger",
+      cancelText: "Batal",
+      onOk: () => deleteFacultyData(id),
+    });
+  };
+
   const columns = [
     {
       title: "No.",
@@ -63,13 +105,13 @@ const Faculty = () => {
       title: "Waktu Dibuat",
       dataIndex: "createdAt",
       key: "createdAt",
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => new Date(text).toLocaleString("id-ID"),
     },
     {
       title: "Waktu Diperbarui",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      render: (text) => new Date(text).toLocaleString(),
+      render: (text) => new Date(text).toLocaleString("id-ID"),
     },
     {
       title: (
@@ -87,16 +129,14 @@ const Faculty = () => {
       ),
       dataIndex: "id",
       key: "action",
-      render: () => {
+      render: (text, record) => {
         return (
           <div className="flex justify-end">
             <Button
               type="text"
               disabled={isDisabled}
               className="text-blue-500 font-semibold"
-              onClick={() => {
-                setIsDisabled(true);
-              }}
+              onClick={() => handleEdit(record)}
             >
               Edit
             </Button>
@@ -104,9 +144,7 @@ const Faculty = () => {
               type="text"
               disabled={isDisabled}
               className="text-red-600 font-semibold"
-              onClick={() => {
-                setIsDisabled(true);
-              }}
+              onClick={() => handleDelete(record.id)}
             >
               Delete
             </Button>
@@ -115,7 +153,6 @@ const Faculty = () => {
       },
     },
   ];
-  
 
   return (
     <>
@@ -135,6 +172,7 @@ const Faculty = () => {
         />
       </div>
 
+      {/* Modal for adding data */}
       <PostModal
         postApi={API_FACULTY}
         isOpen={isModalOpen}
@@ -150,6 +188,23 @@ const Faculty = () => {
           <Input placeholder="cth. Matematika dan Ilmu Pengetahuan Alam" />
         </Form.Item>
       </PostModal>
+
+      {/* Modal for editing data */}
+      <PatchModal
+        isEditOpen={isEditOpen}
+        setIsEditOpen={setIsEditOpen}
+        patchPayload={patchFacultyData}
+        title="Edit Fakultas"
+        initValue={currentFaculty}
+      >
+        <Form.Item
+          label="Nama Fakultas"
+          name="facultyName"
+          rules={[{ required: true, message: "Harus diisi!" }]}
+        >
+          <Input placeholder="cth. Matematika dan Ilmu Pengetahuan Alam" />
+        </Form.Item>
+      </PatchModal>
     </>
   );
 };
