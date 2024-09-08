@@ -38,6 +38,7 @@ export const API_SCHEDULE = "/api/schedule/";
 export const API_SCHEDULE_BY_ID = (id) => `/api/schedule/${id}`;
 export const API_SCHEDULE_BY_CLASS_LECTURER = (classLecturerId) => `/api/schedule/by-classLecturer-id/${classLecturerId}`;
 export const API_SCHEDULE_BY_SCHEDULE_DAY = (dayId) => `/api/schedule/by-scheduleDay-id/${dayId}`;
+export const API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT = (dayId, departmentId) => `/api/schedule/by-day-by-department?dayId=${dayId}&departmentId=${departmentId}`;
 export const API_SCHEDULE_BY_SCHEDULE_SESSION = (scheduleSessionId) => `/api/schedule/by-scheduleSession-id/${scheduleSessionId}`;
 
 // Schedule Day
