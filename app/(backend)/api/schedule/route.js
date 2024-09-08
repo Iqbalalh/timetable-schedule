@@ -12,6 +12,11 @@ export async function GET(req) {
                 lecturerName: true
               },
             },
+            lecturer2: {
+              select: {
+                lecturerName: true
+              },
+            },
             class: {
               select: {
                 className: true,
@@ -43,6 +48,14 @@ export async function GET(req) {
             startTime: true,
             endTime: true
           }
+        },
+        room: {
+          select: {
+            roomName: true,
+            roomCapacity: true,
+            isPracticum: true,
+            isTheory: true,
+          }
         }
       }
     });
@@ -71,7 +84,7 @@ export async function POST(req) {
       const newSchedule = await prisma.schedule.create({
         data: {
           idScheduleDay,
-          idClassLecturer
+          idClassLecturer,
           idScheduleSession
         },
       });

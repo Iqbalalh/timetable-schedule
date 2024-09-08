@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import { Table, message, Layout, Button, Input, Form, Modal } from "antd";
 import axios from "axios";
@@ -52,7 +52,10 @@ const Faculty = () => {
   const patchFacultyData = async (values) => {
     const data = { facultyName: values.facultyName };
 
-    const response = await axios.put(API_FACULTY_BY_ID(currentFaculty?.id), data);
+    const response = await axios.put(
+      API_FACULTY_BY_ID(currentFaculty?.id),
+      data
+    );
     if (response.status !== 200) {
       throw new Error("Gagal memperbarui fakultas");
     }
@@ -164,6 +167,7 @@ const Faculty = () => {
         </div>
 
         <Table
+          className="shadow-xl rounded-lg"
           columns={columns}
           dataSource={faculty}
           rowKey="id"

@@ -208,6 +208,7 @@ const Lecturer = () => {
         </div>
 
         <Table
+          className="shadow-xl rounded-lg"
           columns={columns}
           dataSource={datas}
           rowKey="id"
@@ -241,12 +242,12 @@ const Lecturer = () => {
                 { required: true, message: "Harus diisi!" },
                 {
                   max: 18,
-                  message: "Maksimal 18 karakter!"
+                  message: "Maksimal 18 karakter!",
                 },
                 {
                   min: 17,
-                  message: "Format belum sesuai!"
-                }
+                  message: "Format belum sesuai!",
+                },
               ]}
             >
               <Input type="number" placeholder="cth. 20241212202412224" />
@@ -309,9 +310,7 @@ const Lecturer = () => {
             }
             options={dep}
             notFoundContent={
-              depLoading ? (
-                <Spin size="small" />
-              ) : "Tidak ada data!"
+              depLoading ? <Spin size="small" /> : "Tidak ada data!"
             }
           />
         </Form.Item>

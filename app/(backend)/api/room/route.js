@@ -5,11 +5,6 @@ export async function GET(req) {
   try {
     const rooms = await prisma.room.findMany({
       include: {
-        subjectType: {
-          select: {
-            typeName: true
-          }
-        },
         department: {
           select: {
             departmentName: true

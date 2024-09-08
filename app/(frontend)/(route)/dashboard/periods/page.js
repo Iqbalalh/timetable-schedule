@@ -2,7 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { Table, message, Button, Form, Input, Modal } from "antd";
 import axios from "axios";
-import { API_ACADEMIC_PERIOD, API_ACADEMIC_PERIOD_BY_ID } from "@/app/(backend)/lib/endpoint";
+import {
+  API_ACADEMIC_PERIOD,
+  API_ACADEMIC_PERIOD_BY_ID,
+} from "@/app/(backend)/lib/endpoint";
 import PostModal from "@/app/(frontend)/(component)/PostModal";
 import PatchModal from "@/app/(frontend)/(component)/PatchModal";
 
@@ -47,7 +50,10 @@ const AcademicPeriods = () => {
   const patchAcademicPeriodData = async (values) => {
     const data = { periodName: values.periodName };
 
-    const response = await axios.put(API_ACADEMIC_PERIOD_BY_ID(currentAcademicPeriod.id), data);
+    const response = await axios.put(
+      API_ACADEMIC_PERIOD_BY_ID(currentAcademicPeriod.id),
+      data
+    );
     if (response.status !== 200) {
       throw new Error("Gagal memperbarui periode!");
     }
@@ -166,6 +172,7 @@ const AcademicPeriods = () => {
         </div>
 
         <Table
+          className="shadow-xl rounded-lg"
           columns={columns}
           dataSource={academicPeriods}
           rowKey="id"

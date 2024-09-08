@@ -37,7 +37,7 @@ export const API_ROOM_BY_SUBJECT_TYPE = (subjectTypeId) => `/api/room/by-subject
 export const API_SCHEDULE = "/api/schedule/";
 export const API_SCHEDULE_BY_ID = (id) => `/api/schedule/${id}`;
 export const API_SCHEDULE_BY_CLASS_LECTURER = (classLecturerId) => `/api/schedule/by-classLecturer-id/${classLecturerId}`;
-export const API_SCHEDULE_BY_SCHEDULE_DAY = (scheduleDayId) => `/api/schedule/by-scheduleDay-id/${scheduleDayId}`;
+export const API_SCHEDULE_BY_SCHEDULE_DAY = (dayId) => `/api/schedule/by-scheduleDay-id/${dayId}`;
 export const API_SCHEDULE_BY_SCHEDULE_SESSION = (scheduleSessionId) => `/api/schedule/by-scheduleSession-id/${scheduleSessionId}`;
 
 // Schedule Day
@@ -45,10 +45,10 @@ export const API_SCHEDULE_DAY = "/api/schedule-day/";
 export const API_SCHEDULE_DAY_BY_ID = (id) => `/api/schedule-day/${id}`;
 
 // Schedule Room
-export const API_SCHEDULE_ROOM = "/api/schedule-room/";
-export const API_SCHEDULE_ROOM_BY_ID = (id) => `/api/schedule-room/${id}`;
-export const API_SCHEDULE_ROOM_BY_ROOM = (roomId) => `/api/schedule-room/by-room-id/${roomId}`;
-export const API_SCHEDULE_ROOM_BY_SCHEDULE = (scheduleId) => `/api/schedule-room/by-schedule-id/${scheduleId}`;
+// export const API_SCHEDULE_ROOM = "/api/schedule-room/";
+// export const API_SCHEDULE_ROOM_BY_ID = (id) => `/api/schedule-room/${id}`;
+// export const API_SCHEDULE_ROOM_BY_ROOM = (roomId) => `/api/schedule-room/by-room-id/${roomId}`;
+// export const API_SCHEDULE_ROOM_BY_SCHEDULE = (scheduleId) => `/api/schedule-room/by-schedule-id/${scheduleId}`;
 
 // Schedule Session
 export const API_SCHEDULE_SESSION = "/api/schedule-session/";

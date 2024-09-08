@@ -242,7 +242,7 @@ const DashboardLayout = ({ children }) => {
             </Space>
           </div>
         </Header>
-        <Content className="overflow-auto lg:m-8 md:m-8 m-4">{children}</Content>
+        <Content className="overflow-auto lg:p-8 md:p-8 p-4">{children}</Content>
         <Footer className="bg-white h-12 flex text-center items-center justify-center">
           Penjadwalan Unila ©{new Date().getFullYear()} Created by Iqbal Al
           Hafidzu Rahman
