@@ -1,28 +1,27 @@
-Note:
+# Schedule Management System
 
-- routing:
-1. folder () tidak masuk kedalam route jadi gaada /backend atau /frontend
-contoh: (backend) dan (fronted) ga bisa diakses /backend /frontend
+This project is a **Schedule Management System** built with **React.js**, **Tailwind CSS**, **Ant Design**, and **Next.js**. The system dynamically generates tables based on the data fetched from APIs.
 
-2. folder [] adalah folder dynamic jadi folder yang ada ini nya namanya bisa berubah sesuai dengan route yang ingin diakses
-contoh: [id], route nya bukan /api/id, tapi tergantung misal di passing id = 1, jadinya /api/1
+## Features
 
-3. folder yang gaada bracket itu static routing jadi bisa diakses dan gabisa diubah
-contoh: /api/utils
+- **University Level**: Can be used for university level scheduling.
+- **Dynamic Schedule Display**: Display the schedule for a selected day and session, organized by rooms.
+- **Responsive Layout**: Built with Tailwind CSS for responsive design.
+- **Multi Role Management**: Built to accomodate multi role management.
 
-4. page.js dipakai buat halaman yang akan diliat
-contoh: /routing
+## Technology Stack
 
-5. route.js dipakai buat nulis api, jadi walaupun diketik url /api/classroom gabakal bisa dikasi tampilan, cuma bisa di hit api nya aja
-contoh: /api/user gabakal ada tampilan
+- **Next.js**: Main framework. Server-side rendering and routing for better performance.
+- **React.js**: Used for building the UI components and managing the application state.
+- **Ant Design**: For UI components like tables, buttons, and selects.
+- **Tailwind CSS**: For styling and responsive design.
+- **Axios**: For making API requests to fetch and post data.
+- **PostgreSQL**: For the database.
+- **Prisma**: For the database ORM.
 
-6. layout.js dipakai buat layout jadi semua yg jadi subfolder atau childrennya bakal kebawa
+Author:
+- Iqbal Al Hafidzu Rahman
 
-Penting:
-1. sebisa mungkin semua styling pakai className diisi tailwind kecuali buat animasi aneh2
-2. semua penulisan yang bukan tampilan pakai bahasa inggris camelCase
-3. sebisa mungkin pakai antd buat mempercepat dev
-4. fe konek ke be via hit api nanti ada var nya dibuat di utils
-5. usahakan code readable
-6. baca dokumentasi next 14, karena versi dibawahnya bakalan lumayan beda routingnya
-
+Contributor:
+- Jihan Haya Mufialdo
+- Cindy Loria
