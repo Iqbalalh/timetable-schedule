@@ -11,45 +11,47 @@ export async function GET(req) {
                 }
             },
             schedule: {
+              select: {
                 classLecturer: {
-                    select: {
-                      lecturer: {
-                        select: {
-                          lecturerName: true
-                        },
+                  select: {
+                    lecturer: {
+                      select: {
+                        lecturerName: true
                       },
-                      class: {
-                        select: {
-                          className: true,
-                          subSubject: {
-                            select: {
-                              subject: {
-                                select: {
-                                  subjectName: true
-                                },
+                    },
+                    class: {
+                      select: {
+                        className: true,
+                        subSubject: {
+                          select: {
+                            subject: {
+                              select: {
+                                subjectName: true
                               },
-                              subjectType: {
-                                select: {
-                                  typeName: true
-                                },
+                            },
+                            subjectType: {
+                              select: {
+                                typeName: true
                               },
                             },
                           },
-                        }
+                        },
                       }
                     }
-                  },
-                  scheduleDay: {
-                    select: {
-                      day: true
-                    }
-                  },
-                  scheduleSession: {
-                    select: {
-                      startTime: true,
-                      endTime: true
-                    }
                   }
+                },
+                scheduleDay: {
+                  select: {
+                    day: true
+                  }
+                },
+                scheduleSession: {
+                  select: {
+                    startTime: true,
+                    endTime: true
+                  }
+                }
+              }
             }
         }
     });
