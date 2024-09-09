@@ -12,6 +12,8 @@ export const API_CLASS_LECTURER = "/api/class-lecturer/";
 export const API_CLASS_LECTURER_BY_ID = (id) => `/api/class-lecturer/${id}`;
 export const API_CLASS_LECTURER_BY_CLASS = (classId) => `/api/class-lecturer/by-class-id/${classId}`;
 export const API_CLASS_LECTURER_BY_LECTURER = (lecturerId) => `/api/class-lecturer/by-lecturer-id/${lecturerId}`;
+export const API_CLASS_LECTURER_BY_DEPARTMENT = (departmentId) => `/api/class-lecturer/by-department-id?departmentId=${departmentId}`;
+export const API_CLASS_LECTURER_BY_DEPARTMENT_BY_PERIOD = (departmentId, periodId) => `/api/class-lecturer/by-department-by-period?departmentId=${departmentId}&periodId=${periodId}`;
 
 // Department
 export const API_DEPARTMENT = "/api/department/";
@@ -38,8 +40,9 @@ export const API_SCHEDULE = "/api/schedule/";
 export const API_SCHEDULE_BY_ID = (id) => `/api/schedule/${id}`;
 export const API_SCHEDULE_BY_CLASS_LECTURER = (classLecturerId) => `/api/schedule/by-classLecturer-id/${classLecturerId}`;
 export const API_SCHEDULE_BY_SCHEDULE_DAY = (dayId) => `/api/schedule/by-scheduleDay-id/${dayId}`;
-export const API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT = (dayId, departmentId) => `/api/schedule/by-day-by-department?dayId=${dayId}&departmentId=${departmentId}`;
 export const API_SCHEDULE_BY_SCHEDULE_SESSION = (scheduleSessionId) => `/api/schedule/by-scheduleSession-id/${scheduleSessionId}`;
+export const API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT = (dayId, departmentId) => `/api/schedule/by-day-by-department?dayId=${dayId}&departmentId=${departmentId}`;
+export const API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD = (dayId, departmentId, academicPeriodId) => `/api/schedule/by-day-by-department-by-period?dayId=${dayId}&departmentId=${departmentId}&academicPeriodId=${academicPeriodId}`;
 
 // Schedule Day
 export const API_SCHEDULE_DAY = "/api/schedule-day/";

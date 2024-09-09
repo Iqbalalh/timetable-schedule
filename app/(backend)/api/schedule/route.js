@@ -67,10 +67,10 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { idScheduleDay, idClassLecturer, idScheduleSession } = await req.json();
+      const { idDay, idClassLecturer, idScheduleSession, idRoom } = await req.json();
   
       // Validate input
-      if (!idScheduleDay) {
+      if (!idDay) {
         return NextResponse.json({ error: "Day is required" }, { status: 400 });
       }
       if (!idClassLecturer) {
@@ -79,13 +79,17 @@ export async function POST(req) {
       if (!idScheduleSession) {
         return NextResponse.json({ error: "Schedule session ID is required" }, { status: 400 });
       }
+      if (!idScheduleSession) {
+        return NextResponse.json({ error: "Room ID is required" }, { status: 400 });
+      }
   
       // Create a new schedule
       const newSchedule = await prisma.schedule.create({
         data: {
-          idScheduleDay,
+          idDay,
           idClassLecturer,
-          idScheduleSession
+          idScheduleSession,
+          idRoom,
         },
       });
   
