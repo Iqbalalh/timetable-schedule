@@ -49,14 +49,15 @@ model StudyProgram {
   @@map(name: "studyPrograms")
 }
 
-model Curiculum {
-  id            Int       @id @default(autoincrement())
-  curiculumName String    @unique
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  subjects      Subject[]
+model Curriculum {
+  id              Int              @id @default(autoincrement())
+  curriculumName  String           
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  subjects        Subject[]
+  academicPeriods AcademicPeriod[]
 
-  @@map(name: "curiculums")
+  @@map(name: "curriculums")
 }
 
 model Subject {
@@ -64,8 +65,8 @@ model Subject {
   subjectCode    String       @unique
   subjectName    String
   subjectSKS     Int
-  idCuriculum    Int
-  curiculum      Curiculum    @relation(fields: [idCuriculum], references: [id])
+  idCurriculum   Int
+  curriculum     Curriculum   @relation(fields: [idCurriculum], references: [id])
   idStudyProgram Int
   studyProgram   StudyProgram @relation(fields: [idStudyProgram], references: [id])
   createdAt      DateTime     @default(now())
@@ -101,7 +102,7 @@ model SubSubject {
 
 model Room {
   id           Int        @id @default(autoincrement())
-  roomName     String     @unique
+  roomName     String     
   roomCapacity Int
   // idSubjectType Int
   // subjectType   SubjectType @relation(fields: [idSubjectType], references: [id])
@@ -119,11 +120,13 @@ model Room {
 }
 
 model AcademicPeriod {
-  id         Int      @id @default(autoincrement())
-  periodName String   @unique
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  classes    Class[]
+  id           Int        @id @default(autoincrement())
+  periodName   String     
+  curriculumId Int
+  Curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  classes      Class[]
 
   @@map(name: "academicPeriods")
 }
@@ -191,7 +194,7 @@ model ScheduleSession {
   id            Int        @id @default(autoincrement())
   startTime     String
   endTime       String
-  sessionNumber Int        @unique
+  sessionNumber Int        
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   schedules     Schedule[]

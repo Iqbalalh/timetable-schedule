@@ -12,17 +12,21 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { periodName } = await req.json();
+      const { periodName, idCurriculum } = await req.json();
   
       // Validate input
       if (!periodName) {
         return NextResponse.json({ error: "Period name is required" }, { status: 400 });
+      }
+      if (!idCurriculum) {
+        return NextResponse.json({ error: "Curriculum ID is required" }, { status: 400 });
       }
   
       // Create a new academic period
       const newAcademicPeriod = await prisma.academicPeriod.create({
         data: {
           periodName,
+          idCurriculum
         },
       });
   

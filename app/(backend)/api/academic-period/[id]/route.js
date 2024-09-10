@@ -21,17 +21,20 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { periodName } = await req.json();
+  const { periodName, idCurriculum } = await req.json();
 
   // Validate input
   if (!periodName) {
     return NextResponse.json({ error: "Academic period name is required" }, { status: 400 });
   }
+  if (!idCurriculum) {
+    return NextResponse.json({ error: "Curriculum ID name is required" }, { status: 400 });
+  }
 
   try {
     const updatedAcademicPeriod = await prisma.academicPeriod.update({
       where: { id: Number(id) },
-      data: { periodName },
+      data: { periodName, idCurriculum },
     });
 
     return NextResponse.json(updatedAcademicPeriod, { status: 200 });

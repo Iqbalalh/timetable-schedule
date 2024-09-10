@@ -36,17 +36,20 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { className, classCapacity, idSubSubject } = await req.json();
-  
+      const { className, classCapacity, idSubSubject, idAcademicPeriod } = await req.json();
+
       // Validate input
       if (!className) {
-        return NextResponse.json({ error: "Class name is required" }, { status: 400 });
+        return NextResponse.json({ error: "class name is required" }, { status: 400 });
       }
       if (!classCapacity) {
-        return NextResponse.json({ error: "Class capacity is required" }, { status: 400 });
+        return NextResponse.json({ error: "class capacity is required" }, { status: 400 });
       }
       if (!idSubSubject) {
-        return NextResponse.json({ error: "Sub Subject ID is required" }, { status: 400 });
+        return NextResponse.json({ error: "Sub subject is required" }, { status: 400 });
+      }
+      if (!idAcademicPeriod) {
+        return NextResponse.json({ error: "Academic period is required" }, { status: 400 });
       }
   
       // Create a new class
@@ -54,7 +57,8 @@ export async function POST(req) {
         data: {
           className,
           classCapacity,
-          idSubSubject
+          idSubSubject,
+          idAcademicPeriod
         },
       });
   

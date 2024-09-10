@@ -5,15 +5,15 @@ export async function GET(req, { params }) {
   const { id } = params;
 
   try {
-    const curiculum = await prisma.curiculum.findUnique({
+    const curriculum = await prisma.curriculum.findUnique({
       where: { id: Number(id) },
     });
 
-    if (!curiculum) {
-      return NextResponse.json({ error: "Curiculum not found" }, { status: 404 });
+    if (!curriculum) {
+      return NextResponse.json({ error: "Curriculum not found" }, { status: 404 });
     }
 
-    return NextResponse.json(curiculum, { status: 200 });
+    return NextResponse.json(curriculum, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
@@ -21,20 +21,20 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { curiculumName } = await req.json();
+  const { curriculumName } = await req.json();
 
   // Validate input
-  if (!curiculumName) {
-    return NextResponse.json({ error: "CUriculum name is required" }, { status: 400 });
+  if (!curriculumName) {
+    return NextResponse.json({ error: "Curriculum name is required" }, { status: 400 });
   }
 
   try {
-    const updatedCuriculum = await prisma.curiculum.update({
+    const updatedCurriculum = await prisma.curriculum.update({
       where: { id: Number(id) },
-      data: { curiculumName },
+      data: { curriculumName },
     });
 
-    return NextResponse.json(updatedCuriculum, { status: 200 });
+    return NextResponse.json(updatedCurriculum, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
@@ -44,11 +44,11 @@ export async function DELETE(req, { params }) {
   const { id } = params;
 
   try {
-    const deletedCuriculum = await prisma.curiculum.delete({
+    const deletedCurriculum = await prisma.curriculum.delete({
       where: { id: Number(id) },
     });
 
-    return NextResponse.json(deletedCuriculum, { status: 200 });
+    return NextResponse.json(deletedCurriculum, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
