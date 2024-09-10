@@ -9,10 +9,7 @@ export async function GET(req) {
     const PeriodId = searchParams.get("periodId");
 
     if (!departmentId || !PeriodId) {
-      return NextResponse.json(
-        { error: "ID is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "ID is required" }, { status: 400 });
     }
 
     // Query the database to find class lecturers by departmentId
@@ -26,9 +23,9 @@ export async function GET(req) {
                   id: parseInt(departmentId), // Use departmentId in the query
                 },
               },
-              idAcademicPeriod : parseInt(PeriodId)
             },
           },
+          idAcademicPeriod: parseInt(PeriodId),
         },
       },
       include: {
@@ -46,6 +43,11 @@ export async function GET(req) {
           select: {
             className: true,
             classCapacity: true,
+            academicPeriod: {
+              select: {
+                periodName: true,
+              },
+            },
             subSubject: {
               select: {
                 subject: {
