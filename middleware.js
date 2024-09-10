@@ -9,15 +9,23 @@ export async function middleware(req) {
   const nonAdminPaths = ['/lecturer'];
   const apiPaths = ['/api'];
   const publicApiPaths = ['/api/auth'];
+  const homePagePath = '/'; // Path for the home page
 
   // Check if the request is for a protected route (API or pages)
   const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
   const isNonAdminPath = nonAdminPaths.some((path) => pathname.startsWith(path));
   const isApiPath = apiPaths.some((path) => pathname.startsWith(path));
   const isPublicApiPath = publicApiPaths.some((path) => pathname.startsWith(path));
+  const isHomePage = pathname === homePagePath;
 
   // Get the token from the request (using next-auth JWT)
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+  // Handle home page redirection for logged-in users
+  if (token && isHomePage) {
+    const dashboardUrl = new URL('/dashboard', req.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
 
   // Allow access to public API routes without authentication
   if (isPublicApiPath) {
@@ -64,5 +72,5 @@ export async function middleware(req) {
 
 // Match both page routes and API routes
 export const config = {
-  matcher: ['/dashboard/:path*', '/lecturer/:path*', '/api/:path*'],
+  matcher: ['/dashboard/:path*', '/lecturer/:path*', '/api/:path*', '/'],
 };
