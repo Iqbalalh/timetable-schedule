@@ -49,28 +49,28 @@ model StudyProgram {
   @@map(name: "studyPrograms")
 }
 
-model AcademicPeriod {
-  id         Int       @id @default(autoincrement())
-  periodName String    @unique
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  subjects   Subject[]
+model Curiculum {
+  id            Int       @id @default(autoincrement())
+  curiculumName String    @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  subjects      Subject[]
 
-  @@map(name: "academicPeriods")
+  @@map(name: "curiculums")
 }
 
 model Subject {
-  id               Int            @id @default(autoincrement())
-  subjectCode      String         @unique
-  subjectName      String
-  subjectSKS       Int
-  idAcademicPeriod Int
-  academicPeriod   AcademicPeriod @relation(fields: [idAcademicPeriod], references: [id])
-  idStudyProgram   Int
-  studyProgram     StudyProgram   @relation(fields: [idStudyProgram], references: [id])
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  subSubjects      SubSubject[]
+  id             Int          @id @default(autoincrement())
+  subjectCode    String       @unique
+  subjectName    String
+  subjectSKS     Int
+  idCuriculum    Int
+  curiculum      Curiculum    @relation(fields: [idCuriculum], references: [id])
+  idStudyProgram Int
+  studyProgram   StudyProgram @relation(fields: [idStudyProgram], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  subSubjects    SubSubject[]
 
   @@map(name: "subjects")
 }
@@ -111,21 +111,34 @@ model Room {
   updatedAt    DateTime   @updatedAt
   isPracticum  Boolean
   isTheory     Boolean
+  isLab        Boolean
   // scheduleRooms ScheduleRoom[]
   Schedule     Schedule[]
 
   @@map(name: "rooms")
 }
 
+model AcademicPeriod {
+  id         Int      @id @default(autoincrement())
+  periodName String   @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  classes    Class[]
+
+  @@map(name: "academicPeriods")
+}
+
 model Class {
-  id             Int             @id @default(autoincrement())
-  className      String
-  classCapacity  Int
-  idSubSubject   Int
-  subSubject     SubSubject      @relation(fields: [idSubSubject], references: [id])
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-  classLecturers ClassLecturer[]
+  id               Int             @id @default(autoincrement())
+  className        String
+  classCapacity    Int
+  idSubSubject     Int
+  subSubject       SubSubject      @relation(fields: [idSubSubject], references: [id])
+  idAcademicPeriod Int
+  academicPeriod   AcademicPeriod  @relation(fields: [idAcademicPeriod], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  classLecturers   ClassLecturer[]
 
   @@map(name: "classes")
 }
