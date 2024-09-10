@@ -1,6 +1,7 @@
 // Academic Period
 export const API_ACADEMIC_PERIOD = "/api/academic-period/";
 export const API_ACADEMIC_PERIOD_BY_ID = (id) => `/api/academic-period/${id}`;
+export const API_ACADEMIC_PERIOD_BY_CURRICULUM = (curriculumId) => `/api/academic-period/by-curriculum-id/${curriculumId}`;
 
 // Class
 export const API_CLASS = "/api/class/";
@@ -81,4 +82,4 @@ export const API_SUBJECT_TYPE = "/api/subject-type/";
 export const API_SUBJECT_TYPE_BY_ID = (id) => `/api/subject-type/${id}`;
 
 // Curriculum
-export const API_CURRICULUM = "/api/curiculum/"
+export const API_CURRICULUM = "/api/curriculum/"

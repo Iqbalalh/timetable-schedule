@@ -7,21 +7,22 @@ import axios from "axios";
 import {
   API_SCHEDULE_SESSION,
   API_SCHEDULE_DAY,
-  API_DEPARTMENT_BY_FACULTY,
   API_FACULTY,
+  API_ACADEMIC_PERIOD_BY_CURRICULUM,
+  API_DEPARTMENT_BY_FACULTY,
   API_ROOM_BY_DEPARTMENT,
-  API_ACADEMIC_PERIOD,
   API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD,
+  API_CURRICULUM,
 } from "@/app/(backend)/lib/endpoint";
 import PostSchedule from "@/app/(frontend)/(component)/PostSchedule";
 
 const ScheduleMatrix = () => {
-
   const [roomOptions, setRoomOptions] = useState([]);
   const [sessionOptions, setSessionOptions] = useState([]);
   const [dayOptions, setDayOptions] = useState([]);
   const [academicPeriodOptions, setAcademicPeriodOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState(null);
+  const [curriculumOptions, setCurriculumOptions] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,24 +31,27 @@ const ScheduleMatrix = () => {
   const [facultyOptions, setFacultyOptions] = useState([]);
   const [isDepartmentLoading, setIsDepartmentLoading] = useState(false);
   const [isFacultyLoading, setIsFacultyLoading] = useState(false);
+  const [isPeriodLoading, setIsPeriodLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDayId, setCurrentDayId] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [currentRoomId, setCurrentRoomId] = useState(null);
   const [currentPeriodId, setCurrentPeriodId] = useState(null);
+  const [currentCurriculumId, setCurrentCurriculumId] = useState(null);
 
   useEffect(() => {
     const loadInitialData = async () => {
       setIsLoading(true);
       try {
-        const [sessionResponse, dayResponse, periodResponse] = await Promise.all([
-          axios.get(API_SCHEDULE_SESSION),
-          axios.get(API_SCHEDULE_DAY),
-          axios.get(API_ACADEMIC_PERIOD),
-        ]);
-        setAcademicPeriodOptions(periodResponse.data);
+        const [sessionResponse, dayResponse, curriculumResponse] =
+          await Promise.all([
+            axios.get(API_SCHEDULE_SESSION),
+            axios.get(API_SCHEDULE_DAY),
+            axios.get(API_CURRICULUM),
+          ]);
         setSessionOptions(sessionResponse.data);
         setDayOptions(dayResponse.data);
+        setCurriculumOptions(curriculumResponse.data);
         setIsLoading(false);
       } catch (error) {
         message.error("Error fetching data");
@@ -85,6 +89,25 @@ const ScheduleMatrix = () => {
     }
   };
 
+  // Fetch period
+  const loadPeriod = async (curriculumId) => {
+    setIsPeriodLoading(true);
+    try {
+      const response = await axios.get(
+        API_ACADEMIC_PERIOD_BY_CURRICULUM(curriculumId)
+      );
+      const periods = response.data.map((per) => ({
+        value: per.id,
+        label: per.periodName,
+      }));
+      setAcademicPeriodOptions(periods);
+      setIsPeriodLoading(false);
+    } catch (error) {
+      message.error("Failed to load faculties data!");
+      setIsPeriodLoading(false);
+    }
+  };
+
   // Fetch faculties
   const loadFaculties = async () => {
     setIsFacultyLoading(true);
@@ -106,7 +129,9 @@ const ScheduleMatrix = () => {
   const loadRoomsByDepartment = async (departmentId) => {
     setIsLoading(true);
     try {
-      const roomResponse = await axios.get(API_ROOM_BY_DEPARTMENT(departmentId));
+      const roomResponse = await axios.get(
+        API_ROOM_BY_DEPARTMENT(departmentId)
+      );
       setRoomOptions(roomResponse.data);
       setIsLoading(false);
     } catch (error) {
@@ -120,7 +145,11 @@ const ScheduleMatrix = () => {
     setIsLoading(true);
     try {
       const scheduleResponse = await axios.get(
-        API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD(dayId, selectedDepartment, currentPeriodId)
+        API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD(
+          dayId,
+          selectedDepartment,
+          currentPeriodId
+        )
       );
       setScheduleData(scheduleResponse.data);
       setIsLoading(false);
@@ -182,7 +211,11 @@ const ScheduleMatrix = () => {
           <div className="flex justify-center items-center rounded-lg h-32">
             <Button
               onClick={() =>
-                handleAddButtonClick(selectedDay.id, record.sessionNumber, room.id)
+                handleAddButtonClick(
+                  selectedDay.id,
+                  record.sessionNumber,
+                  room.id
+                )
               }
             >
               Tambah Data
@@ -223,81 +256,139 @@ const ScheduleMatrix = () => {
     >
       <div>
         <div className="flex items-center">
-          <h1 className="text-2xl font-bold mb-4 flex">
+          <h1 className="text-2xl font-bold mb-8 flex">
             <div className="bg-blue-500 px-1 mr-2">&nbsp;</div>Kelola Jadwal
           </h1>
         </div>
 
-        <div className="mb-12 lg:flex block">
-          <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-200">
-            Periode Akademik :{" "}
-          </div>
-          <Select
-            className="lg:w-1/5 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
-            showSearch
-            placeholder="Pilih salah satu"
-            value={currentPeriodId} // Show selected period
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            options={academicPeriodOptions.map((period) => ({
-              value: period.id,
-              label: period.periodName,
-            }))}
-            onChange={(value) => {
-              setCurrentPeriodId(value);
-              setSelectedFaculty(null);
-              loadFaculties();
-            }}
-          />
+        <div className="mb-12 block">
+          <div className="lg:flex">
+            <div className="lg:w-1/2 lg:flex lg:mb-8">
+              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
+                Kurikulum:
+              </div>
+              <Select
+                className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
+                showSearch
+                placeholder="Pilih salah satu"
+                value={currentCurriculumId}
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={curriculumOptions.map((curr) => ({
+                  value: curr.id,
+                  label: curr.curriculumName,
+                }))}
+                onChange={(value) => {
+                  setCurrentCurriculumId(value);
+                  setCurrentPeriodId(null);
+                  setSelectedFaculty(null);
+                  setSelectedDepartment(null);
+                  setSelectedDay(null);
+                  loadPeriod(value);
+                }}
+              />
+            </div>
 
-          <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-200">
-            Fakultas:{" "}
+            <div className="lg:w-1/2 lg:flex lg:mb-8">
+              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
+                Periode Akademik:
+              </div>
+              <Select
+                className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
+                showSearch
+                placeholder={
+                  !currentCurriculumId
+                    ? "Pilih kurikulum terlebih dahulu"
+                    : "Pilih salah satu"
+                }
+                value={currentPeriodId} // Show selected period
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={academicPeriodOptions}
+                onChange={(value) => {
+                  setCurrentPeriodId(value);
+                  setSelectedFaculty(null);
+                  setSelectedDepartment(null);
+                  setSelectedDay(null);
+                  loadFaculties();
+                }}
+                loading={isPeriodLoading}
+                disabled={currentCurriculumId === null}
+              />
+            </div>
           </div>
-          <Select
-            className="lg:w-1/5 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
-            showSearch
-            placeholder={
-              !currentPeriodId ? "Pilih periode akademik terlebih dahulu" : "Pilih salah satu"
-            }
-            value={selectedFaculty}
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            options={facultyOptions}
-            onChange={(value) => {
-              setSelectedFaculty(value);
-              loadDepartmentsByFaculty(value);
-              setSelectedDepartment(null);
-              setSelectedDay(null);
-            }}
-            loading={isFacultyLoading}
-            disabled={currentPeriodId === null} // Disable when periodId is null
-          />
 
-          <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-200">
-            Jurusan :{" "}
+          <div className="lg:flex">
+            <div className="lg:w-1/2 lg:flex">
+              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
+                Fakultas:
+              </div>
+              <Select
+                className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
+                showSearch
+                placeholder={
+                  !currentPeriodId
+                    ? "Pilih periode akademik terlebih dahulu"
+                    : "Pilih salah satu"
+                }
+                value={selectedFaculty}
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={facultyOptions}
+                onChange={(value) => {
+                  setSelectedFaculty(value);
+                  loadDepartmentsByFaculty(value);
+                  setSelectedDepartment(null);
+                  setSelectedDay(null);
+                }}
+                loading={isFacultyLoading}
+                disabled={currentPeriodId === null} // Disable when periodId is null
+              />
+            </div>
+
+            <div className="lg:w-1/2 lg:flex ">
+              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
+                Jurusan:
+              </div>
+              <Select
+                showSearch
+                className="shadow-lg lg:mb-0 mb-2 lg:w-1/2 w-full"
+                disabled={!selectedFaculty}
+                placeholder={
+                  !selectedFaculty
+                    ? "Pilih fakultas terlebih dahulu"
+                    : "Pilih salah satu"
+                }
+                filterOption={(input, option) =>
+                  (option?.label ?? "")
+                    .toLowerCase()
+                    .includes(input.toLowerCase())
+                }
+                options={departmentOptions}
+                value={selectedDepartment} // Set the selected department value
+                notFoundContent={
+                  isDepartmentLoading ? (
+                    <Spin size="small" />
+                  ) : (
+                    "Tidak ada data!"
+                  )
+                }
+                onSelect={(value) => {
+                  setSelectedDay(null); // Clear selected day when department is changed
+                  handleDepartmentChange(value); // Set department and fetch rooms
+                }}
+              />
+            </div>
           </div>
-          <Select
-            showSearch
-            className="shadow-lg lg:mb-0 mb-2 lg:w-1/5 w-full"
-            disabled={!selectedFaculty}
-            placeholder={
-              !selectedFaculty ? "Pilih fakultas terlebih dahulu" : "Pilih salah satu"
-            }
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            options={departmentOptions}
-            value={selectedDepartment} // Set the selected department value
-            notFoundContent={
-              isDepartmentLoading ? <Spin size="small" /> : "Tidak ada data!"
-            }
-            onSelect={(value) => {
-              setSelectedDay(null); // Clear selected day when department is changed
-              handleDepartmentChange(value); // Set department and fetch rooms
-            }}
-          />
         </div>
 
         {isLoading ? (
@@ -360,7 +451,7 @@ const ScheduleMatrix = () => {
           idScheduleSession={currentSessionId}
           idRoom={currentRoomId}
           idDepartment={selectedDepartment}
-          idPeriod={currentPeriodId}
+          idCurriculum={currentCurriculumId}
           onSuccess={() => loadScheduleByDay(currentDayId)}
         />
       </div>

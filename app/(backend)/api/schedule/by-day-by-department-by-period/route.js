@@ -26,12 +26,8 @@ export async function GET(req) {
             idDepartment: parseInt(departmentId), // assuming departmentId is an integer
           },
           class: {
-            subSubject: {
-                subject: {
-                    idAcademicPeriod: parseInt(academicPeriodId),
-                }
-            }
-          }
+            idAcademicPeriod: parseInt(academicPeriodId),
+          },
         },
       },
       include: {

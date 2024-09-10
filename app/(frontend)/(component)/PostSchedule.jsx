@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form, Select, message, Spin } from "antd";
 import axios from "axios";
 import {
-  API_CLASS_LECTURER_BY_DEPARTMENT,
-  API_CLASS_LECTURER_BY_DEPARTMENT_BY_PERIOD,
+  API_CLASS_LECTURER_BY_DEPARTMENT_BY_CURRICULUM,
   API_SCHEDULE,
 } from "@/app/(backend)/lib/endpoint";
 
@@ -16,7 +15,7 @@ const PostSchedule = ({
   idRoom,
   idDepartment,
   onSuccess,
-  idPeriod,
+  idCurriculum,
 }) => {
   const [classLecturers, setClassLecturers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -28,7 +27,7 @@ const PostSchedule = ({
         setLoading(true);
         try {
           const response = await axios.get(
-            API_CLASS_LECTURER_BY_DEPARTMENT_BY_PERIOD(idDepartment, idPeriod)
+            API_CLASS_LECTURER_BY_DEPARTMENT_BY_CURRICULUM(idDepartment, idCurriculum)
           ); // API to fetch class lecturers
           const classLecturerOptions = response.data.map((classLecturer) => ({
             value: classLecturer.id,

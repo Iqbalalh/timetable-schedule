@@ -110,6 +110,12 @@ const AcademicPeriods = () => {
       key: "periodName",
     },
     {
+      title: "Kurikulum",
+      dataIndex: "curriculumName",
+      key: "curriculumName",
+      render: (_, record) => <div>{record.curriculum.curriculumName}</div>,
+    },
+    {
       title: "Waktu Dibuat",
       dataIndex: "createdAt",
       key: "createdAt",

@@ -123,7 +123,7 @@ model AcademicPeriod {
   id           Int        @id @default(autoincrement())
   periodName   String     
   curriculumId Int
-  Curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   classes      Class[]
