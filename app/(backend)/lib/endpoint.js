@@ -79,3 +79,6 @@ export const API_SUBJECT_BY_STUDY_PROGRAM = (studyProgramId) => `/api/subject/by
 // Subject Type
 export const API_SUBJECT_TYPE = "/api/subject-type/";
 export const API_SUBJECT_TYPE_BY_ID = (id) => `/api/subject-type/${id}`;
+
+// Curriculum
+export const API_CURRICULUM = "/api/curiculum/"
