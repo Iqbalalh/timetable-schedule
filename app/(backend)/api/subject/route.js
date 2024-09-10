@@ -20,9 +20,9 @@ export async function GET(req) {
             }
           }
         },
-        academicPeriod: {
+        curiculum: {
           select: {
-            periodName: true
+            curiculumName: true
           }
         } 
       }

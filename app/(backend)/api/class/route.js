@@ -1,3 +1,4 @@
+import AcademicPeriods from "@/app/(frontend)/(route)/dashboard/periods/page";
 import prisma from "../../lib/db";
 import { NextResponse } from 'next/server';
 
@@ -20,6 +21,11 @@ export async function GET(req) {
             },
           },
         },
+        AcademicPeriod: {
+          select: {
+            periodName: true
+          }
+        }
       },
     });
     return NextResponse.json(classes, { status: 200 });
