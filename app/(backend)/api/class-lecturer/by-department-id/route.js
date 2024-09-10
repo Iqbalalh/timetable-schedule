@@ -1,9 +1,34 @@
-import prisma from "../../lib/db";
+import prisma from "@/app/(backend)/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
+    // Extract departmentId from the query parameters
+    const { searchParams } = new URL(req.url);
+    const departmentId = searchParams.get("departmentId");
+
+    if (!departmentId) {
+      return NextResponse.json(
+        { error: "Department ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Query the database to find class lecturers by departmentId
     const classLecturers = await prisma.classLecturer.findMany({
+      where: {
+        class: {
+          subSubject: {
+            subject: {
+              studyProgram: {
+                department: {
+                  id: parseInt(departmentId), // Use departmentId in the query
+                },
+              },
+            },
+          },
+        },
+      },
       include: {
         lecturer: {
           select: {
@@ -48,51 +73,9 @@ export async function GET(req) {
         },
       },
     });
+
     return NextResponse.json(classLecturers, { status: 200 });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Something went wrong" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(req) {
-  try {
-    const { idLecturer, idLecturer2, idClass } = await req.json();
-
-    // Validate input
-    if (!idLecturer) {
-      return NextResponse.json(
-        { error: "Lecturer ID is required" },
-        { status: 400 }
-      );
-    }
-    if (!idClass) {
-      return NextResponse.json(
-        { error: "Class ID is required" },
-        { status: 400 }
-      );
-    }
-    if (!idLecturer2) {
-      return NextResponse.json(
-        { error: "Lecturer 2 ID is required" },
-        { status: 400 }
-      );
-    }
-
-    // Create a new class lecturer
-    const newClassLecturer = await prisma.classLecturer.create({
-      data: {
-        idLecturer,
-        idLecturer2,
-        idClass,
-      },
-    });
-
-    return NextResponse.json(newClassLecturer, { status: 201 });
-  } catch (error) {
-    console.error("Error creating class lecturer:", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }
