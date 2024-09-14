@@ -40,3 +40,6 @@ next-env.d.ts
 
 # manual hashing
 hash.js
+
+# note
+note.txt

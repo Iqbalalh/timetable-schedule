@@ -15,7 +15,7 @@ export const API_CLASS_LECTURER_BY_CLASS = (classId) => `/api/class-lecturer/by-
 export const API_CLASS_LECTURER_BY_LECTURER = (lecturerId) => `/api/class-lecturer/by-lecturer-id/${lecturerId}`;
 export const API_CLASS_LECTURER_BY_DEPARTMENT = (departmentId) => `/api/class-lecturer/by-department-id?departmentId=${departmentId}`;
 export const API_CLASS_LECTURER_BY_DEPARTMENT_BY_PERIOD = (departmentId, periodId) => `/api/class-lecturer/by-department-by-period?departmentId=${departmentId}&periodId=${periodId}`;
-export const API_CLASS_LECTURER_BY_DEPARTMENT_BY_CURRICULUM = (departmentId, curriculumId) => `/api/class-lecturer/by-department-by-curriculum?departmentId=${departmentId}&curriculumId=${curriculumId}`;
+export const API_CLASS_LECTURER_BY_DEPARTMENT_BY_CURRICULUM = (departmentId, curriculumId, isTheory, isPracticum) => `/api/class-lecturer/by-department-by-curriculum?departmentId=${departmentId}&curriculumId=${curriculumId}&isTheory=${isTheory}&isPracticum=${isPracticum}`;
 
 // Department
 export const API_DEPARTMENT = "/api/department/";

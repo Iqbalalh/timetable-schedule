@@ -1,5 +1,5 @@
-import prisma from '@/app/(backend)/lib/db';
-import { NextResponse } from 'next/server';
+import prisma from "@/app/(backend)/lib/db";
+import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
   const { id } = params;
@@ -10,36 +10,51 @@ export async function GET(req, { params }) {
     });
 
     if (!academicPeriod) {
-      return NextResponse.json({ error: "Academic period not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Academic period not found" },
+        { status: 404 }
+      );
     }
 
     return NextResponse.json(academicPeriod, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { periodName, idCurriculum } = await req.json();
+  const { periodName, curriculumId } = await req.json();
 
   // Validate input
   if (!periodName) {
-    return NextResponse.json({ error: "Academic period name is required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Academic period name is required" },
+      { status: 400 }
+    );
   }
-  if (!idCurriculum) {
-    return NextResponse.json({ error: "Curriculum ID name is required" }, { status: 400 });
+  if (!curriculumId) {
+    return NextResponse.json(
+      { error: "Curriculum ID name is required" },
+      { status: 400 }
+    );
   }
 
   try {
     const updatedAcademicPeriod = await prisma.academicPeriod.update({
       where: { id: Number(id) },
-      data: { periodName, idCurriculum },
+      data: { periodName, curriculumId },
     });
 
     return NextResponse.json(updatedAcademicPeriod, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }
 
@@ -53,6 +68,9 @@ export async function DELETE(req, { params }) {
 
     return NextResponse.json(deletedAcademicPeriod, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Something went wrong" },
+      { status: 500 }
+    );
   }
 }

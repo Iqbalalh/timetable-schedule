@@ -33,30 +33,34 @@ export async function GET(req) {
       include: {
         classLecturer: {
           select: {
+            idLecturer: true,
             lecturer: {
-              select: { lecturerName: true },
+              select: { id: true, lecturerName: true, lecturerNIP: true },
             },
+            idLecturer2: true,
             lecturer2: {
-              select: { lecturerName: true },
+              select: { id: true, lecturerName: true, lecturerNIP: true },
             },
             class: {
               select: {
                 className: true,
                 subSubject: {
                   select: {
+                    idSubjectType: true,
                     subject: { select: { subjectName: true } },
-                    subjectType: { select: { typeName: true } },
+                    subjectType: { select: { typeName: true, id: true } },
                   },
                 },
               },
             },
           },
         },
-        scheduleDay: { select: { day: true } },
+        scheduleDay: { select: { day: true, id: true } },
         scheduleSession: {
           select: {
             startTime: true,
             endTime: true,
+            id: true,
           },
         },
         room: {
