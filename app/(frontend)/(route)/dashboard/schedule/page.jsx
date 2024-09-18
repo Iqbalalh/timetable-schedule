@@ -1,6 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Button, Table, Spin, message, ConfigProvider, Select, Popconfirm } from "antd";
+import {
+  Button,
+  Table,
+  Spin,
+  message,
+  ConfigProvider,
+  Select,
+  Popconfirm,
+} from "antd";
 import axios from "axios";
 
 // Your API endpoints
@@ -318,6 +326,9 @@ const ScheduleMatrix = () => {
                   value: curr.id,
                   label: curr.curriculumName,
                 }))}
+                notFoundContent={
+                  isLoading ? <Spin size="small" /> : "Tidak ada data!"
+                }
                 onChange={(value) => {
                   setCurrentCurriculumId(value);
                   setCurrentPeriodId(null);
@@ -355,6 +366,9 @@ const ScheduleMatrix = () => {
                   setSelectedDay(null);
                   loadFaculties();
                 }}
+                notFoundContent={
+                  isPeriodLoading ? <Spin size="small" /> : "Tidak ada data!"
+                }
                 loading={isPeriodLoading}
                 disabled={currentCurriculumId === null}
               />
@@ -367,6 +381,9 @@ const ScheduleMatrix = () => {
                 Fakultas:
               </div>
               <Select
+                notFoundContent={
+                  isFacultyLoading ? <Spin size="small" /> : "Tidak ada data!"
+                }
                 className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
                 showSearch
                 placeholder={

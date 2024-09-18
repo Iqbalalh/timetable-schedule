@@ -89,6 +89,45 @@ const DashboardLayout = ({ children }) => {
       label: "Kelola Data",
       children: [
         {
+          key: "/dashboard/faculty",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/faculty");
+                setKeySelected("/dashboard/faculty");
+              }}
+            >
+              Fakultas
+            </div>
+          ),
+        },  
+        {
+          key: "/dashboard/room",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/room");
+                setKeySelected("/dashboard/room");
+              }}
+            >
+              Ruangan
+            </div>
+          ),
+        },  
+        {
+          key: "/dashboard/curriculum",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/curriculum");
+                setKeySelected("/dashboard/curriculum");
+              }}
+            >
+              Kurikulum
+            </div>
+          ),
+        },  
+        {
           key: "/dashboard/periods",
           label: (
             <div
@@ -102,15 +141,15 @@ const DashboardLayout = ({ children }) => {
           ),
         },
         {
-          key: "/dashboard/faculty",
+          key: "/dashboard/study-program",
           label: (
             <div
               onClick={() => {
-                router.push("/dashboard/faculty");
-                setKeySelected("/dashboard/faculty");
+                router.push("/dashboard/study-program");
+                setKeySelected("/dashboard/study-program");
               }}
             >
-              Fakultas
+              Program Studi
             </div>
           ),
         },

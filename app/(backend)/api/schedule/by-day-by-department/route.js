@@ -1,6 +1,8 @@
 import prisma from "@/app/(backend)/lib/db";
 import { NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 // GET: Fetch schedules filtered by dayId and departmentId
 export async function GET(req) {
   try {

@@ -3,34 +3,27 @@ import React, { useEffect, useState } from "react";
 import { Table, message, Button, Input, Form, Select, Spin, Modal } from "antd";
 import axios from "axios";
 import {
-  API_STUDY_PROGRAM,
-  API_FACULTY,
-  API_DEPARTMENT_BY_FACULTY,
-  API_STUDY_PROGRAM_BY_ID,
+  API_ROOM,
   API_DEPARTMENT,
+  API_ROOM_BY_ID,
 } from "@/app/(backend)/lib/endpoint";
 import PostModal from "@/app/(frontend)/(component)/PostModal";
 import PatchModal from "@/app/(frontend)/(component)/PatchModal";
 
-const StudyProgram = () => {
+const Room = () => {
   const [datas, setDatas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [dep, setDep] = useState(null);
-  const [faculty, setFaculty] = useState(null);
-  const [departments, setDepartments] = useState(null);
-  const [faculties, setFaculties] = useState([]);
-  const [depLoading, setDepLoading] = useState(false);
-  const [facultyLoading, setFacultyLoading] = useState(false);
-  const [currentStudyProgram, setCurrentStudyProgram] = useState(null);
+  const [departments, setDepartments] = useState([]);
+  const [currentRoom, setCurrentRoom] = useState(null);
 
-  // Fetch study programs
+  // Fetch rooms
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(API_STUDY_PROGRAM);
+      const response = await axios.get(API_ROOM);
       setDatas(response.data);
       try {
         const response = await axios.get(API_DEPARTMENT);
@@ -42,48 +35,14 @@ const StudyProgram = () => {
         );
         setIsLoading(false);
       } catch (error) {
-        message.error("Failed to load data!");
+        message.error("Failed to load department data!");
         setIsLoading(false);
       }
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to load data!");
+      message.error("Failed to load room data!");
       setIsLoading(false);
-    }
-  };
-
-  // Fetch departments based on selected faculty
-  const fetchDepartments = async (facultyId) => {
-    setDepLoading(true);
-    try {
-      const response = await axios.get(API_DEPARTMENT_BY_FACULTY(facultyId));
-      const departments = response.data.map((dept) => ({
-        value: dept.id,
-        label: dept.departmentName,
-      }));
-      setDep(departments);
-      setDepLoading(false);
-    } catch (error) {
-      message.error("Failed to load departments data!");
-      setDepLoading(false);
-    }
-  };
-
-  // Fetch faculties
-  const fetchFaculty = async () => {
-    setFacultyLoading(true);
-    try {
-      const response = await axios.get(API_FACULTY);
-      const faculties = response.data.map((fac) => ({
-        value: fac.id,
-        label: fac.facultyName,
-      }));
-      setFaculties(faculties);
-      setFacultyLoading(false);
-    } catch (error) {
-      message.error("Failed to load faculties data!");
-      setFacultyLoading(false);
     }
   };
 
@@ -101,65 +60,77 @@ const StudyProgram = () => {
 
   const postData = async (values) => {
     const data = {
-      studyProgramName: values.studyProgramName,
+      roomName: values.roomName,
+      roomCapacity: values.roomCapacity,
       idDepartment: values.idDepartment,
+      isTheory: values.courseType === "Teori" || values.courseType === "Hybrid",
+      isPracticum:
+        values.courseType === "Praktikum" || values.courseType === "Hybrid",
+      isLab: false,
     };
 
-    const response = await axios.post(API_STUDY_PROGRAM, data, {
+    const response = await axios.post(API_ROOM, data, {
       headers: {
         "Content-Type": "application/json",
       },
     });
 
     if (response.status !== 201) {
-      throw new Error("Failed to add study program");
+      throw new Error("Gagal menambahkan");
     }
     handleSuccess();
   };
 
-  const patchStudyProgramData = async (values) => {
+  const patchRoomData = async (values) => {
     const data = {
-      studyProgramName: values.studyProgramName,
+      roomName: values.roomName,
+      roomCapacity: values.roomCapacity,
       idDepartment: values.idDepartment,
+      isTheory:
+        values.courseType === "Teori" || values.courseType === "Hybrid"
+          ? true
+          : false,
+      isPracticum:
+        values.courseType === "Praktikum" || values.courseType === "Hybrid"
+          ? true
+          : false,
+      isLab: false,
     };
 
-    const response = await axios.put(
-      API_STUDY_PROGRAM_BY_ID(currentStudyProgram?.id),
-      data
-    );
+    const response = await axios.put(API_ROOM_BY_ID(currentRoom?.id), data);
     if (response.status !== 200) {
-      throw new Error("Failed to update data");
+      throw new Error("Gagal menyunting");
     }
     handleSuccess();
   };
 
   const handleEdit = (record) => {
-    setCurrentStudyProgram(record);
+    setCurrentRoom(record);
     setIsEditOpen(true);
   };
 
-  const deleteStudyProgramData = async (id) => {
+  const deleteRoomData = async (id) => {
     try {
-      const response = await axios.delete(API_STUDY_PROGRAM_BY_ID(id));
+      const response = await axios.delete(API_ROOM_BY_ID(id));
       if (response.status !== 200) {
-        throw new Error("Failed to delete data");
+        throw new Error("Failed to delete room data");
       }
       message.success("Data successfully deleted!");
       handleSuccess();
     } catch (error) {
-      message.error(error.message || "Failed to delete data");
+      message.error(error.message || "Failed to delete room data");
     }
   };
 
   // Handle delete confirmation
   const handleDelete = (id) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this data?",
-      content: "This action cannot be undone.",
-      okText: "Yes, Delete",
+      title: "Apakah anda yakin?",
+      content: "Tindakan ini tidak dapat dibatalkan!",
+      okText: "Yes, Hapus",
       okType: "danger",
       cancelText: "Cancel",
-      onOk: () => deleteStudyProgramData(id),
+      onOk: () => deleteRoomData(id),
     });
   };
 
@@ -170,15 +141,30 @@ const StudyProgram = () => {
       render: (text, record, index) => index + 1 + ".",
     },
     {
-      title: "Program Studi",
-      dataIndex: "studyProgramName",
-      key: "studyProgramName",
+      title: "Ruangan",
+      dataIndex: "roomName",
+      key: "roomName",
+    },
+    {
+      title: "Kapasitas",
+      dataIndex: "roomCapacity",
+      key: "roomCapacity",
     },
     {
       title: "Jurusan",
       dataIndex: "idDepartment",
       key: "idDepartment",
       render: (text, record) => record?.department?.departmentName,
+    },
+    {
+      title: "Tipe Ruangan",
+      key: "courseType",
+      render: (text, record) => {
+        if (record.isTheory && record.isPracticum) return "Hybrid";
+        if (record.isTheory) return "Teori";
+        if (record.isPracticum) return "Praktikum";
+        return "None";
+      },
     },
     {
       title: "Waktu Dibuat",
@@ -238,7 +224,7 @@ const StudyProgram = () => {
       <div>
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold mb-4 flex">
-            <div className="bg-blue-500 px-1 mr-2">&nbsp;</div>Program Studi
+            <div className="bg-blue-500 px-1 mr-2">&nbsp;</div>Ruangan
           </h1>
         </div>
 
@@ -253,63 +239,56 @@ const StudyProgram = () => {
       </div>
 
       <PostModal
-        postApi={API_STUDY_PROGRAM}
+        postApi={API_ROOM}
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         postPayload={postData}
-        title="Tambah Program Studi"
+        title="Add Room"
       >
         <Form.Item
-          label="Program Studi"
+          label="Room Name"
           className="mb-2"
-          name="studyProgramName"
-          rules={[{ required: true, message: "Harus diisi!" }]}
+          name="roomName"
+          rules={[{ required: true, message: "Required!" }]}
         >
-          <Input placeholder="cth. S1 Ilmu Komputer" />
+          <Input placeholder="e.g. Room 101" />
         </Form.Item>
         <Form.Item
-          label="Fakultas"
+          label="Capacity"
           className="mb-2"
-          name="idFaculty"
-          rules={[{ required: true, message: "Harus diisi!" }]}
+          name="roomCapacity"
+          rules={[{ required: true, message: "Required!" }]}
+        >
+          <Input type="number" placeholder="e.g. 30" />
+        </Form.Item>
+        <Form.Item
+          label="Department"
+          className="mb-2"
+          name="idDepartment"
+          rules={[{ required: true, message: "Required!" }]}
         >
           <Select
             showSearch
-            placeholder="Pilih salah satu"
+            placeholder="Select department"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
-            options={faculties}
-            loading={facultyLoading}
-            onDropdownVisibleChange={(open) => {
-              if (open && faculties.length === 0) {
-                fetchFaculty();
-              }
-            }}
-            onSelect={(value) => {
-              setFaculty(value);
-              fetchDepartments(value);
-            }}
-            notFoundContent={facultyLoading ? <Spin size="small" /> : null}
+            options={departments}
           />
         </Form.Item>
         <Form.Item
-          label="Jurusan"
+          label="Course Type"
           className="mb-2"
-          name="idDepartment"
-          rules={[{ required: true, message: "Harus diisi!" }]}
+          name="courseType"
+          rules={[{ required: true, message: "Required!" }]}
         >
           <Select
-            showSearch
-            disabled={!faculty}
-            placeholder={
-              !faculty ? "Pilih fakultas terlebih dahulu" : "Pilih salah satu"
-            }
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            options={dep}
-            notFoundContent={depLoading ? <Spin size="small" /> : null}
+            placeholder="Select course type"
+            options={[
+              { value: "Teori", label: "Teori" },
+              { value: "Praktikum", label: "Praktikum" },
+              { value: "Hybrid", label: "Hybrid" },
+            ]}
           />
         </Form.Item>
       </PostModal>
@@ -317,23 +296,31 @@ const StudyProgram = () => {
       <PatchModal
         isEditOpen={isEditOpen}
         setIsEditOpen={setIsEditOpen}
-        patchPayload={patchStudyProgramData}
-        title="Edit Data"
-        initValue={currentStudyProgram}
+        patchPayload={patchRoomData}
+        title="Edit Room"
+        initValue={currentRoom}
       >
         <Form.Item
-          label="Program Studi"
+          label="Room Name"
           className="mb-2"
-          name="studyProgramName"
-          rules={[{ required: true, message: "Harus diisi!" }]}
+          name="roomName"
+          rules={[{ required: true, message: "Required!" }]}
         >
-          <Input placeholder="cth. S1 Ilmu Komputer" />
+          <Input placeholder="e.g. Room 101" />
         </Form.Item>
         <Form.Item
-          label="Jurusan"
+          label="Capacity"
+          className="mb-2"
+          name="roomCapacity"
+          rules={[{ required: true, message: "Required!" }]}
+        >
+          <Input type="number" placeholder="e.g. 30" />
+        </Form.Item>
+        <Form.Item
+          label="Department"
           className="mb-2"
           name="idDepartment"
-          rules={[{ required: true, message: "Harus diisi!" }]}
+          rules={[{ required: true, message: "Required!" }]}
         >
           <Select
             showSearch
@@ -341,9 +328,21 @@ const StudyProgram = () => {
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             options={departments}
-            notFoundContent={
-              depLoading ? <Spin size="small" /> : "Tidak ada data!"
-            }
+          />
+        </Form.Item>
+        <Form.Item
+          label="Course Type"
+          className="mb-2"
+          name="courseType"
+          rules={[{ required: true, message: "Required!" }]}
+        >
+          <Select
+            placeholder="Select course type"
+            options={[
+              { value: "Teori", label: "Teori" },
+              { value: "Praktikum", label: "Praktikum" },
+              { value: "Hybrid", label: "Hybrid" },
+            ]}
           />
         </Form.Item>
       </PatchModal>
@@ -351,4 +350,4 @@ const StudyProgram = () => {
   );
 };
 
-export default StudyProgram;
+export default Room;

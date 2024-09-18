@@ -7,6 +7,20 @@ export async function GET(req, { params }) {
   try {
     const lecturer = await prisma.lecturer.findUnique({
       where: { id: Number(id) },
+      include: {
+        department: {
+          select: {
+            id: true,
+            departmentName: true,
+          },
+        },
+        faculty: {
+          select: {
+            id: true,
+            facultyName: true,
+          }
+        }
+      },
     });
 
     if (!lecturer) {
