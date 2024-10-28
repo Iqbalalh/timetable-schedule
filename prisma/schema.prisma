@@ -140,6 +140,7 @@ model SubjectType {
   subSubjects SubSubject[]
 
   @@map(name: "subjectTypes")
+  
 }
 
 model SubSubject {
