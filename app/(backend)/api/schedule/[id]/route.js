@@ -50,11 +50,43 @@ export async function DELETE(req, { params }) {
   const { id } = params;
 
   try {
-    const deletedSchedule = await prisma.schedule.delete({
+    // Fetch the schedule and room details
+    const schedule = await prisma.schedule.findUnique({
+      where: { id: Number(id) },
+      include: {
+        room: true, // Include room details to get the room capacity
+        classLecturer: {
+          include: {
+            class: true, // Include class to update the capacity
+          },
+        },
+      },
+    });
+
+    if (!schedule) {
+      return NextResponse.json({ error: "Schedule not found" }, { status: 404 });
+    }
+
+    // Fetch the class capacity for the class associated with the lecturer
+    const classLecturer = schedule.classLecturer;
+    const roomCapacity = schedule.room.roomCapacity;
+    const classCapacity = classLecturer.class.classCapacity;
+
+    // Calculate the new class capacity
+    const newClassCapacity = classCapacity + roomCapacity;
+
+    // Ensure that class capacity does not exceed the maximum allowed
+    await prisma.class.update({
+      where: { id: classLecturer.class.id },
+      data: { classCapacity: newClassCapacity },
+    });
+
+    // Delete the schedule
+    await prisma.schedule.delete({
       where: { id: Number(id) },
     });
 
-    return NextResponse.json(deletedSchedule, { status: 200 });
+    return NextResponse.json({ message: "Schedule deleted successfully" }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }

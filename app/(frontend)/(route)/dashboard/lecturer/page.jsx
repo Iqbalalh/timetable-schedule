@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   Table,
   message,
-  Layout,
   Button,
   Input,
   Form,
@@ -15,24 +14,27 @@ import {
 import axios from "axios";
 import {
   API_LECTURER,
-  API_DEPARTMENT,
   API_FACULTY,
   API_DEPARTMENT_BY_FACULTY,
+  API_LECTURER_BY_ID,
+  API_DEPARTMENT,
 } from "@/app/(backend)/lib/endpoint";
 import PostModal from "@/app/(frontend)/(component)/PostModal";
-
-const { Content } = Layout;
+import PatchModal from "@/app/(frontend)/(component)/PatchModal";
 
 const Lecturer = () => {
   const [datas, setDatas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [dep, setDep] = useState(null);
+  const [departments, setDepartments] = useState(null);
   const [faculty, setFaculty] = useState(null);
   const [faculties, setFaculties] = useState([]);
   const [depLoading, setDepLoading] = useState(false);
-  const [facultyLoading, setFacultyLoading] = useState(false); // Added a loading state for faculties
+  const [facultyLoading, setFacultyLoading] = useState(false);
+  const [currentLecturer, setCurrentLecturer] = useState(null);
 
   // Fetch lecturers
   const fetchData = async () => {
@@ -40,6 +42,19 @@ const Lecturer = () => {
     try {
       const response = await axios.get(API_LECTURER);
       setDatas(response.data);
+      try {
+        const response = await axios.get(API_DEPARTMENT);
+        setDepartments(
+          response.data.map((dept) => ({
+            value: dept.id,
+            label: dept.departmentName,
+          }))
+        );
+        setIsLoading(false);
+      } catch (error) {
+        message.error("Failed to load lecturers data!");
+        setIsLoading(false);
+      }
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
@@ -72,7 +87,7 @@ const Lecturer = () => {
       const response = await axios.get(API_FACULTY);
       const faculties = response.data.map((fac) => ({
         value: fac.id,
-        label: fac.facultyName,
+        label: fac.lecturerName,
       }));
       setFaculties(faculties);
       setFacultyLoading(false);
@@ -112,6 +127,54 @@ const Lecturer = () => {
       throw new Error("Failed to add lecturer");
     }
     handleSuccess();
+  };
+
+  const patchLecturerData = async (values) => {
+    const data = {
+      lecturerName: values.lecturerName,
+      lecturerNIP: values.lecturerNIP,
+      lecturerEmail: values.lecturerEmail,
+      idDepartment: values.idDepartment,
+    };
+
+    const response = await axios.put(
+      API_LECTURER_BY_ID(currentLecturer?.id),
+      data
+    );
+    if (response.status !== 200) {
+      throw new Error("Gagal memperbarui data");
+    }
+    handleSuccess();
+  };
+
+  const handleEdit = (record) => {
+    setCurrentLecturer(record);
+    setIsEditOpen(true);
+  };
+
+  const deleteLecturerData = async (id) => {
+    try {
+      const response = await axios.delete(API_LECTURER_BY_ID(id));
+      if (response.status !== 200) {
+        throw new Error("Gagal menghapus data");
+      }
+      message.success("Data berhasil dihapus!");
+      handleSuccess();
+    } catch (error) {
+      message.error(error.message || "Gagal menghapus data");
+    }
+  };
+
+  // Handle delete modal
+  const handleDelete = (id) => {
+    Modal.confirm({
+      title: "Apakah Anda yakin ingin menghapus data ini?",
+      content: "Tindakan ini tidak dapat dibatalkan.",
+      okText: "Ya, Hapus",
+      okType: "danger",
+      cancelText: "Batal",
+      onOk: () => deleteLecturerData(id),
+    });
   };
 
   const columns = [
@@ -169,7 +232,7 @@ const Lecturer = () => {
       ),
       dataIndex: "id",
       key: "action",
-      render: () => {
+      render: (_, record) => {
         return (
           <div className="flex justify-end">
             <Button
@@ -177,7 +240,7 @@ const Lecturer = () => {
               disabled={isDisabled}
               className="text-blue-500 font-semibold"
               onClick={() => {
-                setIsDisabled(true);
+                handleEdit(record);
               }}
             >
               Edit
@@ -187,7 +250,7 @@ const Lecturer = () => {
               disabled={isDisabled}
               className="text-red-600 font-semibold"
               onClick={() => {
-                setIsDisabled(true);
+                handleDelete(record.id);
               }}
             >
               Delete
@@ -268,7 +331,7 @@ const Lecturer = () => {
           </Col>
         </Row>
         <Form.Item
-          label="Fakultas"
+          label="Data"
           className="mb-2"
           name="idFaculty"
           rules={[{ required: true, message: "Harus diisi!" }]}
@@ -303,7 +366,7 @@ const Lecturer = () => {
             showSearch
             disabled={!faculty}
             placeholder={
-              !faculty ? "Pilih fakultas terlebih dahulu" : "Pilih salah satu"
+              !faculty ? "Pilih Data terlebih dahulu" : "Pilih salah satu"
             }
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -315,6 +378,75 @@ const Lecturer = () => {
           />
         </Form.Item>
       </PostModal>
+
+      <PatchModal
+        isEditOpen={isEditOpen}
+        setIsEditOpen={setIsEditOpen}
+        patchPayload={patchLecturerData}
+        title="Edit Data"
+        initValue={currentLecturer}
+      >
+        <Form.Item
+          label="Nama Lengkap"
+          className="mb-2"
+          name="lecturerName"
+          rules={[{ required: true, message: "Harus diisi!" }]}
+        >
+          <Input placeholder="cth. Iqbal Alhafidzu" />
+        </Form.Item>
+        <Row gutter={20}>
+          <Col span={12}>
+            <Form.Item
+              label="NIP"
+              className="mb-2"
+              name="lecturerNIP"
+              rules={[
+                { required: true, type: "number", message: "Harus diisi!" },
+                {
+                  max: 18,
+                  message: "Maksimal 18 karakter!",
+                },
+                {
+                  min: 17,
+                  message: "Format belum sesuai!",
+                },
+              ]}
+            >
+              <Input placeholder="cth. 20241212202412224" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="Email"
+              className="mb-2"
+              name="lecturerEmail"
+              rules={[
+                { required: true, message: "Harus diisi!" },
+                { type: "email", message: "Format tidak sesuai!" },
+              ]}
+            >
+              <Input placeholder="cth. iqbal@fmipa.ac.id" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item
+          label="Jurusan"
+          className="mb-2"
+          name="idDepartment"
+          rules={[{ required: true, message: "Harus diisi!" }]}
+        >
+          <Select
+            showSearch
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={departments}
+            notFoundContent={
+              depLoading ? <Spin size="small" /> : "Tidak ada data!"
+            }
+          />
+        </Form.Item>
+      </PatchModal>
     </>
   );
 };

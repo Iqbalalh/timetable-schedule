@@ -1,6 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Button, Table, Spin, message, ConfigProvider, Select } from "antd";
+import {
+  Button,
+  Table,
+  Spin,
+  message,
+  ConfigProvider,
+  Select,
+  Popconfirm,
+} from "antd";
 import axios from "axios";
 
 // Your API endpoints
@@ -13,6 +21,7 @@ import {
   API_ROOM_BY_DEPARTMENT,
   API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD,
   API_CURRICULUM,
+  API_SCHEDULE_BY_ID,
 } from "@/app/(backend)/lib/endpoint";
 import PostSchedule from "@/app/(frontend)/(component)/PostSchedule";
 
@@ -36,8 +45,12 @@ const ScheduleMatrix = () => {
   const [currentDayId, setCurrentDayId] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [currentRoomId, setCurrentRoomId] = useState(null);
+  const [currentRoomName, setCurrentRoomName] = useState(null);
+  const [currentRoomCapacity, setCurrentRoomCapacity] = useState(null);
   const [currentPeriodId, setCurrentPeriodId] = useState(null);
   const [currentCurriculumId, setCurrentCurriculumId] = useState(null);
+  const [isTheory, setIsTheory] = useState(null);
+  const [isPracticum, setIsPracticum] = useState(null);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -61,10 +74,22 @@ const ScheduleMatrix = () => {
     loadInitialData();
   }, []);
 
-  const handleAddButtonClick = (dayId, sessionId, roomId) => {
+  const handleAddButtonClick = (
+    dayId,
+    sessionId,
+    roomId,
+    isTheory,
+    isPracticum,
+    roomName,
+    roomCapacity
+  ) => {
     setCurrentDayId(dayId);
     setCurrentSessionId(sessionId);
     setCurrentRoomId(roomId);
+    setIsTheory(isTheory);
+    setIsPracticum(isPracticum);
+    setCurrentRoomName(roomName);
+    setCurrentRoomCapacity(roomCapacity);
     setIsModalOpen(true); // Show modal when button is clicked
   };
 
@@ -159,6 +184,16 @@ const ScheduleMatrix = () => {
     }
   };
 
+  const handleDeleteSchedule = async (scheduleId) => {
+    try {
+      const response = await axios.delete(API_SCHEDULE_BY_ID(scheduleId));
+      message.success("Schedule deleted successfully!");
+      loadScheduleByDay(currentDayId); // Reload the schedule data
+    } catch (error) {
+      message.error("Failed to delete schedule.");
+    }
+  };
+
   // Handle department selection and fetch rooms
   const handleDepartmentChange = (departmentId) => {
     setSelectedDepartment(departmentId);
@@ -203,9 +238,16 @@ const ScheduleMatrix = () => {
               <div>1. {scheduleItem.classLecturer.lecturer.lecturerName}</div>
               <div>2. {scheduleItem.classLecturer.lecturer2.lecturerName}</div>
             </div>
-            <Button className="mt-2" size="small" danger>
-              Hapus
-            </Button>
+            <Popconfirm
+              title="Apakah anda yakin?"
+              onConfirm={() => handleDeleteSchedule(scheduleItem.id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button className="mt-2" size="small" danger>
+                Hapus
+              </Button>
+            </Popconfirm>
           </div>
         ) : (
           <div className="flex justify-center items-center rounded-lg h-32">
@@ -214,7 +256,11 @@ const ScheduleMatrix = () => {
                 handleAddButtonClick(
                   selectedDay.id,
                   record.sessionNumber,
-                  room.id
+                  room.id,
+                  room.isTheory,
+                  room.isPracticum,
+                  room.roomName,
+                  room.roomCapacity
                 )
               }
             >
@@ -225,7 +271,6 @@ const ScheduleMatrix = () => {
       },
     })),
   ];
-
   // Prepare data for the table
   const dataSource = sessionOptions
     .sort((a, b) => a.sessionNumber - b.sessionNumber) // Sort by sessionNumber
@@ -281,6 +326,9 @@ const ScheduleMatrix = () => {
                   value: curr.id,
                   label: curr.curriculumName,
                 }))}
+                notFoundContent={
+                  isLoading ? <Spin size="small" /> : "Tidak ada data!"
+                }
                 onChange={(value) => {
                   setCurrentCurriculumId(value);
                   setCurrentPeriodId(null);
@@ -318,6 +366,9 @@ const ScheduleMatrix = () => {
                   setSelectedDay(null);
                   loadFaculties();
                 }}
+                notFoundContent={
+                  isPeriodLoading ? <Spin size="small" /> : "Tidak ada data!"
+                }
                 loading={isPeriodLoading}
                 disabled={currentCurriculumId === null}
               />
@@ -330,6 +381,9 @@ const ScheduleMatrix = () => {
                 Fakultas:
               </div>
               <Select
+                notFoundContent={
+                  isFacultyLoading ? <Spin size="small" /> : "Tidak ada data!"
+                }
                 className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
                 showSearch
                 placeholder={
@@ -427,7 +481,7 @@ const ScheduleMatrix = () => {
                       dataSource={dataSource}
                       bordered
                       pagination={false}
-                      scroll={{ x: "max-content", y: 700 }} // Horizontal scroll enabled
+                      scroll={{ x: "max-content", y: 500 }} // Horizontal scroll enabled
                     />
                   </>
                 )}
@@ -452,6 +506,11 @@ const ScheduleMatrix = () => {
           idRoom={currentRoomId}
           idDepartment={selectedDepartment}
           idCurriculum={currentCurriculumId}
+          isTheory={isTheory}
+          isPracticum={isPracticum}
+          roomName={currentRoomName}
+          roomCapacity={currentRoomCapacity}
+          scheduleData={scheduleData}
           onSuccess={() => loadScheduleByDay(currentDayId)}
         />
       </div>

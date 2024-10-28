@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect } from "react";
 import { Button, Modal, Form, message } from "antd";
 import { useForm } from "antd/es/form/Form";

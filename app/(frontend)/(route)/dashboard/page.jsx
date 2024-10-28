@@ -5,8 +5,6 @@ import { Table, message, Layout } from "antd";
 import { FaBookmark, FaDownload, FaUser } from "react-icons/fa";
 import DashboardCard from "../../(component)/DashboardCard";
 
-const { Content } = Layout;
-
 const Dashboard = () => {
   return (
     <>
