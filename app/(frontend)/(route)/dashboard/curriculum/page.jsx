@@ -97,6 +97,7 @@ const Curriculums = () => {
     {
       title: "No.",
       key: "index",
+      width: 70,
       render: (text, record, index) => index + 1 + ".",
     },
     {
@@ -173,6 +174,7 @@ const Curriculums = () => {
           rowKey="id"
           loading={isLoading}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content", y: 800 }}
         />
       </div>
 

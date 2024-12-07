@@ -154,11 +154,11 @@ const StudyProgram = () => {
   // Handle delete confirmation
   const handleDelete = (id) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this data?",
-      content: "This action cannot be undone.",
-      okText: "Yes, Delete",
+      title: "Anda yakin ingin menghapus data ini?",
+      content: "Tindakan ini juga akan menghapus seluruh data terkait.",
+      okText: "Ya, Hapus",
       okType: "danger",
-      cancelText: "Cancel",
+      cancelText: "Batalkan",
       onOk: () => deleteStudyProgramData(id),
     });
   };
@@ -167,6 +167,7 @@ const StudyProgram = () => {
     {
       title: "No.",
       key: "index",
+      width: 70,
       render: (text, record, index) => index + 1 + ".",
     },
     {
@@ -249,6 +250,8 @@ const StudyProgram = () => {
           rowKey="id"
           loading={isLoading}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content", y: 800 }}
+
         />
       </div>
 

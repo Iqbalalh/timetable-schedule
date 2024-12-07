@@ -97,6 +97,7 @@ const Faculty = () => {
     {
       title: "No.",
       key: "index",
+      width: 70,
       render: (text, record, index) => index + 1 + ".",
     },
     {
@@ -173,6 +174,8 @@ const Faculty = () => {
           rowKey="id"
           loading={isLoading}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content", y: 800 }}
+
         />
       </div>
 

@@ -129,7 +129,7 @@ const Room = () => {
       content: "Tindakan ini tidak dapat dibatalkan!",
       okText: "Yes, Hapus",
       okType: "danger",
-      cancelText: "Cancel",
+      cancelText: "Batalkan",
       onOk: () => deleteRoomData(id),
     });
   };
@@ -138,6 +138,7 @@ const Room = () => {
     {
       title: "No.",
       key: "index",
+      width: 70,
       render: (text, record, index) => index + 1 + ".",
     },
     {
@@ -147,6 +148,7 @@ const Room = () => {
     },
     {
       title: "Kapasitas",
+      width: 100,
       dataIndex: "roomCapacity",
       key: "roomCapacity",
     },
@@ -235,6 +237,8 @@ const Room = () => {
           rowKey="id"
           loading={isLoading}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content", y: 800 }}
+
         />
       </div>
 
@@ -243,33 +247,33 @@ const Room = () => {
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
         postPayload={postData}
-        title="Add Room"
+        title="Tambah Ruangan"
       >
         <Form.Item
-          label="Room Name"
+          label="RUangan"
           className="mb-2"
           name="roomName"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Input placeholder="e.g. Room 101" />
         </Form.Item>
         <Form.Item
-          label="Capacity"
+          label="Kapasitas"
           className="mb-2"
           name="roomCapacity"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Input type="number" placeholder="e.g. 30" />
         </Form.Item>
         <Form.Item
-          label="Department"
+          label="Jurusan"
           className="mb-2"
           name="idDepartment"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
             showSearch
-            placeholder="Select department"
+            placeholder="Pilih salah satu!"
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
@@ -277,13 +281,13 @@ const Room = () => {
           />
         </Form.Item>
         <Form.Item
-          label="Course Type"
+          label="Tipe Ruangan"
           className="mb-2"
           name="courseType"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
-            placeholder="Select course type"
+            placeholder="Pilih salah satu!"
             options={[
               { value: "Teori", label: "Teori" },
               { value: "Praktikum", label: "Praktikum" },
@@ -301,26 +305,26 @@ const Room = () => {
         initValue={currentRoom}
       >
         <Form.Item
-          label="Room Name"
+          label="Ruangan"
           className="mb-2"
           name="roomName"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Input placeholder="e.g. Room 101" />
         </Form.Item>
         <Form.Item
-          label="Capacity"
+          label="Kapasitas"
           className="mb-2"
           name="roomCapacity"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Input type="number" placeholder="e.g. 30" />
         </Form.Item>
         <Form.Item
-          label="Department"
+          label="Jurusan"
           className="mb-2"
           name="idDepartment"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
             showSearch
@@ -331,10 +335,10 @@ const Room = () => {
           />
         </Form.Item>
         <Form.Item
-          label="Course Type"
+          label="Tipe Ruangan"
           className="mb-2"
           name="courseType"
-          rules={[{ required: true, message: "Required!" }]}
+          rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
             placeholder="Select course type"

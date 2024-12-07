@@ -81,12 +81,6 @@ export const API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD = (
 export const API_SCHEDULE_DAY = "/api/schedule-day/";
 export const API_SCHEDULE_DAY_BY_ID = (id) => `/api/schedule-day/${id}`;
 
-// Schedule Room
-// export const API_SCHEDULE_ROOM = "/api/schedule-room/";
-// export const API_SCHEDULE_ROOM_BY_ID = (id) => `/api/schedule-room/${id}`;
-// export const API_SCHEDULE_ROOM_BY_ROOM = (roomId) => `/api/schedule-room/by-room-id/${roomId}`;
-// export const API_SCHEDULE_ROOM_BY_SCHEDULE = (scheduleId) => `/api/schedule-room/by-schedule-id/${scheduleId}`;
-
 // Schedule Session
 export const API_SCHEDULE_SESSION = "/api/schedule-session/";
 export const API_SCHEDULE_SESSION_BY_ID = (id) => `/api/schedule-session/${id}`;

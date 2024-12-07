@@ -3,30 +3,30 @@ import React, { useEffect, useState } from "react";
 import { Table, message, Button, Form, Input, Modal, Select, Spin } from "antd";
 import axios from "axios";
 import {
-  API_ACADEMIC_PERIOD,
-  API_ACADEMIC_PERIOD_BY_ID,
-  API_CURRICULUM,
+  API_DEPARTMENT,
+  API_DEPARTMENT_BY_ID,
+  API_FACULTY,
 } from "@/app/(backend)/lib/endpoint";
 import PostModal from "@/app/(frontend)/(component)/PostModal";
 import PatchModal from "@/app/(frontend)/(component)/PatchModal";
 
-const AcademicPeriods = () => {
-  const [academicPeriods, setAcademicPeriods] = useState([]);
-  const [curriculums, setCurriculums] = useState([]);
-  const [curriculumId, setCurriculumId] = useState(null);
-  const [curIsLoading, setCurIsLoading] = useState(false);
+const Departments = () => {
+  const [departments, setDepartments] = useState([]);
+  const [faculties, setFaculties] = useState([]);
+  const [idFaculty, setidFaculty] = useState(null);
+  const [facIsLoading, setFacIsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [currentAcademicPeriod, setCurrentAcademicPeriod] = useState(null);
+  const [currentDepartment, setCurrentDepartment] = useState(null);
 
   // Fetch data from the API
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get(API_ACADEMIC_PERIOD);
-      setAcademicPeriods(response.data);
+      const response = await axios.get(API_DEPARTMENT);
+      setDepartments(response.data);
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
@@ -35,15 +35,15 @@ const AcademicPeriods = () => {
     }
   };
 
-  const fetchCurriculum = async () => {
-    setCurIsLoading(true);
+  const fetchFaculties = async () => {
+    setFacIsLoading(true);
     try {
-      const response = await axios.get(API_CURRICULUM);
-      const curr = response.data.map((cur) => ({
-        value: cur.id,
-        label: cur.curriculumName,
+      const response = await axios.get(API_FACULTY); // Assuming faculty data is fetched from curriculum API, adjust if needed
+      const fac = response.data.map((faculty) => ({
+        value: faculty.id,
+        label: faculty.facultyName, // Adjust label according to actual faculty field
       }));
-      setCurriculums(curr);
+      setFaculties(fac);
       setIsLoading(false);
     } catch (error) {
       message.error("Gagal memuat data!");
@@ -55,48 +55,48 @@ const AcademicPeriods = () => {
     fetchData();
   }, []);
 
-  // Add new academic period
-  const postAcademicPeriodData = async (values) => {
+  // Add new department
+  const postDepartmentData = async (values) => {
     const data = {
-      periodName: values.periodName,
-      curriculumId: values.curriculumId,
+      departmentName: values.departmentName,
+      idFaculty: values.idFaculty,
     };
 
-    const response = await axios.post(API_ACADEMIC_PERIOD, data);
+    const response = await axios.post(API_DEPARTMENT, data);
     if (response.status !== 201) {
-      throw new Error("Gagal menambahkan periode!");
+      throw new Error("Gagal menambahkan Jurusan!");
     }
     handleSuccess();
   };
 
-  // Update academic period
-  const patchAcademicPeriodData = async (values) => {
+  // Update department
+  const patchDepartmentData = async (values) => {
     const data = {
-      periodName: values.periodName,
-      curriculumId: values.curriculumId,
+      departmentName: values.departmentName,
+      idFaculty: values.idFaculty,
     };
 
     const response = await axios.put(
-      API_ACADEMIC_PERIOD_BY_ID(currentAcademicPeriod.id),
+      API_DEPARTMENT_BY_ID(currentDepartment.id),
       data
     );
     if (response.status !== 200) {
-      throw new Error("Gagal memperbarui periode!");
+      throw new Error("Gagal memperbarui Jurusan!");
     }
     handleSuccess();
   };
 
-  // Delete academic period
-  const deleteAcademicPeriod = async (id) => {
+  // Delete department
+  const deleteDepartment = async (id) => {
     try {
-      const response = await axios.delete(`${API_ACADEMIC_PERIOD}${id}`);
+      const response = await axios.delete(API_DEPARTMENT_BY_ID(id));
       if (response.status !== 200) {
-        throw new Error("Gagal menghapus periode!");
+        throw new Error("Gagal menghapus Jurusan!");
       }
-      message.success("Periode berhasil dihapus!");
+      message.success("Jurusan berhasil dihapus!");
       handleSuccess();
     } catch (error) {
-      message.error(error.message || "Gagal menghapus periode!");
+      message.error(error.message || "Gagal menghapus Jurusan!");
     }
   };
 
@@ -107,19 +107,19 @@ const AcademicPeriods = () => {
 
   // Handle edit modal opening
   const handleEdit = (record) => {
-    setCurrentAcademicPeriod(record);
+    setCurrentDepartment(record);
     setIsEditOpen(true);
   };
 
   // Handle delete confirmation modal
   const handleDelete = (id) => {
     Modal.confirm({
-      title: "Apakah Anda yakin ingin menghapus periode ini?",
+      title: "Apakah Anda yakin ingin menghapus Jurusan ini?",
       content: "Tindakan ini tidak dapat dibatalkan.",
       okText: "Ya, Hapus",
       okType: "danger",
       cancelText: "Batal",
-      onOk: () => deleteAcademicPeriod(id),
+      onOk: () => deleteDepartment(id),
     });
   };
 
@@ -132,15 +132,15 @@ const AcademicPeriods = () => {
       render: (text, record, index) => index + 1 + ".",
     },
     {
-      title: "Periode",
-      dataIndex: "periodName",
-      key: "periodName",
+      title: "Jurusan",
+      dataIndex: "departmentName",
+      key: "departmentName",
     },
     {
-      title: "Kurikulum",
-      dataIndex: "curriculumName",
-      key: "curriculumName",
-      render: (_, record) => <div>{record.curriculum.curriculumName}</div>,
+      title: "Fakultas",
+      dataIndex: "facultyName",
+      key: "facultyName",
+      render: (_, record) => <div>{record.faculty.facultyName}</div>, // Adjust the field names if necessary
     },
     {
       title: "Waktu Dibuat",
@@ -200,14 +200,14 @@ const AcademicPeriods = () => {
       <div>
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold mb-4 flex">
-            <div className="bg-blue-500 px-1 mr-2">&nbsp;</div>Periode Akademik
+            <div className="bg-blue-500 px-1 mr-2">&nbsp;</div>Jurusan
           </h1>
         </div>
 
         <Table
           className="shadow-xl rounded-lg"
           columns={columns}
-          dataSource={academicPeriods}
+          dataSource={departments}
           rowKey="id"
           loading={isLoading}
           pagination={{ pageSize: 10 }}
@@ -215,25 +215,25 @@ const AcademicPeriods = () => {
 
         />
 
-        {/* Modal for adding academic period */}
+        {/* Modal for adding department */}
         <PostModal
-          postApi={API_ACADEMIC_PERIOD}
+          postApi={API_DEPARTMENT}
           isOpen={isModalOpen}
           setIsOpen={setIsModalOpen}
-          postPayload={postAcademicPeriodData}
-          title="Tambah Periode"
+          postPayload={postDepartmentData}
+          title="Tambah Jurusan"
         >
           <Form.Item
-            label="Periode"
-            name="periodName"
+            label="Jurusan"
+            name="departmentName"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
-            <Input placeholder="cth. 2023 Ganjil" />
+            <Input placeholder="cth. Teknik Informatika" />
           </Form.Item>
           <Form.Item
-            label="Kurikulum"
+            label="Fakultas"
             className="mb-2"
-            name="curriculumId"
+            name="idFaculty"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
             <Select
@@ -244,40 +244,40 @@ const AcademicPeriods = () => {
                   .toLowerCase()
                   .includes(input.toLowerCase())
               }
-              options={curriculums}
-              loading={curIsLoading}
+              options={faculties}
+              loading={facIsLoading}
               onDropdownVisibleChange={(open) => {
-                if (open && curriculums.length === 0) {
-                  fetchCurriculum();
+                if (open && faculties.length === 0) {
+                  fetchFaculties();
                 }
               }}
               onSelect={(value) => {
-                setCurriculumId(value);
+                setidFaculty(value);
               }}
-              notFoundContent={curIsLoading ? <Spin size="small" /> : null}
+              notFoundContent={facIsLoading ? <Spin size="small" /> : null}
             />
           </Form.Item>
         </PostModal>
 
-        {/* Modal for editing academic period */}
+        {/* Modal for editing department */}
         <PatchModal
           isEditOpen={isEditOpen}
           setIsEditOpen={setIsEditOpen}
-          patchPayload={patchAcademicPeriodData}
-          title="Edit Periode"
-          initValue={currentAcademicPeriod}
+          patchPayload={patchDepartmentData}
+          title="Edit Jurusan"
+          initValue={currentDepartment}
         >
           <Form.Item
-            label="Periode"
-            name="periodName"
+            label="Jurusan"
+            name="departmentName"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
-            <Input placeholder="cth. 2023 Ganjil" />
+            <Input placeholder="cth. Teknik Informatika" />
           </Form.Item>
           <Form.Item
-            label="Kurikulum"
+            label="Fakultas"
             className="mb-2"
-            name="curriculumId"
+            name="idFaculty"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
             <Select
@@ -288,17 +288,17 @@ const AcademicPeriods = () => {
                   .toLowerCase()
                   .includes(input.toLowerCase())
               }
-              options={curriculums}
-              loading={curIsLoading}
+              options={faculties}
+              loading={facIsLoading}
               onDropdownVisibleChange={(open) => {
-                if (open && curriculums.length === 0) {
-                  fetchCurriculum();
+                if (open && faculties.length === 0) {
+                  fetchFaculties();
                 }
               }}
               onSelect={(value) => {
-                setCurriculumId(value);
+                setidFaculty(value);
               }}
-              notFoundContent={curIsLoading ? <Spin size="small" /> : null}
+              notFoundContent={facIsLoading ? <Spin size="small" /> : null}
             />
           </Form.Item>
         </PatchModal>
@@ -307,4 +307,4 @@ const AcademicPeriods = () => {
   );
 };
 
-export default AcademicPeriods;
+export default Departments;

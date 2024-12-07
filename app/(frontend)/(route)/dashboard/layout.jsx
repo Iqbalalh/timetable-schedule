@@ -102,41 +102,15 @@ const DashboardLayout = ({ children }) => {
           ),
         },  
         {
-          key: "/dashboard/room",
+          key: "/dashboard/department",
           label: (
             <div
               onClick={() => {
-                router.push("/dashboard/room");
-                setKeySelected("/dashboard/room");
+                router.push("/dashboard/department");
+                setKeySelected("/dashboard/department");
               }}
             >
-              Ruangan
-            </div>
-          ),
-        },  
-        {
-          key: "/dashboard/curriculum",
-          label: (
-            <div
-              onClick={() => {
-                router.push("/dashboard/curriculum");
-                setKeySelected("/dashboard/curriculum");
-              }}
-            >
-              Kurikulum
-            </div>
-          ),
-        },  
-        {
-          key: "/dashboard/periods",
-          label: (
-            <div
-              onClick={() => {
-                router.push("/dashboard/periods");
-                setKeySelected("/dashboard/periods");
-              }}
-            >
-              Periode
+              Jurusan
             </div>
           ),
         },
@@ -154,6 +128,71 @@ const DashboardLayout = ({ children }) => {
           ),
         },
         {
+          key: "/dashboard/curriculum",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/curriculum");
+                setKeySelected("/dashboard/curriculum");
+              }}
+            >
+              Kurikulum
+            </div>
+          ),
+        },
+        {
+          key: "/dashboard/periods",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/periods");
+                setKeySelected("/dashboard/periods");
+              }}
+            >
+              Periode Akademik
+            </div>
+          ),
+        },
+        {
+          key: "/dashboard/class-lecturer",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/class-lecturer");
+                setKeySelected("/dashboard/class-lecturer");
+              }}
+            >
+              Kelas Perkuliahan
+            </div>
+          ),
+        },  
+        {
+          key: "/dashboard/subject",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/subject");
+                setKeySelected("/dashboard/subject");
+              }}
+            >
+              Mata Kuliah
+            </div>
+          ),
+        },  
+        {
+          key: "/dashboard/room",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/room");
+                setKeySelected("/dashboard/room");
+              }}
+            >
+              Ruangan
+            </div>
+          ),
+        },  
+        {
           key: "/dashboard/lecturer",
           label: (
             <div
@@ -163,6 +202,19 @@ const DashboardLayout = ({ children }) => {
               }}
             >
               Dosen
+            </div>
+          ),
+        },
+        {
+          key: "/dashboard/session",
+          label: (
+            <div
+              onClick={() => {
+                router.push("/dashboard/session");
+                setKeySelected("/dashboard/session");
+              }}
+            >
+              Waktu/Sesi
             </div>
           ),
         },
@@ -186,7 +238,7 @@ const DashboardLayout = ({ children }) => {
               onClick={() => handleLogout()}
             >
               <IoLogOutOutline size={24} className="mr-1" />
-              Logout
+              Keluar
             </div>
           ),
         },
@@ -283,7 +335,7 @@ const DashboardLayout = ({ children }) => {
         </Header>
         <Content className="overflow-auto lg:p-8 md:p-8 p-4">{children}</Content>
         <Footer className="bg-white h-12 flex text-center items-center justify-center">
-          Penjadwalan Unila ©{new Date().getFullYear()} Created by Iqbal Al
+          Penjadwalan Unila ©{new Date().getFullYear()} dibuat oleh Iqbal Al
           Hafidzu Rahman
         </Footer>
       </Layout>

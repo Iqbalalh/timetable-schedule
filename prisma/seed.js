@@ -1,54 +1,43 @@
 const { PrismaClient } = require('@prisma/client');
+
 const prisma = new PrismaClient();
 
 async function main() {
-  // Create a Faculty with Department and Study Programs
   const faculty = await prisma.faculty.create({
     data: {
-      facultyName: "Faculty of Engineering",
+      facultyName: 'Matematika dan Ilmu Pengetahuan Alam',
       departments: {
         create: [
           {
-            departmentName: "Computer Science",
+            departmentName: 'Ilmu Komputer',
             studyPrograms: {
               create: [
                 {
-                  studyProgramName: "Software Engineering",
+                  studyProgramName: 'S1 Ilmu Komputer',
                   subjects: {
                     create: [
                       {
-                        subjectCode: "CS101",
-                        subjectName: "Introduction to Programming",
+                        subjectCode: 'COM620103',
+                        subjectName: 'Dasar-Dasar Pemrograman',
                         subjectSKS: 3,
-                        academicPeriod: {
+                        curriculum: {
                           create: {
-                            periodName: "2024/2025",
+                            curriculumName: '2020',
                           },
                         },
                         subSubjects: {
                           create: [
                             {
                               subjectType: {
-                                create: { typeName: "Theory" },
-                              },
-                              classes: {
                                 create: {
-                                  className: "Class A",
-                                  classCapacity: 30,
-                                  classLecturers: {
-                                    create: {
-                                      lecturer: {
-                                        create: {
-                                          lecturerName: "Dr. John Doe",
-                                          lecturerNIP: "1234567890",
-                                          lecturerEmail: "jdoe@university.com",
-                                          department: {
-                                            connect: { id: 1 }, // Connect to "Computer Science" department
-                                          },
-                                        },
-                                      },
-                                    },
-                                  },
+                                  typeName: 'Teori',
+                                },
+                              },
+                            },
+                            {
+                              subjectType: {
+                                create: {
+                                  typeName: 'Praktikum',
                                 },
                               },
                             },
@@ -63,18 +52,103 @@ async function main() {
             rooms: {
               create: [
                 {
-                  roomName: "Room 101",
-                  roomCapacity: 40,
+                  roomName: 'GIK L1. C',
+                  roomCapacity: 100,
                   isPracticum: false,
                   isTheory: true,
-                  subjectType: { connect: { id: 1 } }, // Connect to subject type "Theory"
+                  isLab: false,
                 },
                 {
-                  roomName: "Room 102",
-                  roomCapacity: 30,
+                  roomName: 'GIK L1. A',
+                  roomCapacity: 100,
+                  isPracticum: false,
+                  isTheory: true,
+                  isLab: false,
+                },
+                {
+                  roomName: 'GIK L1. B',
+                  roomCapacity: 100,
+                  isPracticum: false,
+                  isTheory: true,
+                  isLab: false,
+                },
+                {
+                  roomName: 'MIPA T L1. A',
+                  roomCapacity: 40,
                   isPracticum: true,
                   isTheory: false,
-                  subjectType: { connect: { id: 2 } }, // Connect to subject type "Practicum"
+                  isLab: true,
+                },
+                {
+                  roomName: 'MIPA T L1. B',
+                  roomCapacity: 40,
+                  isPracticum: true,
+                  isTheory: false,
+                  isLab: true,
+                },
+                {
+                  roomName: 'MIPA T LAB RPL',
+                  roomCapacity: 40,
+                  isPracticum: true,
+                  isTheory: false,
+                  isLab: true,
+                },
+                {
+                  roomName: 'MIPA T LAB R1',
+                  roomCapacity: 40,
+                  isPracticum: true,
+                  isTheory: false,
+                  isLab: true,
+                },
+                {
+                  roomName: 'MIPA T LAB R2',
+                  roomCapacity: 40,
+                  isPracticum: true,
+                  isTheory: false,
+                  isLab: true,
+                },
+                {
+                  roomName: 'MIPA T LAB R3',
+                  roomCapacity: 40,
+                  isPracticum: true,
+                  isTheory: false,
+                  isLab: true,
+                },
+              ],
+            },
+            lecturers: {
+              create: [
+                {
+                  lecturerName: '-',
+                  lecturerNIP: '-',
+                  lecturerEmail: '-',
+                },
+                {
+                  lecturerName: 'Tristiyanto, Ph.D',
+                  lecturerNIP: '198104142005011001',
+                  lecturerEmail: 'tristyanto@gmail.com',
+                },
+                {
+                  lecturerName: 'Bambang Hermanto, S.Kom, M.Cs.',
+                  lecturerNIP: '197909122008121001',
+                  lecturerEmail: 'bambang@gmail.com',
+                },
+                {
+                  lecturerName: 'Anie Rose Irawati, S.T., M.Cs.',
+                  lecturerNIP: '197910312006042002',
+                  lecturerEmail: 'anie@gmail.com',
+                },
+                {
+                  lecturerName: 'Febi Eka Febriansyah, M.T',
+                  lecturerNIP: '198002192006041001',
+                  lecturerEmail: 'ilkom737@gmail.com',
+                  users: {
+                    create: {
+                      username: 'admin',
+                      password: '$2a$12$mMX2.YS5fJsT4hxg53UNnu60pvjOEDyyAk/RyOK5r2KsG49PHxrNu',
+                      userRole: 'admin',
+                    },
+                  },
                 },
               ],
             },
@@ -83,42 +157,38 @@ async function main() {
       },
     },
   });
-
-  // Create Schedule Day
-  const scheduleDay = await prisma.scheduleDay.create({
-    data: {
-      day: "Monday",
-      schedules: {
-        create: [
-          {
-            idClassLecturer: 1, // Assumes there is a ClassLecturer with ID 1
-            idScheduleSession: 1, // Assumes there is a ScheduleSession with ID 1
-            idRoom: 1, // Room 101
-          },
-        ],
+  const scheduleSession = await prisma.scheduleSession.createMany({
+    data: [
+      {
+        startTime: '07:30',
+        endTime: '09:10',
+        sessionNumber: 1,
       },
-    },
+      {
+        startTime: '09:15',
+        endTime: '10:55',
+        sessionNumber: 2,
+      },
+      {
+        startTime: '11:00',
+        endTime: '12:40',
+        sessionNumber: 3,
+      },
+    ],
   });
 
-  // Create Schedule Session
-  const scheduleSession = await prisma.scheduleSession.create({
-    data: {
-      startTime: "08:00",
-      endTime: "10:00",
-      sessionNumber: 1,
-      schedules: {
-        create: [
-          {
-            idClassLecturer: 1,
-            idRoom: 1, // Room 101
-            idDay: scheduleDay.id,
-          },
-        ],
-      },
-    },
+  // Create ScheduleDay
+  const scheduleDay = await prisma.scheduleDay.createMany({
+    data: [
+      { day: 'Senin' },
+      { day: 'Selasa' },
+      { day: 'Rabu' },
+      { day: 'Kamis' },
+      { day: 'Jumat' },
+    ],
   });
 
-  console.log({ faculty, scheduleDay, scheduleSession });
+  console.log('Database has been seeded successfully!');
 }
 
 main()

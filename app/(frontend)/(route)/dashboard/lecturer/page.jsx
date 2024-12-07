@@ -10,6 +10,7 @@ import {
   Col,
   Select,
   Spin,
+  Modal,
 } from "antd";
 import axios from "axios";
 import {
@@ -87,7 +88,7 @@ const Lecturer = () => {
       const response = await axios.get(API_FACULTY);
       const faculties = response.data.map((fac) => ({
         value: fac.id,
-        label: fac.lecturerName,
+        label: fac.facultyName,
       }));
       setFaculties(faculties);
       setFacultyLoading(false);
@@ -181,6 +182,7 @@ const Lecturer = () => {
     {
       title: "No.",
       key: "index",
+      width: 70,
       render: (text, record, index) => index + 1 + ".",
     },
     {
@@ -277,6 +279,8 @@ const Lecturer = () => {
           rowKey="id"
           loading={isLoading}
           pagination={{ pageSize: 10 }}
+          scroll={{ x: "max-content", y: 800 }}
+
         />
       </div>
 
@@ -331,7 +335,7 @@ const Lecturer = () => {
           </Col>
         </Row>
         <Form.Item
-          label="Data"
+          label="Fakultas"
           className="mb-2"
           name="idFaculty"
           rules={[{ required: true, message: "Harus diisi!" }]}

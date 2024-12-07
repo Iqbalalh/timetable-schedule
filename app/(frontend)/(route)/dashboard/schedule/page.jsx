@@ -306,143 +306,92 @@ const ScheduleMatrix = () => {
           </h1>
         </div>
 
-        <div className="mb-12 block">
-          <div className="lg:flex">
-            <div className="lg:w-1/2 lg:flex lg:mb-8">
-              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
-                Kurikulum:
-              </div>
-              <Select
-                className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
-                showSearch
-                placeholder="Pilih salah satu"
-                value={currentCurriculumId}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={curriculumOptions.map((curr) => ({
-                  value: curr.id,
-                  label: curr.curriculumName,
-                }))}
-                notFoundContent={
-                  isLoading ? <Spin size="small" /> : "Tidak ada data!"
-                }
-                onChange={(value) => {
-                  setCurrentCurriculumId(value);
-                  setCurrentPeriodId(null);
-                  setSelectedFaculty(null);
-                  setSelectedDepartment(null);
-                  setSelectedDay(null);
-                  loadPeriod(value);
-                }}
-              />
-            </div>
-
-            <div className="lg:w-1/2 lg:flex lg:mb-8">
-              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
-                Periode Akademik:
-              </div>
-              <Select
-                className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
-                showSearch
-                placeholder={
-                  !currentCurriculumId
-                    ? "Pilih kurikulum terlebih dahulu"
-                    : "Pilih salah satu"
-                }
-                value={currentPeriodId} // Show selected period
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={academicPeriodOptions}
-                onChange={(value) => {
-                  setCurrentPeriodId(value);
-                  setSelectedFaculty(null);
-                  setSelectedDepartment(null);
-                  setSelectedDay(null);
-                  loadFaculties();
-                }}
-                notFoundContent={
-                  isPeriodLoading ? <Spin size="small" /> : "Tidak ada data!"
-                }
-                loading={isPeriodLoading}
-                disabled={currentCurriculumId === null}
-              />
-            </div>
-          </div>
-
-          <div className="lg:flex">
-            <div className="lg:w-1/2 lg:flex">
-              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
-                Fakultas:
-              </div>
-              <Select
-                notFoundContent={
-                  isFacultyLoading ? <Spin size="small" /> : "Tidak ada data!"
-                }
-                className="lg:w-1/2 lg:mb-0 mb-2 w-full mr-8 shadow-lg"
-                showSearch
-                placeholder={
-                  !currentPeriodId
-                    ? "Pilih periode akademik terlebih dahulu"
-                    : "Pilih salah satu"
-                }
-                value={selectedFaculty}
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={facultyOptions}
-                onChange={(value) => {
-                  setSelectedFaculty(value);
-                  loadDepartmentsByFaculty(value);
-                  setSelectedDepartment(null);
-                  setSelectedDay(null);
-                }}
-                loading={isFacultyLoading}
-                disabled={currentPeriodId === null} // Disable when periodId is null
-              />
-            </div>
-
-            <div className="lg:w-1/2 lg:flex ">
-              <div className="text-lg font-semibold mr-4 lg:border-b-4 border-blue-500 w-1/4">
-                Jurusan:
-              </div>
-              <Select
-                showSearch
-                className="shadow-lg lg:mb-0 mb-2 lg:w-1/2 w-full"
-                disabled={!selectedFaculty}
-                placeholder={
-                  !selectedFaculty
-                    ? "Pilih fakultas terlebih dahulu"
-                    : "Pilih salah satu"
-                }
-                filterOption={(input, option) =>
-                  (option?.label ?? "")
-                    .toLowerCase()
-                    .includes(input.toLowerCase())
-                }
-                options={departmentOptions}
-                value={selectedDepartment} // Set the selected department value
-                notFoundContent={
-                  isDepartmentLoading ? (
-                    <Spin size="small" />
-                  ) : (
-                    "Tidak ada data!"
-                  )
-                }
-                onSelect={(value) => {
-                  setSelectedDay(null); // Clear selected day when department is changed
-                  handleDepartmentChange(value); // Set department and fetch rooms
-                }}
-              />
-            </div>
-          </div>
+        <div className="mb-8 lg:flex gap-8">
+          <Select
+            className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
+            showSearch
+            placeholder="Kurikulum"
+            value={currentCurriculumId}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={curriculumOptions.map((curr) => ({
+              value: curr.id,
+              label: curr.curriculumName,
+            }))}
+            notFoundContent={
+              isLoading ? <Spin size="small" /> : "Tidak ada data!"
+            }
+            onChange={(value) => {
+              setCurrentCurriculumId(value);
+              setCurrentPeriodId(null);
+              setSelectedFaculty(null);
+              setSelectedDepartment(null);
+              setSelectedDay(null);
+              loadPeriod(value);
+            }}
+          />
+          <Select
+            className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
+            showSearch
+            placeholder={"Periode Akademik"}
+            value={currentPeriodId} // Show selected period
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={academicPeriodOptions}
+            onChange={(value) => {
+              setCurrentPeriodId(value);
+              setSelectedFaculty(null);
+              setSelectedDepartment(null);
+              setSelectedDay(null);
+              loadFaculties();
+            }}
+            notFoundContent={
+              isPeriodLoading ? <Spin size="small" /> : "Tidak ada data!"
+            }
+            loading={isPeriodLoading}
+            disabled={currentCurriculumId === null}
+          />
+          <Select
+            notFoundContent={
+              isFacultyLoading ? <Spin size="small" /> : "Tidak ada data!"
+            }
+            className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
+            showSearch
+            placeholder={"Fakultas"}
+            value={selectedFaculty}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={facultyOptions}
+            onChange={(value) => {
+              setSelectedFaculty(value);
+              loadDepartmentsByFaculty(value);
+              setSelectedDepartment(null);
+              setSelectedDay(null);
+            }}
+            loading={isFacultyLoading}
+            disabled={currentPeriodId === null} // Disable when periodId is null
+          />
+          <Select
+            showSearch
+            className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
+            disabled={!selectedFaculty}
+            placeholder={"Jurusan"}
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={departmentOptions}
+            value={selectedDepartment} // Set the selected department value
+            notFoundContent={
+              isDepartmentLoading ? <Spin size="small" /> : "Tidak ada data!"
+            }
+            onSelect={(value) => {
+              setSelectedDay(null); // Clear selected day when department is changed
+              handleDepartmentChange(value); // Set department and fetch rooms
+            }}
+          />
         </div>
 
         {isLoading ? (

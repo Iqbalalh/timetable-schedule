@@ -3,10 +3,10 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
   try {
-    const { subjectId } = params;
+    const { idSubject } = params;
     const subSubjects = await prisma.subSubject.findMany({
       where: {
-        idSubject: parseInt(subjectId),
+        idSubject: parseInt(idSubject),
       },
     });
 

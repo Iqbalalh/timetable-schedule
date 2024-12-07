@@ -66,9 +66,9 @@ model Subject {
   subjectName    String
   subjectSKS     Int
   idCurriculum   Int
-  curriculum     Curriculum   @relation(fields: [idCurriculum], references: [id])
+  curriculum     Curriculum   @relation(fields: [idCurriculum], references: [id], onDelete: Cascade)
   idStudyProgram Int
-  studyProgram   StudyProgram @relation(fields: [idStudyProgram], references: [id])
+  studyProgram   StudyProgram @relation(fields: [idStudyProgram], references: [id], onDelete: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   subSubjects    SubSubject[]
@@ -82,7 +82,6 @@ model SubjectType {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   subSubjects SubSubject[]
-  // rooms       Room[]
 
   @@map(name: "subjectTypes")
 }
@@ -92,7 +91,7 @@ model SubSubject {
   idSubjectType Int
   subjectType   SubjectType @relation(fields: [idSubjectType], references: [id])
   idSubject     Int
-  subject       Subject     @relation(fields: [idSubject], references: [id])
+  subject       Subject     @relation(fields: [idSubject], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   classes       Class[]
@@ -104,16 +103,13 @@ model Room {
   id           Int        @id @default(autoincrement())
   roomName     String     
   roomCapacity Int
-  // idSubjectType Int
-  // subjectType   SubjectType @relation(fields: [idSubjectType], references: [id])
   idDepartment Int
-  department   Department @relation(fields: [idDepartment], references: [id])
+  department   Department @relation(fields: [idDepartment], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   isPracticum  Boolean
   isTheory     Boolean
   isLab        Boolean
-  // scheduleRooms ScheduleRoom[]
   Schedule     Schedule[]
 
   @@map(name: "rooms")
@@ -123,7 +119,7 @@ model AcademicPeriod {
   id           Int        @id @default(autoincrement())
   periodName   String     
   curriculumId Int
-  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   classes      Class[]
@@ -136,9 +132,9 @@ model Class {
   className        String
   classCapacity    Int
   idSubSubject     Int
-  subSubject       SubSubject      @relation(fields: [idSubSubject], references: [id])
+  subSubject       SubSubject      @relation(fields: [idSubSubject], references: [id], onDelete: Cascade)
   idAcademicPeriod Int
-  academicPeriod   AcademicPeriod  @relation(fields: [idAcademicPeriod], references: [id])
+  academicPeriod   AcademicPeriod  @relation(fields: [idAcademicPeriod], references: [id], onDelete: Cascade)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   classLecturers   ClassLecturer[]
@@ -152,7 +148,7 @@ model Lecturer {
   lecturerNIP      String          @unique
   lecturerEmail    String          @unique
   idDepartment     Int
-  department       Department      @relation(fields: [idDepartment], references: [id])
+  department       Department      @relation(fields: [idDepartment], references: [id], onDelete: Cascade)
   createdAt        DateTime        @default(now())
   updatedAt        DateTime        @updatedAt
   primaryClasses   ClassLecturer[] @relation(name: "PrimaryLecturer")
@@ -165,11 +161,11 @@ model Lecturer {
 model ClassLecturer {
   id          Int        @id @default(autoincrement())
   idLecturer  Int
-  lecturer    Lecturer   @relation(name: "PrimaryLecturer", fields: [idLecturer], references: [id])
+  lecturer    Lecturer   @relation(name: "PrimaryLecturer", fields: [idLecturer], references: [id], onDelete: Cascade)
   idLecturer2 Int
-  lecturer2   Lecturer   @relation(name: "SecondaryLecturer", fields: [idLecturer2], references: [id])
+  lecturer2   Lecturer   @relation(name: "SecondaryLecturer", fields: [idLecturer2], references: [id], onDelete: Cascade)
   idClass     Int
-  class       Class      @relation(fields: [idClass], references: [id])
+  class       Class      @relation(fields: [idClass], references: [id], onDelete: Cascade)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   schedules   Schedule[]
@@ -215,28 +211,15 @@ model ScheduleDay {
 model Schedule {
   id                Int             @id @default(autoincrement())
   idDay             Int
-  scheduleDay       ScheduleDay     @relation(fields: [idDay], references: [id])
+  scheduleDay       ScheduleDay     @relation(fields: [idDay], references: [id], onDelete: Cascade)
   idClassLecturer   Int
-  classLecturer     ClassLecturer   @relation(fields: [idClassLecturer], references: [id])
+  classLecturer     ClassLecturer   @relation(fields: [idClassLecturer], references: [id], onDelete: Cascade)
   idScheduleSession Int
-  scheduleSession   ScheduleSession @relation(fields: [idScheduleSession], references: [id])
+  scheduleSession   ScheduleSession @relation(fields: [idScheduleSession], references: [id], onDelete: Cascade)
   idRoom            Int
-  room              Room            @relation(fields: [idRoom], references: [id])
+  room              Room            @relation(fields: [idRoom], references: [id], onDelete: Cascade)
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
-  // scheduleRooms     ScheduleRoom[]
 
   @@map(name: "schedules")
 }
-
-// model ScheduleRoom {
-//   id         Int      @id @default(autoincrement())
-//   idRooms    Int
-//   room       Room     @relation(fields: [idRooms], references: [id])
-//   idSchedule Int
-//   schedule   Schedule @relation(fields: [idSchedule], references: [id])
-//   createdAt  DateTime @default(now())
-//   updatedAt  DateTime @updatedAt
-
-//   @@map(name: "scheduleRooms")
-// }

@@ -134,7 +134,7 @@ const DashboardLayout = ({ children }) => {
               onClick={() => handleLogout()}
             >
               <IoLogOutOutline size={24} className="mr-1" />
-              Logout
+              Keluar
             </div>
           ),
         },
@@ -238,7 +238,7 @@ const DashboardLayout = ({ children }) => {
           {children}
         </Content>
         <Footer className="bg-white h-12 flex text-center items-center justify-center">
-          Penjadwalan Unila ©{new Date().getFullYear()} Created by Iqbal Al
+          Penjadwalan Unila ©{new Date().getFullYear()} dibuat oleh Iqbal Al
           Hafidzu Rahman
         </Footer>
       </Layout>
