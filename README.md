@@ -9,7 +9,7 @@ This project is a **Schedule Management System** built with **React.js**, **Tail
 - **Responsive Layout**: Built with Tailwind CSS for responsive design.
 - **Multi Role Management**: Built to accomodate multi role management.
 
-## Technology Stack
+## Tech Stack
 
 - **Next.js**: Main framework. Server-side rendering and routing for better performance.
 - **React.js**: Used for building the UI components and managing the application state.
