@@ -42,13 +42,13 @@ const StudyProgram = () => {
         );
         setIsLoading(false);
       } catch (error) {
-        message.error("Failed to load data!");
+        message.error("Gagal memuat data!");
         setIsLoading(false);
       }
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to load data!");
+      message.error("Gagal memuat data!");
       setIsLoading(false);
     }
   };
@@ -65,7 +65,7 @@ const StudyProgram = () => {
       setDep(departments);
       setDepLoading(false);
     } catch (error) {
-      message.error("Failed to load departments data!");
+      message.error("Gagal memuat data jurusan data!");
       setDepLoading(false);
     }
   };
@@ -82,7 +82,7 @@ const StudyProgram = () => {
       setFaculties(faculties);
       setFacultyLoading(false);
     } catch (error) {
-      message.error("Failed to load faculties data!");
+      message.error("Gagal memuat data fakultas!");
       setFacultyLoading(false);
     }
   };

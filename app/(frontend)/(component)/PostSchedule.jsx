@@ -138,8 +138,8 @@ const PostSchedule = ({
       onSuccess();
       onClose();
     } catch (error) {
-      console.error("Failed to post schedule:", error);
-      message.error("Failed to post schedule!");
+      console.error("Gagal menambahkan jadwal:", error);
+      message.error("Gagal menambahkan jadwal!");
     } finally {
       setLoading(false);
     }

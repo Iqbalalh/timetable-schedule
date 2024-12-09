@@ -53,13 +53,13 @@ const Lecturer = () => {
         );
         setIsLoading(false);
       } catch (error) {
-        message.error("Failed to load lecturers data!");
+        message.error("Gagal memuat data dosen!");
         setIsLoading(false);
       }
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to load lecturers data!");
+      message.error("Gagal memuat data dosen!");
       setIsLoading(false);
     }
   };
@@ -76,7 +76,7 @@ const Lecturer = () => {
       setDep(departments);
       setDepLoading(false);
     } catch (error) {
-      message.error("Failed to load departments data!");
+      message.error("Gagal memuat data jurusan data!");
       setDepLoading(false);
     }
   };
@@ -93,7 +93,7 @@ const Lecturer = () => {
       setFaculties(faculties);
       setFacultyLoading(false);
     } catch (error) {
-      message.error("Failed to load faculties data!");
+      message.error("Gagal memuat data fakultas!");
       setFacultyLoading(false);
     }
   };
