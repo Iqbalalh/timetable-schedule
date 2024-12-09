@@ -8,14 +8,16 @@ export async function middleware(req) {
   const adminPaths = ['/dashboard'];
   const nonAdminPaths = ['/lecturer'];
   const apiPaths = ['/api'];
-  const publicApiPaths = ['/api/auth'];
+  const authApiPaths = ['/api/auth'];
+  const publicApiPaths = ['/api/public'];
   const homePagePath = '/'; // Path for the home page
 
   // Check if the request is for a protected route (API or pages)
   const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
   const isNonAdminPath = nonAdminPaths.some((path) => pathname.startsWith(path));
   const isApiPath = apiPaths.some((path) => pathname.startsWith(path));
-  const isPublicApiPath = publicApiPaths.some((path) => pathname.startsWith(path));
+  const isAuthApiPaths = authApiPaths.some((path) => pathname.startsWith(path));
+  const isPublicApiPaths = publicApiPaths.some((path) => pathname.startsWith(path));
   const isHomePage = pathname === homePagePath;
 
   // Get the token from the request (using next-auth JWT)
@@ -27,8 +29,13 @@ export async function middleware(req) {
     return NextResponse.redirect(dashboardUrl);
   }
 
-  // Allow access to public API routes without authentication
-  if (isPublicApiPath) {
+  // Allow access to Login API routes without authentication
+  if (isAuthApiPaths) {
+    return NextResponse.next();
+  }
+
+  // Allow access to Public API routes without authentication
+  if (isPublicApiPaths) {
     return NextResponse.next();
   }
 
