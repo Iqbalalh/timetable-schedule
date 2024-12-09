@@ -33,7 +33,7 @@ const ClassLecturerPage = () => {
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to load data!");
+      message.error("Gagal memuat data!");
       setIsLoading(false);
     }
   };
@@ -51,7 +51,7 @@ const ClassLecturerPage = () => {
       setAcademicPeriods(academicPeriodRes.data);
       setLecturers(lecturerRes.data);
     } catch (error) {
-      message.error("Failed to load options!");
+      message.error("Gagal memuat opsi!");
     }
   };
 
@@ -85,7 +85,7 @@ const ClassLecturerPage = () => {
     });
 
     if (response.status !== 201) {
-      throw new Error("Failed to add class lecturer");
+      throw new Error("Gagal menambahkan");
     }
     handleSuccess();
   };

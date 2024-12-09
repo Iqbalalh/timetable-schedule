@@ -32,7 +32,7 @@ const Subject = () => {
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to load data!");
+      message.error("Gagal memuat data!");
       setIsLoading(false);
     }
   };
@@ -49,7 +49,7 @@ const Subject = () => {
       setStudyPrograms(studyPrograms);
       setStudyProgramLoading(false);
     } catch (error) {
-      message.error("Failed to load study programs data!");
+      message.error("Gagal memuat data prodi!");
       setStudyProgramLoading(false);
     }
   };
@@ -66,7 +66,7 @@ const Subject = () => {
       setCurriculums(curriculums);
       setCurriculumLoading(false);
     } catch (error) {
-      message.error("Failed to load curriculums data!");
+      message.error("Gagal memuat data kurikulum!");
       setCurriculumLoading(false);
     }
   };

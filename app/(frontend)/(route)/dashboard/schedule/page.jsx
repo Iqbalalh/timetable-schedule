@@ -109,7 +109,7 @@ const ScheduleMatrix = () => {
       setDepartmentOptions(departments);
       setIsDepartmentLoading(false);
     } catch (error) {
-      message.error("Failed to load departments data!");
+      message.error("Gagal memuat data jurusan data!");
       setIsDepartmentLoading(false);
     }
   };
@@ -128,7 +128,7 @@ const ScheduleMatrix = () => {
       setAcademicPeriodOptions(periods);
       setIsPeriodLoading(false);
     } catch (error) {
-      message.error("Failed to load faculties data!");
+      message.error("Gagal memuat data fakultas!");
       setIsPeriodLoading(false);
     }
   };
@@ -145,7 +145,7 @@ const ScheduleMatrix = () => {
       setFacultyOptions(faculties);
       setIsFacultyLoading(false);
     } catch (error) {
-      message.error("Failed to load faculties data!");
+      message.error("Gagal memuat data fakultas!");
       setIsFacultyLoading(false);
     }
   };

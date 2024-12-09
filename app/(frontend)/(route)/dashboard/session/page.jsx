@@ -26,7 +26,7 @@ const ScheduleSession = () => {
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to load data!");
+      message.error("Gagal memuat data!");
       setIsLoading(false);
     }
   };

@@ -35,13 +35,13 @@ const Room = () => {
         );
         setIsLoading(false);
       } catch (error) {
-        message.error("Failed to load department data!");
+        message.error("Gagal memuat data jurusan!");
         setIsLoading(false);
       }
       setIsLoading(false);
       setIsDisabled(false);
     } catch (error) {
-      message.error("Failed to load room data!");
+      message.error("Gagal memuat data ruangan!");
       setIsLoading(false);
     }
   };
