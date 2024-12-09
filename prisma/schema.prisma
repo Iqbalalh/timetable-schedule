@@ -167,7 +167,7 @@ model Room {
   department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  Schedule     Schedule[]
+  schedules     Schedule[]
 
   @@map(name: "rooms")
 }
@@ -178,7 +178,7 @@ model AcademicPeriod {
   curriculumId   Int
   curriculum     Curriculum   @relation(fields: [curriculumId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   semesterTypeId Int
-  SemesterType   SemesterType @relation(fields: [semesterTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  semesterType   SemesterType @relation(fields: [semesterTypeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   classes        Class[]
@@ -242,8 +242,8 @@ model User {
   username   String   @unique
   password   String
   role       String
-  idLecturer Int
-  lecturer   Lecturer @relation(fields: [idLecturer], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  lecturerId Int
+  lecturer   Lecturer @relation(fields: [lecturerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
