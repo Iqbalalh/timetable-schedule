@@ -13,7 +13,7 @@ import PatchModal from "@/app/(frontend)/(component)/PatchModal";
 const Departments = () => {
   const [departments, setDepartments] = useState([]);
   const [faculties, setFaculties] = useState([]);
-  const [idFaculty, setidFaculty] = useState(null);
+  const [facultyId, setfacultyId] = useState(null);
   const [facIsLoading, setFacIsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -59,7 +59,7 @@ const Departments = () => {
   const postDepartmentData = async (values) => {
     const data = {
       departmentName: values.departmentName,
-      idFaculty: values.idFaculty,
+      facultyId: values.facultyId,
     };
 
     const response = await axios.post(API_DEPARTMENT, data);
@@ -73,7 +73,7 @@ const Departments = () => {
   const patchDepartmentData = async (values) => {
     const data = {
       departmentName: values.departmentName,
-      idFaculty: values.idFaculty,
+      facultyId: values.facultyId,
     };
 
     const response = await axios.put(
@@ -233,7 +233,7 @@ const Departments = () => {
           <Form.Item
             label="Fakultas"
             className="mb-2"
-            name="idFaculty"
+            name="facultyId"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
             <Select
@@ -252,7 +252,7 @@ const Departments = () => {
                 }
               }}
               onSelect={(value) => {
-                setidFaculty(value);
+                setfacultyId(value);
               }}
               notFoundContent={facIsLoading ? <Spin size="small" /> : null}
             />
@@ -277,7 +277,7 @@ const Departments = () => {
           <Form.Item
             label="Fakultas"
             className="mb-2"
-            name="idFaculty"
+            name="facultyId"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
             <Select
@@ -296,7 +296,7 @@ const Departments = () => {
                 }
               }}
               onSelect={(value) => {
-                setidFaculty(value);
+                setfacultyId(value);
               }}
               notFoundContent={facIsLoading ? <Spin size="small" /> : null}
             />

@@ -24,7 +24,7 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { roomName, roomCapacity, isTheory, isPracticum, isLab, idDepartment } =
+  const { roomName, roomCapacity, isTheory, isPracticum, isLab, departmentId } =
     await req.json();
 
   // Validate input
@@ -40,7 +40,7 @@ export async function PUT(req, { params }) {
       { status: 400 }
     );
   }
-  if (!idDepartment) {
+  if (!departmentId) {
     return NextResponse.json(
       { error: "Department is required" },
       { status: 400 }
@@ -53,7 +53,7 @@ export async function PUT(req, { params }) {
       data: {
         roomName,
         roomCapacity: parseInt(roomCapacity),
-        idDepartment,
+        departmentId,
         isTheory,
         isPracticum,
         isLab,

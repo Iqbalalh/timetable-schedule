@@ -21,23 +21,23 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { idScheduleDay, idClassLecturer, idScheduleSession } = await req.json();
+  const { idScheduleDay, classIdLecturer, scheduleSessionId } = await req.json();
   
   // Validate input
   if (!idScheduleDay) {
     return NextResponse.json({ error: "Day is required" }, { status: 400 });
   }
-  if (!idClassLecturer) {
+  if (!classIdLecturer) {
     return NextResponse.json({ error: "Class lecturer ID is required" }, { status: 400 });
   }
-  if (!idScheduleSession) {
+  if (!scheduleSessionId) {
     return NextResponse.json({ error: "Schedule session ID is required" }, { status: 400 });
   }
 
   try {
     const updatedSchedule = await prisma.schedule.update({
       where: { id: Number(id) },
-      data: { idScheduleDay, idClassLecturer, idScheduleSession }
+      data: { idScheduleDay, classIdLecturer, scheduleSessionId }
     });
 
     return NextResponse.json(updatedSchedule, { status: 200 });

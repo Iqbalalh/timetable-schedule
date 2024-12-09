@@ -22,7 +22,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     // Parse the request body once
-    const { lecturerName, lecturerNIP, lecturerEmail, idDepartment } = await req.json();
+    const { lecturerName, lecturerNIP, lecturerEmail, departmentId } = await req.json();
 
     // Validate input
     if (!lecturerName) {
@@ -34,7 +34,7 @@ export async function POST(req) {
     if (!lecturerEmail) {
       return NextResponse.json({ error: "Lecturer email is required" }, { status: 400 });
     }
-    if (!idDepartment) {
+    if (!departmentId) {
       return NextResponse.json({ error: "Department ID is required" }, { status: 400 });
     }
 
@@ -44,7 +44,7 @@ export async function POST(req) {
         lecturerName,
         lecturerNIP,
         lecturerEmail,
-        idDepartment,
+        departmentId,
       },
     });
 

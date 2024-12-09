@@ -21,7 +21,7 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { subjectCode, subjectName, subjectSKS, idStudyProgram, idAcademicPeriod } = await req.json();
+  const { subjectCode, subjectName, subjectSKS, studyProgramId, academicPeriodId } = await req.json();
 
   // Validate input
   if (!subjectCode) {
@@ -33,17 +33,17 @@ export async function PUT(req, { params }) {
   if (!subjectSKS) {
     return NextResponse.json({ error: "Subject SKS is required" }, { status: 400 });
   }
-  if (!idStudyProgram) {
+  if (!studyProgramId) {
     return NextResponse.json({ error: "Study program is required" }, { status: 400 });
   }
-  if (!idAcademicPeriod) {
+  if (!academicPeriodId) {
     return NextResponse.json({ error: "Academic period is required" }, { status: 400 });
   }
 
   try {
     const updatedSubject = await prisma.subject.update({
       where: { id: Number(id) },
-      data: { subjectCode, subjectName, subjectSKS, idStudyProgram, idAcademicPeriod },
+      data: { subjectCode, subjectName, subjectSKS, studyProgramId, academicPeriodId },
     });
 
     return NextResponse.json(updatedSubject, { status: 200 });

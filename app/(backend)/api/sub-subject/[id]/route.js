@@ -21,20 +21,20 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { idSubjectType, idSubject } = await req.json();
+  const { subjectTypeId, subjectId } = await req.json();
   
   // Validate input
-  if (!idSubjectType) {
+  if (!subjectTypeId) {
     return NextResponse.json({ error: "Subject type ID is required" }, { status: 400 });
   }
-  if (!idSubject) {
+  if (!subjectId) {
     return NextResponse.json({ error: "Subject ID is required" }, { status: 400 });
   }
 
   try {
     const updatedSubSubject = await prisma.subSubject.update({
       where: { id: Number(id) },
-      data: { idSubjectType, idSubject }
+      data: { subjectTypeId, subjectId }
     });
 
     return NextResponse.json(updatedSubSubject, { status: 200 });

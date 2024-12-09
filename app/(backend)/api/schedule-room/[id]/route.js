@@ -21,10 +21,10 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { idRoom, idSchedule } = await req.json();
+  const { roomId, idSchedule } = await req.json();
   
   // Validate input
-  if (!idRoom) {
+  if (!roomId) {
     return NextResponse.json({ error: "Room ID is required" }, { status: 400 });
   }
   if (!idSchedule) {
@@ -34,7 +34,7 @@ export async function PUT(req, { params }) {
   try {
     const updatedScheduleRoom = await prisma.scheduleRoom.update({
       where: { id: Number(id) },
-      data: { idRoom, idSchedule }
+      data: { roomId, idSchedule }
     });
 
     return NextResponse.json(updatedScheduleRoom, { status: 200 });

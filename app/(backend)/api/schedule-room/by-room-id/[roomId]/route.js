@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     const { roomId } = params;
     const scheduleRooms = await prisma.scheduleRoom.findMany({
       where: {
-        idRoom: parseInt(roomId),
+        roomId: parseInt(roomId),
       },
     });
 

@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     const { departmentId } = params;
     const rooms = await prisma.room.findMany({
       where: {
-        idDepartment: parseInt(departmentId),
+        departmentId: parseInt(departmentId),
       },
     });
 

@@ -29,7 +29,7 @@ export async function POST(req) {
       isTheory,
       isPracticum,
       isLab,
-      idDepartment,
+      departmentId,
     } = await req.json();
 
     // Validate input
@@ -45,7 +45,7 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-    if (!idDepartment) {
+    if (!departmentId) {
       return NextResponse.json(
         { error: "Department is required" },
         { status: 400 }
@@ -57,7 +57,7 @@ export async function POST(req) {
       data: {
         roomName,
         roomCapacity: parseInt(roomCapacity),
-        idDepartment,
+        departmentId,
         isTheory,
         isPracticum,
         isLab,

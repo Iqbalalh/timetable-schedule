@@ -26,21 +26,21 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { idSubjectType, idSubject } = await req.json();
+      const { subjectTypeId, subjectId } = await req.json();
   
       // Validate input
-      if (!idSubjectType) {
+      if (!subjectTypeId) {
         return NextResponse.json({ error: "Subject type ID is required" }, { status: 400 });
       }
-      if (!idSubject) {
+      if (!subjectId) {
         return NextResponse.json({ error: "Subject ID is required" }, { status: 400 });
       }
   
       // Create a new sub subject
       const newSubSubject = await prisma.subSubject.create({
         data: {
-          idSubjectType,
-          idSubject,
+          subjectTypeId,
+          subjectId,
         },
       });
   

@@ -88,8 +88,8 @@ const Subject = () => {
       subjectCode: values.subjectCode,
       subjectName: values.subjectName,
       subjectSKS: values.subjectSKS,
-      idCurriculum: values.idCurriculum,
-      idStudyProgram: values.idStudyProgram,
+      curriculumId: values.curriculumId,
+      studyProgramId: values.studyProgramId,
     };
 
     const response = await axios.post(API_SUBJECT, data, {
@@ -109,8 +109,8 @@ const Subject = () => {
       subjectCode: values.subjectCode,
       subjectName: values.subjectName,
       subjectSKS: values.subjectSKS,
-      idCurriculum: values.idCurriculum,
-      idStudyProgram: values.idStudyProgram,
+      curriculumId: values.curriculumId,
+      studyProgramId: values.studyProgramId,
     };
 
     const response = await axios.put(
@@ -179,14 +179,14 @@ const Subject = () => {
     },
     {
       title: "Program Studi",
-      dataIndex: "idStudyProgram",
-      key: "idStudyProgram",
+      dataIndex: "studyProgramId",
+      key: "studyProgramId",
       render: (text, record) => record?.studyProgram?.studyProgramName,
     },
     {
       title: "Kurikulum",
-      dataIndex: "idCurriculum",
-      key: "idCurriculum",
+      dataIndex: "curriculumId",
+      key: "curriculumId",
       width: 100,
       render: (text, record) => record?.curriculum?.curriculumName,
     },
@@ -299,7 +299,7 @@ const Subject = () => {
         <Form.Item
           label="Kurikulum"
           className="mb-2"
-          name="idCurriculum"
+          name="curriculumId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
@@ -315,7 +315,7 @@ const Subject = () => {
         <Form.Item
           label="Program Studi"
           className="mb-2"
-          name="idStudyProgram"
+          name="studyProgramId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
@@ -370,11 +370,11 @@ const Subject = () => {
           <Form.Item
             label="Kurikulum"
             className="mb-2"
-            name="idCurriculum"
+            name="curriculumId"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
             <Select
-              defaultValue={currentSubject?.idCurriculum}
+              defaultValue={currentSubject?.curriculumId}
               placeholder="Pilih salah satu"
               loading={curriculumLoading}
               onDropdownVisibleChange={fetchCurriculums}
@@ -384,11 +384,11 @@ const Subject = () => {
           <Form.Item
             label="Program Studi"
             className="mb-2"
-            name="idStudyProgram"
+            name="studyProgramId"
             rules={[{ required: true, message: "Harus diisi!" }]}
           >
             <Select
-              defaultValue={currentSubject?.idStudyProgram}
+              defaultValue={currentSubject?.studyProgramId}
               placeholder="Pilih salah satu"
               loading={studyProgramLoading}
               onDropdownVisibleChange={fetchStudyPrograms}

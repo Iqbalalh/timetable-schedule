@@ -10,12 +10,12 @@ import {
 const PostSchedule = ({
   open,
   onClose,
-  idDay,
-  idScheduleSession,
-  idRoom,
-  idDepartment,
+  scheduleDayId,
+  scheduleSessionId,
+  roomId,
+  departmentId,
   onSuccess,
-  idCurriculum,
+  curriculumId,
   isTheory,
   isPracticum,
   roomName,
@@ -33,8 +33,8 @@ const PostSchedule = ({
           // Fetch class lecturers based on department, curriculum, theory, and practicum flags
           const response = await axios.get(
             API_CLASS_LECTURER_BY_DEPARTMENT_BY_CURRICULUM(
-              idDepartment,
-              idCurriculum,
+              departmentId,
+              curriculumId,
               isTheory,
               isPracticum
             )
@@ -43,10 +43,10 @@ const PostSchedule = ({
           console.log("Fetched class lecturers data:", response.data);
 
           const filteredClassLecturers = response.data.filter((classLecturer) => {
-            const lecturerId = classLecturer.idLecturer;
-            const lecturer2Id = classLecturer.idLecturer2;
+            const lecturerId = classLecturer.primaryLecturerId;
+            const secondaryLecturerId = classLecturer.secondaryLecturerId;
             const isPracticumClass =
-              classLecturer.class.subSubject.idSubjectType === 2;
+              classLecturer.class.subSubject.subjectTypeId === 2;
 
             // If it's a practicum class, include it regardless of conflicts
             if (isPracticumClass) {
@@ -56,24 +56,24 @@ const PostSchedule = ({
             // Check for clashes with existing schedules if it's not a practicum class
             const hasClash = scheduleData.some((schedule) => {
               const isTheoryClass =
-                schedule.classLecturer.class.subSubject.idSubjectType === 1;
+                schedule.classLecturer.class.subSubject.subjectTypeId === 1;
 
               const sameDayAndSession =
-                schedule.idDay === idDay &&
-                schedule.idScheduleSession === idScheduleSession;
+                schedule.scheduleDayId === scheduleDayId &&
+                schedule.scheduleSessionId === scheduleSessionId;
 
               const lecturerClash =
-                schedule.classLecturer.idLecturer === lecturerId ||
-                schedule.classLecturer.idLecturer2 === lecturerId;
+                schedule.classLecturer.primaryLecturerId === lecturerId ||
+                schedule.classLecturer.secondaryLecturerId === lecturerId;
 
-              const lecturer2Clash =
-                schedule.classLecturer.idLecturer === lecturer2Id ||
-                schedule.classLecturer.idLecturer2 === lecturer2Id;
+              const secondaryLecturerClash =
+                schedule.classLecturer.primaryLecturerId === secondaryLecturerId ||
+                schedule.classLecturer.secondaryLecturerId === secondaryLecturerId;
 
               return (
                 sameDayAndSession &&
                 isTheoryClass &&
-                (lecturerClash || lecturer2Clash)
+                (lecturerClash || secondaryLecturerClash)
               );
             });
 
@@ -113,12 +113,12 @@ const PostSchedule = ({
     }
   }, [
     open,
-    idDepartment,
-    idCurriculum,
+    departmentId,
+    curriculumId,
     isTheory,
     isPracticum,
-    idDay,
-    idScheduleSession,
+    scheduleDayId,
+    scheduleSessionId,
     scheduleData,
   ]);
 
@@ -126,10 +126,10 @@ const PostSchedule = ({
   const handleSubmit = async (values) => {
     setLoading(true);
     const payload = {
-      idDay,
-      idScheduleSession,
-      idRoom,
-      idClassLecturer: values.classLecturer,
+      scheduleDayId,
+      scheduleSessionId,
+      roomId,
+      classIdLecturer: values.classLecturer,
     };
 
     try {

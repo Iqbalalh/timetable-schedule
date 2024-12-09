@@ -16,14 +16,14 @@ export async function GET(req) {
       return NextResponse.json({ error: "ID is required" }, { status: 400 });
     }
 
-    // Determine filter for idSubSubject based on isTheory and isPracticum
-    let idSubSubjectFilter;
+    // Determine filter for subSubjectId based on isTheory and isPracticum
+    let subSubjectIdFilter;
     if (isTheory && isPracticum) {
-      idSubSubjectFilter = { in: [1, 2] }; // Both theory and practicum
+      subSubjectIdFilter = { in: [1, 2] }; // Both theory and practicum
     } else if (isTheory) {
-      idSubSubjectFilter = 1; // Only theory
+      subSubjectIdFilter = 1; // Only theory
     } else if (isPracticum) {
-      idSubSubjectFilter = 2; // Only practicum
+      subSubjectIdFilter = 2; // Only practicum
     } else {
       return NextResponse.json(
         { error: "Invalid filter selection" },
@@ -39,9 +39,9 @@ export async function GET(req) {
             gt: 0,
           },
           subSubject: {
-            idSubjectType: idSubSubjectFilter,
+            subjectTypeId: subSubjectIdFilter,
             subject: {
-              idCurriculum: parseInt(curriculumId),
+              curriculumId: parseInt(curriculumId),
               studyProgram: {
                 department: {
                   id: parseInt(departmentId),
@@ -57,7 +57,7 @@ export async function GET(req) {
             lecturerName: true,
           },
         },
-        lecturer2: {
+        secondaryLecturer: {
           select: {
             lecturerName: true,
           },
@@ -73,7 +73,7 @@ export async function GET(req) {
             },
             subSubject: {
               select: {
-                idSubjectType: true,
+                subjectTypeId: true,
                 subjectType: {
                   select: {
                     id: true,

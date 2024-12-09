@@ -22,25 +22,25 @@ export async function GET(req) {
     // Fetch schedules based on dayId and departmentId
     const schedules = await prisma.schedule.findMany({
       where: {
-        idDay: parseInt(dayId), // assuming dayId is an integer
+        scheduleDayId: parseInt(dayId), // assuming dayId is an integer
         classLecturer: {
           lecturer: {
-            idDepartment: parseInt(departmentId), // assuming departmentId is an integer
+            departmentId: parseInt(departmentId), // assuming departmentId is an integer
           },
           class: {
-            idAcademicPeriod: parseInt(academicPeriodId),
+            academicPeriodId: parseInt(academicPeriodId),
           },
         },
       },
       include: {
         classLecturer: {
           select: {
-            idLecturer: true,
+            primaryLecturerId: true,
             lecturer: {
               select: { id: true, lecturerName: true, lecturerNIP: true },
             },
-            idLecturer2: true,
-            lecturer2: {
+            secondaryLecturerId: true,
+            secondaryLecturer: {
               select: { id: true, lecturerName: true, lecturerNIP: true },
             },
             class: {
@@ -48,7 +48,7 @@ export async function GET(req) {
                 className: true,
                 subSubject: {
                   select: {
-                    idSubjectType: true,
+                    subjectTypeId: true,
                     subject: { select: { subjectName: true } },
                     subjectType: { select: { typeName: true, id: true } },
                   },

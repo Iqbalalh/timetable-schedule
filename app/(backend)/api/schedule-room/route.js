@@ -63,10 +63,10 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { idRoom, idSchedule } = await req.json();
+      const { roomId, idSchedule } = await req.json();
   
       // Validate input
-      if (!idRoom) {
+      if (!roomId) {
         return NextResponse.json({ error: "Room ID is required" }, { status: 400 });
       }
       if (!idSchedule) {
@@ -76,7 +76,7 @@ export async function POST(req) {
       // Create a new schedule session
       const newScheduleRoom = await prisma.scheduleRoom.create({
         data: {
-          idRoom,
+          roomId,
           idSchedule
         },
       });

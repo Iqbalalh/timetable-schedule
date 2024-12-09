@@ -21,20 +21,20 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { departmentName, idFaculty } = await req.json();
+  const { departmentName, facultyId } = await req.json();
 
   // Validate input
   if (!departmentName) {
     return NextResponse.json({ error: "Department name is required" }, { status: 400 });
   }
-  if (!idFaculty) {
+  if (!facultyId) {
     return NextResponse.json({ error: "Faculty is required" }, { status: 400 });
   }
 
   try {
     const updatedDepartment = await prisma.department.update({
       where: { id: Number(id) },
-      data: { departmentName, idFaculty },
+      data: { departmentName, facultyId },
     });
 
     return NextResponse.json(updatedDepartment, { status: 200 });

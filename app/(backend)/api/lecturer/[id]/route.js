@@ -35,7 +35,7 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { lecturerName, lecturerNIP, lecturerEmail, idDepartment } = await req.json();
+  const { lecturerName, lecturerNIP, lecturerEmail, departmentId } = await req.json();
 
   // Validate input
   if (!lecturerName) {
@@ -47,14 +47,14 @@ export async function PUT(req, { params }) {
   if (!lecturerEmail) {
     return NextResponse.json({ error: "Lecturer email is required" }, { status: 400 });
   }
-  if (!idDepartment) {
+  if (!departmentId) {
     return NextResponse.json({ error: "Department ID is required" }, { status: 400 });
   }
 
   try {
     const updatedLecturer = await prisma.lecturer.update({
       where: { id: Number(id) },
-      data: { lecturerName, lecturerNIP, lecturerEmail, idDepartment }
+      data: { lecturerName, lecturerNIP, lecturerEmail, departmentId }
     });
 
     return NextResponse.json(updatedLecturer, { status: 200 });

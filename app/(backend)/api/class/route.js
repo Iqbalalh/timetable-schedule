@@ -42,10 +42,10 @@ export async function POST(req) {
     const {
       className,
       classCapacity,
-      idSubject,
-      idAcademicPeriod,
-      idLecturer,
-      idLecturer2,
+      subjectId,
+      academicPeriodId,
+      primaryLecturerId,
+      secondaryLecturerId,
     } = await req.json();
 
     // Validate input
@@ -61,13 +61,13 @@ export async function POST(req) {
         { status: 400 }
       );
     }
-    if (!idSubject) {
+    if (!subjectId) {
       return NextResponse.json(
         { error: "Subject ID is required" },
         { status: 400 }
       );
     }
-    if (!idAcademicPeriod) {
+    if (!academicPeriodId) {
       return NextResponse.json(
         { error: "Academic period is required" },
         { status: 400 }
@@ -76,7 +76,7 @@ export async function POST(req) {
 
     // Retrieve all subSubjects related to the subjectId
     const subSubjects = await prisma.subSubject.findMany({
-      where: { idSubject: idSubject },
+      where: { subjectId: subjectId },
       select: { id: true },
     });
 
@@ -94,20 +94,20 @@ export async function POST(req) {
         data: {
           className,
           classCapacity: parseInt(classCapacity),
-          idSubSubject: subSubject.id,
-          idAcademicPeriod,
+          subSubjectId: subSubject.id,
+          academicPeriodId,
         },
       });
 
       createdClasses.push(newClass);
 
       // Create an entry for ClassLecturer if provided
-      if (idLecturer && idLecturer2) {
+      if (primaryLecturerId && secondaryLecturerId) {
         await prisma.classLecturer.create({
           data: {
-            idLecturer,
-            idLecturer2,
-            idClass: newClass.id,
+            primaryLecturerId,
+            secondaryLecturerId,
+            classId: newClass.id,
           },
         });
       }

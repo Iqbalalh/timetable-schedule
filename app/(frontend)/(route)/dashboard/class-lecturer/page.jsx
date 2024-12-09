@@ -72,10 +72,10 @@ const ClassLecturerPage = () => {
     const data = {
       className: values.className,
       classCapacity: values.classCapacity,
-      idSubject: values.idSubject,
-      idAcademicPeriod: values.idAcademicPeriod,
-      idLecturer: values.idLecturer,
-      idLecturer2: values.idLecturer2,
+      subjectId: values.subjectId,
+      academicPeriodId: values.academicPeriodId,
+      primaryLecturerId: values.primaryLecturerId,
+      secondaryLecturerId: values.secondaryLecturerId,
     };
 
     const response = await axios.post(API_CLASS, data, {
@@ -92,8 +92,8 @@ const ClassLecturerPage = () => {
 
   const patchClassLecturerData = async (values) => {
     const data = {
-      idLecturer: values.idLecturer,
-      idLecturer2: values.idLecturer2,
+      primaryLecturerId: values.primaryLecturerId,
+      secondaryLecturerId: values.secondaryLecturerId,
     };
 
     const response = await axios.put(
@@ -110,7 +110,7 @@ const ClassLecturerPage = () => {
     setCurrentClassLecturer({
       ...record,
       lecturer: record.lecturer || { id: null },
-      lecturer2: record.lecturer2 || { id: null },
+      secondaryLecturer: record.secondaryLecturer || { id: null },
     });
     setIsEditOpen(true);
   };
@@ -150,19 +150,19 @@ const ClassLecturerPage = () => {
     {
       title: "Mata Kuliah",
       dataIndex: ["subject", "subjectName"],
-      key: "idSubject",
+      key: "subjectId",
       render: (_, record) => record.class.subSubject.subject.subjectName,
     },
     {
       title: "Jenis",
       dataIndex: ["subject", "subjectName"],
-      key: "idSubject",
+      key: "subjectId",
       render: (_, record) => record.class.subSubject.subjectType.typeName,
     },
     {
       title: "Prodi",
       dataIndex: ["subject", "subjectName"],
-      key: "idSubject",
+      key: "subjectId",
       render: (_, record) => record.class.subSubject.subject.studyProgram.studyProgramName,
     },
     {
@@ -173,9 +173,9 @@ const ClassLecturerPage = () => {
     },
     {
       title: "Dosen Pengampu",
-      dataIndex: ["lecturer2", "name"],
-      key: "lecturer2",
-      render: (_, record) => record.lecturer2.lecturerName,
+      dataIndex: ["secondaryLecturer", "name"],
+      key: "secondaryLecturer",
+      render: (_, record) => record.secondaryLecturer.lecturerName,
     },
     {
       title: "Kelas",
@@ -282,7 +282,7 @@ const ClassLecturerPage = () => {
         <Form.Item
           label="Mata Kuliah"
           className="mb-2"
-          name="idSubject"
+          name="subjectId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select placeholder="Pilih salah satu">
@@ -296,7 +296,7 @@ const ClassLecturerPage = () => {
         <Form.Item
           label="Periode Akademik"
           className="mb-2"
-          name="idAcademicPeriod"
+          name="academicPeriodId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select placeholder="Pilih salah satu">
@@ -310,7 +310,7 @@ const ClassLecturerPage = () => {
         <Form.Item
           label="Dosen Pengampu 1"
           className="mb-2"
-          name="idLecturer"
+          name="primaryLecturerId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select placeholder="Pilih salah satu">
@@ -324,7 +324,7 @@ const ClassLecturerPage = () => {
         <Form.Item
           label="Dosen Pengampu 2"
           className="mb-2"
-          name="idLecturer2"
+          name="secondaryLecturerId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select placeholder="Pilih salah satu">
@@ -348,15 +348,15 @@ const ClassLecturerPage = () => {
         >
           <Form
             initialValues={{
-              idLecturer: currentClassLecturer?.lecturer?.id,
-              idLecturer2: currentClassLecturer?.lecturer2?.id,
+              primaryLecturerId: currentClassLecturer?.lecturer?.id,
+              secondaryLecturerId: currentClassLecturer?.secondaryLecturer?.id,
             }}
             onFinish={patchClassLecturerData}
           >
             <Form.Item
               label="Dosen Pengampu"
               className="mb-2"
-              name="idLecturer"
+              name="primaryLecturerId"
               rules={[{ required: true, message: "Harus diisi!" }]}
             >
               <Select>
@@ -370,7 +370,7 @@ const ClassLecturerPage = () => {
             <Form.Item
               label="Dosen Pengampu 2"
               className="mb-2"
-              name="idLecturer2"
+              name="secondaryLecturerId"
             >
               <Select>
                 {lecturers.map((lecturer) => (

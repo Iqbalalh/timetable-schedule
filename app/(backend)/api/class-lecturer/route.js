@@ -10,7 +10,7 @@ export async function GET(req) {
             lecturerName: true,
           },
         },
-        lecturer2: {
+        secondaryLecturer: {
           select: {
             lecturerName: true,
           },
@@ -59,22 +59,22 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { idLecturer, idLecturer2, idClass } = await req.json();
+    const { primaryLecturerId, secondaryLecturerId, classId } = await req.json();
 
     // Validate input
-    if (!idLecturer) {
+    if (!primaryLecturerId) {
       return NextResponse.json(
         { error: "Lecturer ID is required" },
         { status: 400 }
       );
     }
-    if (!idClass) {
+    if (!classId) {
       return NextResponse.json(
         { error: "Class ID is required" },
         { status: 400 }
       );
     }
-    if (!idLecturer2) {
+    if (!secondaryLecturerId) {
       return NextResponse.json(
         { error: "Lecturer 2 ID is required" },
         { status: 400 }
@@ -84,9 +84,9 @@ export async function POST(req) {
     // Create a new class lecturer
     const newClassLecturer = await prisma.classLecturer.create({
       data: {
-        idLecturer,
-        idLecturer2,
-        idClass,
+        primaryLecturerId,
+        secondaryLecturerId,
+        classId,
       },
     });
 

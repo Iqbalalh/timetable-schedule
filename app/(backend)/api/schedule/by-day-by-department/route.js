@@ -21,10 +21,10 @@ export async function GET(req) {
     // Fetch schedules based on dayId and departmentId
     const schedules = await prisma.schedule.findMany({
       where: {
-        idDay: parseInt(dayId), // assuming dayId is an integer
+        scheduleDayId: parseInt(dayId), // assuming dayId is an integer
         classLecturer: {
           lecturer: {
-            idDepartment: parseInt(departmentId), // assuming departmentId is an integer
+            departmentId: parseInt(departmentId), // assuming departmentId is an integer
           },
         },
       },
@@ -34,7 +34,7 @@ export async function GET(req) {
             lecturer: {
               select: { lecturerName: true },
             },
-            lecturer2: {
+            secondaryLecturer: {
               select: { lecturerName: true },
             },
             class: {

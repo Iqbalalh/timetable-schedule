@@ -224,7 +224,7 @@ const ScheduleMatrix = () => {
       key: room.id,
       render: (_, record) => {
         const scheduleItem = record.schedules.find(
-          (sch) => sch.idRoom === room.id
+          (sch) => sch.roomId === room.id
         );
         return scheduleItem ? (
           <div className="flex flex-col justify-center h-32 text-center items-center">
@@ -236,7 +236,7 @@ const ScheduleMatrix = () => {
             <div className="text-gray-500 text-sm">
               Dosen Pengampu:
               <div>1. {scheduleItem.classLecturer.lecturer.lecturerName}</div>
-              <div>2. {scheduleItem.classLecturer.lecturer2.lecturerName}</div>
+              <div>2. {scheduleItem.classLecturer.secondaryLecturer.lecturerName}</div>
             </div>
             <Popconfirm
               title="Apakah anda yakin?"
@@ -280,7 +280,7 @@ const ScheduleMatrix = () => {
         sessionNumber: session.sessionNumber, // Add session number for indexing
         time: `${session.startTime} - ${session.endTime}`,
         schedules: scheduleData.filter(
-          (sch) => sch.idScheduleSession === session.id
+          (sch) => sch.scheduleSessionId === session.id
         ), // Filter schedules for this session
       };
 
@@ -450,11 +450,11 @@ const ScheduleMatrix = () => {
         <PostSchedule
           open={isModalOpen}
           onClose={handleModalClose}
-          idDay={currentDayId}
-          idScheduleSession={currentSessionId}
-          idRoom={currentRoomId}
-          idDepartment={selectedDepartment}
-          idCurriculum={currentCurriculumId}
+          scheduleDayId={currentDayId}
+          scheduleSessionId={currentSessionId}
+          roomId={currentRoomId}
+          departmentId={selectedDepartment}
+          curriculumId={currentCurriculumId}
           isTheory={isTheory}
           isPracticum={isPracticum}
           roomName={currentRoomName}

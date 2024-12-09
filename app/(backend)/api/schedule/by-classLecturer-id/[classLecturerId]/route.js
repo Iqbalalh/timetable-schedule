@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     const { classLecturerId } = params;
     const schedules = await prisma.schedule.findMany({
       where: {
-        idClassLecturer: parseInt(classLecturerId),
+        classIdLecturer: parseInt(classLecturerId),
       },
     });
 

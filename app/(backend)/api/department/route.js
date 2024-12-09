@@ -20,13 +20,13 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-      const { departmentName, idFaculty } = await req.json();
+      const { departmentName, facultyId } = await req.json();
   
       // Validate input
       if (!departmentName) {
         return NextResponse.json({ error: "Department name is required" }, { status: 400 });
       }
-      if (!idFaculty) {
+      if (!facultyId) {
         return NextResponse.json({ error: "Faculty is required" }, { status: 400 });
       }
   
@@ -34,7 +34,7 @@ export async function POST(req) {
       const newDepartment = await prisma.department.create({
         data: {
           departmentName,
-          idFaculty
+          facultyId
         },
       });
   

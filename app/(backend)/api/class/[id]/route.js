@@ -21,7 +21,7 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { className, classCapacity, idSubSubject, idAcademicPeriod } = await req.json();
+  const { className, classCapacity, subSubjectId, academicPeriodId } = await req.json();
 
   // Validate input
   if (!className) {
@@ -30,17 +30,17 @@ export async function PUT(req, { params }) {
   if (!classCapacity) {
     return NextResponse.json({ error: "class capacity is required" }, { status: 400 });
   }
-  if (!idSubSubject) {
+  if (!subSubjectId) {
     return NextResponse.json({ error: "Sub subject is required" }, { status: 400 });
   }
-  if (!idAcademicPeriod) {
+  if (!academicPeriodId) {
     return NextResponse.json({ error: "Academic period is required" }, { status: 400 });
   }
 
   try {
     const updatedClass = await prisma.class.update({
       where: { id: Number(id) },
-      data: { className, classCapacity, idSubSubject, idAcademicPeriod },
+      data: { className, classCapacity, subSubjectId, academicPeriodId },
     });
 
     return NextResponse.json(updatedClass, { status: 200 });

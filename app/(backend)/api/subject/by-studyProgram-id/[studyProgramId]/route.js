@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     const { studyProgramId } = params;
     const subjects = await prisma.subject.findMany({
       where: {
-        idStudyProgram: parseInt(studyProgramId),
+        studyProgramId: parseInt(studyProgramId),
       },
     });
 

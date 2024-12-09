@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
     const { classId } = params;
     const classLecturers = await prisma.classLecturer.findMany({
       where: {
-        idClass: parseInt(classId),
+        classId: parseInt(classId),
       },
     });
 

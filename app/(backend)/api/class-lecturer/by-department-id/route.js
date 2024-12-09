@@ -37,7 +37,7 @@ export async function GET(req) {
             lecturerName: true,
           },
         },
-        lecturer2: {
+        secondaryLecturer: {
           select: {
             lecturerName: true,
           },

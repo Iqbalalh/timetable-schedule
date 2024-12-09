@@ -40,7 +40,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { subjectCode, subjectName, subjectSKS, idStudyProgram, idCurriculum } = await req.json();
+    const { subjectCode, subjectName, subjectSKS, studyProgramId, curriculumId } = await req.json();
     
     // Validate input
     if (!subjectCode) {
@@ -52,10 +52,10 @@ export async function POST(req) {
     if (!subjectSKS) {
       return NextResponse.json({ error: "Subject SKS is required" }, { status: 400 });
     }
-    if (!idStudyProgram) {
+    if (!studyProgramId) {
       return NextResponse.json({ error: "Study program is required" }, { status: 400 });
     }
-    if (!idCurriculum) {
+    if (!curriculumId) {
       return NextResponse.json({ error: "Curriculum is required" }, { status: 400 });
     }
 
@@ -65,8 +65,8 @@ export async function POST(req) {
         subjectCode,
         subjectName,
         subjectSKS: parseInt(subjectSKS),
-        idStudyProgram,
-        idCurriculum
+        studyProgramId,
+        curriculumId
       },
     });
 
@@ -75,16 +75,16 @@ export async function POST(req) {
       // If subjectSKS > 2, create subsubjects for both subject types 1 and 2
       await prisma.subSubject.createMany({
         data: [
-          { idSubjectType: 1, idSubject: newSubject.id },
-          { idSubjectType: 2, idSubject: newSubject.id }
+          { subjectTypeId: 1, subjectId: newSubject.id },
+          { subjectTypeId: 2, subjectId: newSubject.id }
         ]
       });
     } else {
       // If subjectSKS <= 2, create a subsubject for subject type 1
       await prisma.subSubject.create({
         data: {
-          idSubjectType: 1,
-          idSubject: newSubject.id
+          subjectTypeId: 1,
+          subjectId: newSubject.id
         },
       });
     }

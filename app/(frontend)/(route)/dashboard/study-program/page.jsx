@@ -102,7 +102,7 @@ const StudyProgram = () => {
   const postData = async (values) => {
     const data = {
       studyProgramName: values.studyProgramName,
-      idDepartment: values.idDepartment,
+      departmentId: values.departmentId,
     };
 
     const response = await axios.post(API_STUDY_PROGRAM, data, {
@@ -120,7 +120,7 @@ const StudyProgram = () => {
   const patchStudyProgramData = async (values) => {
     const data = {
       studyProgramName: values.studyProgramName,
-      idDepartment: values.idDepartment,
+      departmentId: values.departmentId,
     };
 
     const response = await axios.put(
@@ -177,8 +177,8 @@ const StudyProgram = () => {
     },
     {
       title: "Jurusan",
-      dataIndex: "idDepartment",
-      key: "idDepartment",
+      dataIndex: "departmentId",
+      key: "departmentId",
       render: (text, record) => record?.department?.departmentName,
     },
     {
@@ -273,7 +273,7 @@ const StudyProgram = () => {
         <Form.Item
           label="Fakultas"
           className="mb-2"
-          name="idFaculty"
+          name="facultyId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
@@ -299,7 +299,7 @@ const StudyProgram = () => {
         <Form.Item
           label="Jurusan"
           className="mb-2"
-          name="idDepartment"
+          name="departmentId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
@@ -335,7 +335,7 @@ const StudyProgram = () => {
         <Form.Item
           label="Jurusan"
           className="mb-2"
-          name="idDepartment"
+          name="departmentId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select

@@ -62,7 +62,7 @@ const Room = () => {
     const data = {
       roomName: values.roomName,
       roomCapacity: values.roomCapacity,
-      idDepartment: values.idDepartment,
+      departmentId: values.departmentId,
       isTheory: values.courseType === "Teori" || values.courseType === "Hybrid",
       isPracticum:
         values.courseType === "Praktikum" || values.courseType === "Hybrid",
@@ -85,7 +85,7 @@ const Room = () => {
     const data = {
       roomName: values.roomName,
       roomCapacity: values.roomCapacity,
-      idDepartment: values.idDepartment,
+      departmentId: values.departmentId,
       isTheory:
         values.courseType === "Teori" || values.courseType === "Hybrid"
           ? true
@@ -154,8 +154,8 @@ const Room = () => {
     },
     {
       title: "Jurusan",
-      dataIndex: "idDepartment",
-      key: "idDepartment",
+      dataIndex: "departmentId",
+      key: "departmentId",
       render: (text, record) => record?.department?.departmentName,
     },
     {
@@ -268,7 +268,7 @@ const Room = () => {
         <Form.Item
           label="Jurusan"
           className="mb-2"
-          name="idDepartment"
+          name="departmentId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select
@@ -323,7 +323,7 @@ const Room = () => {
         <Form.Item
           label="Jurusan"
           className="mb-2"
-          name="idDepartment"
+          name="departmentId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select

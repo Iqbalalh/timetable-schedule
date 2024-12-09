@@ -27,7 +27,7 @@ export async function GET(req) {
               },
             },
           },
-          idAcademicPeriod: parseInt(PeriodId),
+          academicPeriodId: parseInt(PeriodId),
         },
       },
       include: {
@@ -36,7 +36,7 @@ export async function GET(req) {
             lecturerName: true,
           },
         },
-        lecturer2: {
+        secondaryLecturer: {
           select: {
             lecturerName: true,
           },

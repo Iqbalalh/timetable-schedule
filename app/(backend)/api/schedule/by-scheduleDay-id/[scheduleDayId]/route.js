@@ -7,7 +7,7 @@ export async function GET(req, { params }) {
 
     const schedules = await prisma.schedule.findMany({
       where: {
-        idDay: parseInt(scheduleDayId),
+        scheduleDayId: parseInt(scheduleDayId),
       },
       include: {
         classLecturer: {
@@ -17,7 +17,7 @@ export async function GET(req, { params }) {
                 lecturerName: true,
               },
             },
-            lecturer2: {
+            secondaryLecturer: {
               select: {
                 lecturerName: true,
               },
