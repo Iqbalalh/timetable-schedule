@@ -1,43 +1,55 @@
-const { PrismaClient } = require('@prisma/client');
-
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Create Faculties
   const faculty = await prisma.faculty.create({
     data: {
-      facultyName: 'Matematika dan Ilmu Pengetahuan Alam',
+      facultyName: 'Faculty of Computer Science',
       departments: {
         create: [
           {
-            departmentName: 'Ilmu Komputer',
+            departmentName: 'Department of Informatics',
             studyPrograms: {
               create: [
                 {
-                  studyProgramName: 'S1 Ilmu Komputer',
+                  studyProgramName: 'Informatics Engineering',
                   subjects: {
                     create: [
                       {
-                        subjectCode: 'COM620103',
-                        subjectName: 'Dasar-Dasar Pemrograman',
+                        subjectCode: 'INF101',
+                        subjectName: 'Introduction to Programming',
                         subjectSKS: 3,
+                        subjectCategory: 'Core',
                         curriculum: {
                           create: {
-                            curriculumName: '2020',
+                            curriculumName: 'Curriculum 2024',
                           },
                         },
-                        subSubjects: {
+                        semester: {
+                          create: {
+                            semesterName: 1,
+                            semesterType: {
+                              create: { typeName: 'Odd' },
+                            },
+                          },
+                        },
+                      },
+                    ],
+                  },
+                  studyProgramClass: {
+                    create: [
+                      {
+                        className: 'A',
+                        assistants: {
                           create: [
                             {
-                              subjectType: {
+                              assistantName: 'John Doe',
+                              assistantNPM: '190102001',
+                              semester: {
                                 create: {
-                                  typeName: 'Teori',
-                                },
-                              },
-                            },
-                            {
-                              subjectType: {
-                                create: {
-                                  typeName: 'Praktikum',
+                                  semesterName: 1,
+                                  semesterType: { create: { typeName: 'Odd' } },
                                 },
                               },
                             },
@@ -52,103 +64,11 @@ async function main() {
             rooms: {
               create: [
                 {
-                  roomName: 'GIK L1. C',
-                  roomCapacity: 100,
+                  roomName: 'Room A',
+                  roomCapacity: 40,
                   isPracticum: false,
                   isTheory: true,
-                  isLab: false,
-                },
-                {
-                  roomName: 'GIK L1. A',
-                  roomCapacity: 100,
-                  isPracticum: false,
-                  isTheory: true,
-                  isLab: false,
-                },
-                {
-                  roomName: 'GIK L1. B',
-                  roomCapacity: 100,
-                  isPracticum: false,
-                  isTheory: true,
-                  isLab: false,
-                },
-                {
-                  roomName: 'MIPA T L1. A',
-                  roomCapacity: 40,
-                  isPracticum: true,
-                  isTheory: false,
-                  isLab: true,
-                },
-                {
-                  roomName: 'MIPA T L1. B',
-                  roomCapacity: 40,
-                  isPracticum: true,
-                  isTheory: false,
-                  isLab: true,
-                },
-                {
-                  roomName: 'MIPA T LAB RPL',
-                  roomCapacity: 40,
-                  isPracticum: true,
-                  isTheory: false,
-                  isLab: true,
-                },
-                {
-                  roomName: 'MIPA T LAB R1',
-                  roomCapacity: 40,
-                  isPracticum: true,
-                  isTheory: false,
-                  isLab: true,
-                },
-                {
-                  roomName: 'MIPA T LAB R2',
-                  roomCapacity: 40,
-                  isPracticum: true,
-                  isTheory: false,
-                  isLab: true,
-                },
-                {
-                  roomName: 'MIPA T LAB R3',
-                  roomCapacity: 40,
-                  isPracticum: true,
-                  isTheory: false,
-                  isLab: true,
-                },
-              ],
-            },
-            lecturers: {
-              create: [
-                {
-                  lecturerName: '-',
-                  lecturerNIP: '-',
-                  lecturerEmail: '-',
-                },
-                {
-                  lecturerName: 'Tristiyanto, Ph.D',
-                  lecturerNIP: '198104142005011001',
-                  lecturerEmail: 'tristyanto@gmail.com',
-                },
-                {
-                  lecturerName: 'Bambang Hermanto, S.Kom, M.Cs.',
-                  lecturerNIP: '197909122008121001',
-                  lecturerEmail: 'bambang@gmail.com',
-                },
-                {
-                  lecturerName: 'Anie Rose Irawati, S.T., M.Cs.',
-                  lecturerNIP: '197910312006042002',
-                  lecturerEmail: 'anie@gmail.com',
-                },
-                {
-                  lecturerName: 'Febi Eka Febriansyah, M.T',
-                  lecturerNIP: '198002192006041001',
-                  lecturerEmail: 'ilkom737@gmail.com',
-                  users: {
-                    create: {
-                      username: 'admin',
-                      password: '$2a$12$mMX2.YS5fJsT4hxg53UNnu60pvjOEDyyAk/RyOK5r2KsG49PHxrNu',
-                      userRole: 'admin',
-                    },
-                  },
+                  isResponse: false,
                 },
               ],
             },
@@ -157,45 +77,108 @@ async function main() {
       },
     },
   });
-  const scheduleSession = await prisma.scheduleSession.createMany({
-    data: [
-      {
-        startTime: '07:30',
-        endTime: '09:10',
-        sessionNumber: 1,
+
+  console.log({ faculty });
+
+  // Create Academic Period
+  const academicPeriod = await prisma.academicPeriod.create({
+    data: {
+      academicYear: 2024,
+      curriculum: {
+        create: {
+          curriculumName: 'Curriculum 2024',
+        },
       },
-      {
-        startTime: '09:15',
-        endTime: '10:55',
-        sessionNumber: 2,
+      SemesterType: {
+        create: {
+          typeName: 'Odd',
+        },
       },
-      {
-        startTime: '11:00',
-        endTime: '12:40',
-        sessionNumber: 3,
-      },
-    ],
+    },
   });
 
-  // Create ScheduleDay
-  const scheduleDay = await prisma.scheduleDay.createMany({
-    data: [
-      { day: 'Senin' },
-      { day: 'Selasa' },
-      { day: 'Rabu' },
-      { day: 'Kamis' },
-      { day: 'Jumat' },
-    ],
+  console.log({ academicPeriod });
+
+  // Create Schedule Days
+  const scheduleDay = await prisma.scheduleDay.create({
+    data: {
+      day: 'Monday',
+    },
   });
 
-  console.log('Database has been seeded successfully!');
+  console.log({ scheduleDay });
+
+  // Create Schedule Sessions
+  const scheduleSession = await prisma.scheduleSession.create({
+    data: {
+      startTime: '07:30',
+      endTime: '09:10',
+      sessionNumber: 1,
+    },
+  });
+
+  console.log({ scheduleSession });
+
+  // Create Lecturers
+  const lecturer = await prisma.lecturer.create({
+    data: {
+      lecturerName: 'Dr. Alice Johnson',
+      lecturerNIDN: '123456789',
+      lecturerEmail: 'alice.johnson@example.com',
+      department: {
+        connect: { id: 1 }, // Adjust department ID if needed
+      },
+    },
+  });
+
+  console.log({ lecturer });
+
+  // Create Users
+  const user = await prisma.user.create({
+    data: {
+      username: 'admin',
+      password: '$2a$12$zZeNjPxjEyWsvU78f7MlOuPIxTI9fjGmjNqgtrZpILGxUdpXlHUGu',
+      role: 'Admin',
+      lecturer: {
+        connect: { id: lecturer.id },
+      },
+    },
+  });
+
+  console.log({ user });
+
+  // Create Classes
+  const classData = await prisma.class.create({
+    data: {
+      classCapacity: 30,
+      studyProgramClass: {
+        connect: { id: 1 }, // Adjust study program class ID if needed
+      },
+      subSubject: {
+        create: {
+          subjectType: {
+            create: { typeName: 'Lecture' },
+          },
+          subject: {
+            connect: { id: 1 }, // Adjust subject ID if needed
+          },
+        },
+      },
+      academicPeriod: {
+        connect: { id: academicPeriod.id },
+      },
+    },
+  });
+
+  console.log({ classData });
 }
 
 main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
+  .then(async () => {
     await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
   });

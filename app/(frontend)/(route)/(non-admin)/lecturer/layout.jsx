@@ -221,7 +221,7 @@ const DashboardLayout = ({ children }) => {
                     className="font-semibold flex items-center mt-2 justify-center"
                   >
                     <FaUserCircle size={20} />|
-                    <div>{user?.userRole.toUpperCase()}</div>
+                    <div>{user?.role.toUpperCase()}</div>
                     <DownOutlined />
                   </Button>
                 </Dropdown>

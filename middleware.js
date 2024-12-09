@@ -33,16 +33,16 @@ export async function middleware(req) {
   }
 
   if (token) {
-    const { userRole } = token;
+    const { role } = token;
 
     // Block non-admin users from accessing admin paths
-    if (isAdminPath && userRole !== 'admin') {
+    if (isAdminPath && role !== 'admin') {
       const forbiddenUrl = new URL('/403', req.url);
       return NextResponse.redirect(forbiddenUrl);
     }
 
     // Block admin users from accessing non-admin paths
-    if (isNonAdminPath && userRole === 'admin') {
+    if (isNonAdminPath && role === 'admin') {
       const forbiddenUrl = new URL('/403', req.url);
       return NextResponse.redirect(forbiddenUrl);
     }

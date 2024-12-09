@@ -36,7 +36,7 @@ const handler = NextAuth({
         const currentUser = {
           id: user.id,
           username: user.username,
-          userRole: user.userRole,
+          role: user.role,
           lecturer: user.lecturer, // Include lecturer information
         };
 
@@ -50,7 +50,7 @@ const handler = NextAuth({
         // Add user information to the token
         token.id = user.id;
         token.username = user.username;
-        token.userRole = user.userRole;
+        token.role = user.role;
         token.lecturer = user.lecturer;
       }
       return token;
@@ -60,7 +60,7 @@ const handler = NextAuth({
       session.user = {
         id: token.id,
         username: token.username,
-        userRole: token.userRole,
+        role: token.role,
         lecturer: token.lecturer
       };
       return session;

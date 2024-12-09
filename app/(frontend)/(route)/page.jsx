@@ -34,9 +34,9 @@ const App = () => {
         const { user } = session;
         localStorage.setItem("user", JSON.stringify(user));
 
-        if (user.userRole === "admin") {
+        if (user.role === "admin") {
           router.push("/dashboard");
-        } else if (user.userRole === "lecturer") {
+        } else if (user.role === "lecturer") {
           router.push("/lecturer");
         }
       }
