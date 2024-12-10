@@ -3,15 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    const curriculums = await prisma.curriculum.findMany({
-      include: {
-        academicPeriods: {
-          select: {
-            periodName: true,
-          },
-        },
-      },
-    });
+    const curriculums = await prisma.curriculum.findMany();
     return NextResponse.json(curriculums, { status: 200 });
   } catch (error) {
     return NextResponse.json(

@@ -7,9 +7,14 @@ export async function GET(req) {
       include: {
         curriculum: {
           select: {
-            curriculumName: true,
-          },
+            curriculumName: true
+          }
         },
+        semesterType: {
+          select: {
+            typeName: true
+          }
+        }
       },
     });
     return NextResponse.json(academicPeriods, { status: 200 });
@@ -23,12 +28,18 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { periodName, curriculumId } = await req.json();
+    const { academicYear, semesterTypeId, curriculumId } = await req.json();
 
     // Validate input
-    if (!periodName) {
+    if (!academicYear) {
       return NextResponse.json(
-        { error: "Period name is required" },
+        { error: "Academic year is required" },
+        { status: 400 }
+      );
+    }
+    if (!semesterTypeId) {
+      return NextResponse.json(
+        { error: "Semester type ID is required" },
         { status: 400 }
       );
     }
@@ -42,12 +53,14 @@ export async function POST(req) {
     // Create a new academic period
     const newAcademicPeriod = await prisma.academicPeriod.create({
       data: {
-        periodName,
+        academicYear,
+        semesterTypeId,
         curriculumId,
       },
     });
 
     return NextResponse.json(newAcademicPeriod, { status: 201 });
+    
   } catch (error) {
     console.error("Error creating academic period:", error);
     return NextResponse.json(

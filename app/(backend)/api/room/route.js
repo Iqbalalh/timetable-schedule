@@ -28,7 +28,7 @@ export async function POST(req) {
       roomCapacity,
       isTheory,
       isPracticum,
-      isLab,
+      isResponse,
       departmentId,
     } = await req.json();
 
@@ -60,7 +60,7 @@ export async function POST(req) {
         departmentId,
         isTheory,
         isPracticum,
-        isLab,
+        isResponse,
       },
     });
 

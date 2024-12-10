@@ -3,14 +3,14 @@ import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
   try {
-    const { roomId } = params;
-    const scheduleRooms = await prisma.scheduleRoom.findMany({
+    const { semesterTypeId } = params;
+    const semesters = await prisma.semester.findMany({
       where: {
-        roomId: parseInt(roomId),
-      },
+        semesterTypeId: parseInt(semesterTypeId),
+      }
     });
 
-    return NextResponse.json(scheduleRooms, { status: 200 });
+    return NextResponse.json(semesters, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }

@@ -23,11 +23,11 @@ export async function GET(req) {
         curriculum: {
           select: {
             curriculumName: true,
-            // academicPeriod: {
-            //   select: {
-            //     periodName: true
-            //   }
-            // }
+          }
+        },
+        semester: {
+          select: {
+            semesterName: true,
           }
         } 
       }
@@ -40,7 +40,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { subjectCode, subjectName, subjectSKS, studyProgramId, curriculumId } = await req.json();
+    const { subjectCode, subjectName, subjectSKS, subjectCategory, studyProgramId, curriculumId, semesterId, selectedType } = await req.json();
     
     // Validate input
     if (!subjectCode) {
@@ -52,11 +52,20 @@ export async function POST(req) {
     if (!subjectSKS) {
       return NextResponse.json({ error: "Subject SKS is required" }, { status: 400 });
     }
+    if (!subjectCategory) {
+      return NextResponse.json({ error: "Subject category is required" }, { status: 400 });
+    }
     if (!studyProgramId) {
       return NextResponse.json({ error: "Study program is required" }, { status: 400 });
     }
     if (!curriculumId) {
       return NextResponse.json({ error: "Curriculum is required" }, { status: 400 });
+    }
+    if (!semesterId) {
+      return NextResponse.json({ error: "Semester is required" }, { status: 400 });
+    }
+    if (subjectSKS > 2 && !selectedType) {
+      return NextResponse.json({ error: "Selected type is required" }, { status: 400 });
     }
 
     // Create a new subject
@@ -65,27 +74,26 @@ export async function POST(req) {
         subjectCode,
         subjectName,
         subjectSKS: parseInt(subjectSKS),
+        subjectCategory,
         studyProgramId,
-        curriculumId
+        curriculumId,
+        semesterId
       },
     });
 
-    // Automatically create subsubjects based on subjectSKS
+    // Determine sub-subject creation logic
     if (subjectSKS > 2) {
-      // If subjectSKS > 2, create subsubjects for both subject types 1 and 2
+      // Create sub-subjects for selected type (R/P) + T
       await prisma.subSubject.createMany({
         data: [
-          { subjectTypeId: 1, subjectId: newSubject.id },
-          { subjectTypeId: 2, subjectId: newSubject.id }
-        ]
+          { subjectTypeId: 1, subjectId: newSubject.id }, // T
+          { subjectTypeId: selectedType, subjectId: newSubject.id }, // R or P
+        ],
       });
     } else {
-      // If subjectSKS <= 2, create a subsubject for subject type 1
+      // Create a sub-subject for T only
       await prisma.subSubject.create({
-        data: {
-          subjectTypeId: 1,
-          subjectId: newSubject.id
-        },
+        data: { subjectTypeId: 1, subjectId: newSubject.id }, // T
       });
     }
 

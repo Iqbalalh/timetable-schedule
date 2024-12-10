@@ -38,14 +38,14 @@ model Department {
 }
 
 model StudyProgram {
-  id                Int                 @id @default(autoincrement())
-  studyProgramName  String
-  departmentId      Int
-  department        Department          @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
-  subjects          Subject[]
-  studyProgramClass StudyProgramClass[]
+  id                  Int                 @id @default(autoincrement())
+  studyProgramName    String
+  departmentId        Int
+  department          Department          @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  subjects            Subject[]
+  studyProgramClasses StudyProgramClass[]
 
   @@map(name: "studyPrograms")
 }
@@ -96,22 +96,6 @@ model StudyProgramClass {
   classes        Class[]
 
   @@map(name: "studyProgramClasses")
-}
-
-model Assistant {
-  id                  Int               @id @default(autoincrement())
-  assistantName       String
-  assistantNPM        String            @unique
-  semesterId          Int
-  semester            Semester          @relation(fields: [semesterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  studyProgramClassId Int
-  studyProgramClass   StudyProgramClass @relation(fields: [studyProgramClassId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  primaryClasses      ClassLecturer[]   @relation(name: "PrimaryAssistant")
-  secondaryClasses    ClassLecturer[]   @relation(name: "SecondaryAssistant")
-
-  @@map(name: "assistants")
 }
 
 model Subject {
@@ -167,7 +151,7 @@ model Room {
   department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
-  schedules     Schedule[]
+  schedules    Schedule[]
 
   @@map(name: "rooms")
 }
@@ -197,23 +181,39 @@ model Class {
   academicPeriod      AcademicPeriod    @relation(fields: [academicPeriodId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @updatedAt
-  classLecturers      ClassLecturer[]
+  classLecturers      ClassLecturer[] // Relasi ke ClassLecturer
 
   @@map(name: "classes")
 }
 
+model Assistant {
+  id                       Int               @id @default(autoincrement())
+  assistantName            String
+  assistantNPM             String            @unique
+  semesterId               Int
+  semester                 Semester          @relation(fields: [semesterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  studyProgramClassId      Int
+  studyProgramClass        StudyProgramClass @relation(fields: [studyProgramClassId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
+  primaryClassAssistants   ClassLecturer[]   @relation(name: "PrimaryAssistant")
+  secondaryClassAssistants ClassLecturer[]   @relation(name: "SecondaryAssistant")
+
+  @@map(name: "assistants")
+}
+
 model Lecturer {
-  id               Int             @id @default(autoincrement())
-  lecturerName     String
-  lecturerNIP     String          @unique
-  lecturerEmail    String          @unique
-  departmentId     Int
-  department       Department      @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  primaryClasses   ClassLecturer[] @relation(name: "PrimaryLecturer")
-  secondaryClasses ClassLecturer[] @relation(name: "SecondaryLecturer")
-  users            User[]
+  id                      Int             @id @default(autoincrement())
+  lecturerName            String
+  lecturerNIP             String          @unique
+  lecturerEmail           String          @unique
+  departmentId            Int
+  department              Department      @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  primaryClassLecturers   ClassLecturer[] @relation(name: "PrimaryLecturer")
+  secondaryClassLecturers ClassLecturer[] @relation(name: "SecondaryLecturer")
+  users                   User[]
 
   @@map(name: "lecturers")
 }
@@ -224,12 +224,12 @@ model ClassLecturer {
   class                Class      @relation(fields: [classId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   primaryLecturerId    Int
   primaryLecturer      Lecturer   @relation(name: "PrimaryLecturer", fields: [primaryLecturerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  secondaryLecturerId  Int
-  secondaryLecturer    Lecturer   @relation(name: "SecondaryLecturer", fields: [secondaryLecturerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  primaryAssistantId   Int
-  primaryAssistant     Assistant  @relation(name: "PrimaryAssistant", fields: [primaryAssistantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  secondaryAssistantId Int
-  secondaryAssistant   Assistant  @relation(name: "SecondaryAssistant", fields: [secondaryAssistantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  secondaryLecturerId  Int?
+  secondaryLecturer    Lecturer?  @relation(name: "SecondaryLecturer", fields: [secondaryLecturerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  primaryAssistantId   Int?
+  primaryAssistant     Assistant? @relation(name: "PrimaryAssistant", fields: [primaryAssistantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  secondaryAssistantId Int?
+  secondaryAssistant   Assistant? @relation(name: "SecondaryAssistant", fields: [secondaryAssistantId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt            DateTime   @default(now())
   updatedAt            DateTime   @updatedAt
   schedules            Schedule[]

@@ -5,20 +5,8 @@ export async function GET(req) {
   try {
     const classLecturers = await prisma.classLecturer.findMany({
       include: {
-        lecturer: {
-          select: {
-            lecturerName: true,
-          },
-        },
-        secondaryLecturer: {
-          select: {
-            lecturerName: true,
-          },
-        },
         class: {
           select: {
-            className: true,
-            classCapacity: true,
             subSubject: {
               select: {
                 subject: {
@@ -44,6 +32,32 @@ export async function GET(req) {
                 },
               },
             },
+            studyProgramClass: {
+              select: {
+                className: true,
+              }
+            },
+            classCapacity: true,
+          },
+        },
+        primaryLecturer: {
+          select: {
+            lecturerName: true,
+          },
+        },
+        secondaryLecturer: {
+          select: {
+            lecturerName: true,
+          },
+        },
+        primaryAssistant: {
+          select: {
+            assistantName: true,
+          },
+        },
+        secondaryAssistant: {
+          select: {
+            assistantName: true,
           },
         },
       },
@@ -59,24 +73,18 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const { primaryLecturerId, secondaryLecturerId, classId } = await req.json();
+    const { classId, primaryLecturerId, secondaryLecturerId, primaryAssistantId, secondaryAssistantId } = await req.json();
 
     // Validate input
-    if (!primaryLecturerId) {
-      return NextResponse.json(
-        { error: "Lecturer ID is required" },
-        { status: 400 }
-      );
-    }
     if (!classId) {
       return NextResponse.json(
         { error: "Class ID is required" },
         { status: 400 }
       );
     }
-    if (!secondaryLecturerId) {
+    if (!primaryLecturerId) {
       return NextResponse.json(
-        { error: "Lecturer 2 ID is required" },
+        { error: "Primary lecturer ID is required" },
         { status: 400 }
       );
     }
@@ -84,9 +92,37 @@ export async function POST(req) {
     // Create a new class lecturer
     const newClassLecturer = await prisma.classLecturer.create({
       data: {
-        primaryLecturerId,
-        secondaryLecturerId,
-        classId,
+        class: {
+          connect: {
+            id: classId,
+          },
+        },
+        primaryLecturer: {
+          connect: {
+            id: primaryLecturerId,
+          },
+        },
+        secondaryLecturer: secondaryLecturerId
+          ? {
+              connect: {
+                id: secondaryLecturerId,
+              },
+            }
+          : null,
+        primaryAssistant: primaryAssistantId
+          ? {
+              connect: {
+                id: primaryAssistantId,
+              },
+            }
+          : null,
+        secondaryAssistant: secondaryAssistantId
+          ? {
+              connect: {
+                id: secondaryAssistantId,
+              },
+            }
+          : null,
       },
     });
 
@@ -94,7 +130,7 @@ export async function POST(req) {
   } catch (error) {
     console.error("Error creating class lecturer:", error);
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Something went wrong", details: error.message },  // Menyertakan detail error untuk informasi lebih lanjut
       { status: 500 }
     );
   }

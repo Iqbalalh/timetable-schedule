@@ -12,6 +12,7 @@ export async function GET(req) {
               select: {
                 subjectCode: true,
                 subjectName: true,
+                subjectCategory: true
               },
             },
             subjectType: {
@@ -21,11 +22,26 @@ export async function GET(req) {
             },
           },
         },
-        AcademicPeriod: {
+        academicPeriod: {
           select: {
-            periodName: true,
+            academicYear: true,
+            semesterType: {
+              select: {
+                typeName: true
+              }
+            }
           },
         },
+        studyProgramClass: {
+          select: {
+            className: true,
+            studyProgram: {
+              select: {
+                studyProgramName: true
+              }
+            }
+          }
+        }
       },
     });
     return NextResponse.json(classes, { status: 200 });
@@ -40,18 +56,20 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const {
-      className,
+      studyProgramClassId,
       classCapacity,
       subjectId,
       academicPeriodId,
       primaryLecturerId,
       secondaryLecturerId,
+      // primaryAssistantId,
+      // secondaryAssistantId
     } = await req.json();
 
     // Validate input
-    if (!className) {
+    if (!studyProgramClassId) {
       return NextResponse.json(
-        { error: "Class name is required" },
+        { error: "Study program class ID is required" },
         { status: 400 }
       );
     }
@@ -69,7 +87,7 @@ export async function POST(req) {
     }
     if (!academicPeriodId) {
       return NextResponse.json(
-        { error: "Academic period is required" },
+        { error: "Academic period ID is required" },
         { status: 400 }
       );
     }
@@ -92,7 +110,7 @@ export async function POST(req) {
     for (const subSubject of subSubjects) {
       const newClass = await prisma.class.create({
         data: {
-          className,
+          studyProgramClassId,
           classCapacity: parseInt(classCapacity),
           subSubjectId: subSubject.id,
           academicPeriodId,
@@ -112,8 +130,8 @@ export async function POST(req) {
         });
       }
     }
-
     return NextResponse.json({ createdClasses }, { status: 201 });
+
   } catch (error) {
     console.error("Error creating class:", error);
     return NextResponse.json(

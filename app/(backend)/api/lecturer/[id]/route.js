@@ -13,12 +13,6 @@ export async function GET(req, { params }) {
             id: true,
             departmentName: true,
           },
-        },
-        faculty: {
-          select: {
-            id: true,
-            facultyName: true,
-          }
         }
       },
     });

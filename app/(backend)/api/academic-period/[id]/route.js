@@ -27,18 +27,24 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { periodName, curriculumId } = await req.json();
+  const { academicYear, semesterTypeId, curriculumId } = await req.json();
 
   // Validate input
-  if (!periodName) {
+  if (!academicYear) {
     return NextResponse.json(
-      { error: "Academic period name is required" },
+      { error: "Academic year is required" },
+      { status: 400 }
+    );
+  }
+  if (!semesterTypeId) {
+    return NextResponse.json(
+      { error: "Semester type ID is required" },
       { status: 400 }
     );
   }
   if (!curriculumId) {
     return NextResponse.json(
-      { error: "Curriculum ID name is required" },
+      { error: "Curriculum ID is required" },
       { status: 400 }
     );
   }
@@ -46,7 +52,7 @@ export async function PUT(req, { params }) {
   try {
     const updatedAcademicPeriod = await prisma.academicPeriod.update({
       where: { id: Number(id) },
-      data: { periodName, curriculumId },
+      data: { academicYear, semesterTypeId, curriculumId },
     });
 
     return NextResponse.json(updatedAcademicPeriod, { status: 200 });
