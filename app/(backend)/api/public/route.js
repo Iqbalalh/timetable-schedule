@@ -3,14 +3,12 @@ import { NextResponse } from "next/server";
 
 export async function GET(request) {
   try {
-    // Extract query parameters from the request
     const { searchParams } = new URL(request.url);
     const departmentId = searchParams.get("departmentId");
     const curriculumId = searchParams.get("curriculumId");
     const semesterTypeId = searchParams.get("semesterTypeId");
     const academicPeriodId = searchParams.get("academicPeriodId");
 
-    // Fetch data with appropriate filters based on query parameters
     const data = {
       academicPeriods: await prisma.academicPeriod.findMany({
         where: {
@@ -20,7 +18,7 @@ export async function GET(request) {
         include: {
           curriculum: true,
           semesterType: true,
-          classes: true, // Optionally fetch related classes
+          classes: true,
         },
       }),
 
