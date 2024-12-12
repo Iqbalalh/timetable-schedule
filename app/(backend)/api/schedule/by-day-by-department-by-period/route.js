@@ -24,7 +24,7 @@ export async function GET(req) {
       where: {
         scheduleDayId: parseInt(dayId), // assuming dayId is an integer
         classLecturer: {
-          lecturer: {
+          primaryLecturer: {
             departmentId: parseInt(departmentId), // assuming departmentId is an integer
           },
           class: {
@@ -36,7 +36,7 @@ export async function GET(req) {
         classLecturer: {
           select: {
             primaryLecturerId: true,
-            lecturer: {
+            primaryLecturer: {
               select: { id: true, lecturerName: true, lecturerNIP: true },
             },
             secondaryLecturerId: true,
@@ -45,7 +45,6 @@ export async function GET(req) {
             },
             class: {
               select: {
-                className: true,
                 subSubject: {
                   select: {
                     subjectTypeId: true,

@@ -123,7 +123,7 @@ const ScheduleMatrix = () => {
       );
       const periods = response.data.map((per) => ({
         value: per.id,
-        label: per.periodName,
+        label: per.academicYear,
       }));
       setAcademicPeriodOptions(periods);
       setIsPeriodLoading(false);
@@ -236,7 +236,9 @@ const ScheduleMatrix = () => {
             <div className="text-gray-500 text-sm">
               Dosen Pengampu:
               <div>1. {scheduleItem.classLecturer.lecturer.lecturerName}</div>
-              <div>2. {scheduleItem.classLecturer.secondaryLecturer.lecturerName}</div>
+              <div>
+                2. {scheduleItem.classLecturer.secondaryLecturer.lecturerName}
+              </div>
             </div>
             <Popconfirm
               title="Apakah anda yakin?"
@@ -251,7 +253,7 @@ const ScheduleMatrix = () => {
           </div>
         ) : (
           <div className="flex justify-center items-center rounded-lg h-32">
-            <Button
+            {/* <Button
               onClick={() =>
                 handleAddButtonClick(
                   selectedDay.id,
@@ -265,7 +267,8 @@ const ScheduleMatrix = () => {
               }
             >
               Tambah Data
-            </Button>
+            </Button> */}
+            <Button>Kosong</Button>
           </div>
         );
       },
@@ -401,7 +404,7 @@ const ScheduleMatrix = () => {
             {/* Day buttons */}
             {selectedDepartment && (
               <>
-                <div className="mb-4">
+                <div className="mb-4 justify-between flex">
                   {dayOptions.map((day) => (
                     <Button
                       key={day.id}
@@ -412,6 +415,9 @@ const ScheduleMatrix = () => {
                       {day.day}
                     </Button>
                   ))}
+                  <Button className="mr-2 mb-2 border-b-4 border-gray-600" type="primary">
+                    Buat Jadwal Otomatis
+                  </Button>
                 </div>
 
                 {/* Show the table only when a day is selected */}
