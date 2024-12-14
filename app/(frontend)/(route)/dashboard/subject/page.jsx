@@ -109,6 +109,7 @@ const Subject = () => {
       subjectCode: values.subjectCode,
       subjectName: values.subjectName,
       subjectSKS: values.subjectSKS,
+      subjectCategory: values.subjectCategory,
       curriculumId: values.curriculumId,
       studyProgramId: values.studyProgramId,
     };
@@ -175,6 +176,12 @@ const Subject = () => {
       title: "SKS",
       dataIndex: "subjectSKS",
       key: "subjectSKS",
+      width: 100,
+    },
+    {
+      title: "Kategori",
+      dataIndex: "subjectCategory",
+      key: "subjectCategory",
       width: 100,
     },
     {

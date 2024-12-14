@@ -21,14 +21,11 @@ export async function GET(req, { params }) {
 
 export async function PUT(req, { params }) {
   const { id } = params;
-  const { primaryLecturerId, classId, secondaryLecturerId } = await req.json();
+  const { classId, primaryLecturerId, secondaryLecturerId, primaryAssistantId, secondaryAssistantId } = await req.json();
   
   // Validate input
   if (!primaryLecturerId) {
     return NextResponse.json({ error: "Lecturer ID is required" }, { status: 400 });
-  }
-  if (!secondaryLecturerId) {
-    return NextResponse.json({ error: "Lecturer 2 ID is required" }, { status: 400 });
   }
   if (!classId) {
     return NextResponse.json({ error: "Class ID is required" }, { status: 400 });
@@ -37,7 +34,7 @@ export async function PUT(req, { params }) {
   try {
     const updatedClassLecturer = await prisma.classLecturer.update({
       where: { id: Number(id) },
-      data: { primaryLecturerId, secondaryLecturerId, classId }
+      data: { classId, primaryLecturerId, secondaryLecturerId, primaryAssistantId, secondaryAssistantId }
     });
 
     return NextResponse.json(updatedClassLecturer, { status: 200 });

@@ -63,10 +63,9 @@ const Room = () => {
       roomName: values.roomName,
       roomCapacity: values.roomCapacity,
       departmentId: values.departmentId,
-      isTheory: values.courseType === "Teori" || values.courseType === "Hybrid",
-      isPracticum:
-        values.courseType === "Praktikum" || values.courseType === "Hybrid",
-      isLab: false,
+      isTheory: values.isTheory,
+      isPracticum: values.isPracticum,
+      isResponse: values.isResponse,
     };
 
     const response = await axios.post(API_ROOM, data, {
@@ -86,15 +85,9 @@ const Room = () => {
       roomName: values.roomName,
       roomCapacity: values.roomCapacity,
       departmentId: values.departmentId,
-      isTheory:
-        values.courseType === "Teori" || values.courseType === "Hybrid"
-          ? true
-          : false,
-      isPracticum:
-        values.courseType === "Praktikum" || values.courseType === "Hybrid"
-          ? true
-          : false,
-      isLab: false,
+      isTheory: values.isTheory,
+      isPracticum: values.isPracticum,
+      isResponse: values.isResponse,
     };
 
     const response = await axios.put(API_ROOM_BY_ID(currentRoom?.id), data);
@@ -156,18 +149,16 @@ const Room = () => {
       title: "Jurusan",
       dataIndex: "departmentId",
       key: "departmentId",
-      render: (text, record) => record?.department?.departmentName,
+      render: (_, record) => record.department.departmentName,
     },
     {
       title: "Tipe Ruangan",
-      key: "courseType",
-      render: (text, record) => {
-        if (record.isTheory && record.isPracticum) return "Hybrid";
-        if (record.isTheory) return "Teori";
-        if (record.isPracticum) return "Praktikum";
-        return "None";
+      render: (_, record) => {
+        if (record.isTheory && record.isResponse) return "Teori, Responsi";
+        else if (record.isPracticum) return "Praktikum";
+        else return "None";
       },
-    },
+    },    
     {
       title: "Waktu Dibuat",
       dataIndex: "createdAt",
@@ -250,7 +241,7 @@ const Room = () => {
         title="Tambah Ruangan"
       >
         <Form.Item
-          label="RUangan"
+          label="Ruangan"
           className="mb-2"
           name="roomName"
           rules={[{ required: true, message: "Harus diisi!" }]}
@@ -345,7 +336,7 @@ const Room = () => {
             options={[
               { value: "Teori", label: "Teori" },
               { value: "Praktikum", label: "Praktikum" },
-              { value: "Hybrid", label: "Hybrid" },
+              { value: "Responsi", label: "Responsi" },
             ]}
           />
         </Form.Item>

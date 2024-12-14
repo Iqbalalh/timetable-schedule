@@ -92,37 +92,38 @@ export async function POST(req) {
     // Create a new class lecturer
     const newClassLecturer = await prisma.classLecturer.create({
       data: {
-        class: {
-          connect: {
-            id: classId,
-          },
-        },
-        primaryLecturer: {
-          connect: {
-            id: primaryLecturerId,
-          },
-        },
-        secondaryLecturer: secondaryLecturerId
-          ? {
-              connect: {
-                id: secondaryLecturerId,
-              },
-            }
-          : null,
-        primaryAssistant: primaryAssistantId
-          ? {
-              connect: {
-                id: primaryAssistantId,
-              },
-            }
-          : null,
-        secondaryAssistant: secondaryAssistantId
-          ? {
-              connect: {
-                id: secondaryAssistantId,
-              },
-            }
-          : null,
+        // class: {
+        //   connect: {
+        //     id: classId,
+        //   },
+        // },
+        // primaryLecturer: {
+        //   connect: {
+        //     id: primaryLecturerId,
+        //   },
+        // },
+        // secondaryLecturer: secondaryLecturerId
+        //  # ? {
+        //       connect: {
+        //         id: secondaryLecturerId,
+        //       },
+        //     }
+        //   : null,
+        // primaryAssistant: primaryAssistantId
+        //   #? {
+        //       connect: {
+        //         id: primaryAssistantId,
+        //       },
+        //     }
+        //   : null,
+        // secondaryAssistant: secondaryAssistantId
+        //   #? {
+        //       connect: {
+        //         id: secondaryAssistantId,
+        //       },
+        //     }
+        //   : null,
+        classId, primaryLecturerId, secondaryLecturerId, primaryAssistantId, secondaryAssistantId
       },
     });
 

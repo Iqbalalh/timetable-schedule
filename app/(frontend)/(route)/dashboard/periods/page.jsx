@@ -14,6 +14,8 @@ const AcademicPeriods = () => {
   const [academicPeriods, setAcademicPeriods] = useState([]);
   const [curriculums, setCurriculums] = useState([]);
   const [curriculumId, setCurriculumId] = useState(null);
+  const [semesterTypes, setSemesterTypes] = useState([]);
+  const [semesterTypeId, setSemesterTypeId] = useState(null);
   const [curIsLoading, setCurIsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -60,6 +62,7 @@ const AcademicPeriods = () => {
     const data = {
       periodName: values.periodName,
       curriculumId: values.curriculumId,
+      semesterTypeId: values.semesterTypeId
     };
 
     const response = await axios.post(API_ACADEMIC_PERIOD, data);
@@ -74,6 +77,7 @@ const AcademicPeriods = () => {
     const data = {
       periodName: values.periodName,
       curriculumId: values.curriculumId,
+      semesterTypeId: values.semesterTypeId
     };
 
     const response = await axios.put(
@@ -135,6 +139,10 @@ const AcademicPeriods = () => {
       title: "Periode",
       dataIndex: "periodName",
       key: "periodName",
+      render: (_, record) => {
+        const periodName = `${record.academicYear} ${record.semesterType.typeName}`;
+        return <div>{periodName}</div>;
+      },
     },
     {
       title: "Kurikulum",
