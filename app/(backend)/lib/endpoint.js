@@ -4,6 +4,9 @@ export const API_ACADEMIC_PERIOD_BY_ID = (id) => `/api/academic-period/${id}`;
 export const API_ACADEMIC_PERIOD_BY_CURRICULUM = (curriculumId) =>
   `/api/academic-period/by-curriculum-id/${curriculumId}`;
 
+// Assistant
+
+
 // Class
 export const API_CLASS = "/api/class/";
 export const API_CLASS_BY_ID = (id) => `/api/class/${id}`;
@@ -85,6 +88,10 @@ export const API_SCHEDULE_DAY_BY_ID = (id) => `/api/schedule-day/${id}`;
 export const API_SCHEDULE_SESSION = "/api/schedule-session/";
 export const API_SCHEDULE_SESSION_BY_ID = (id) => `/api/schedule-session/${id}`;
 
+// Semester Type
+export const API_SEMESTER_TYPE = "/api/semester-type/";
+export const API_SEMESTER_TYPE_BY_ID = (id) => `/api/semester-type/${id}`;
+
 // Study Program
 export const API_STUDY_PROGRAM = "/api/study-program/";
 export const API_STUDY_PROGRAM_BY_ID = (id) => `/api/study-program/${id}`;
@@ -114,3 +121,6 @@ export const API_SUBJECT_TYPE_BY_ID = (id) => `/api/subject-type/${id}`;
 // Curriculum
 export const API_CURRICULUM = "/api/curriculum/";
 export const API_CURRICULUM_BY_ID = (id) => `/api/curriculum/${id}`;
+
+// Auto Generate Service
+export const AUTO_GENERATE_SERVICE = (departmentId, curriculumId, semesterTypeId, academicPeriodId) => `${process.env.NEXT_PUBLIC_AUTO_GENERATE_SERVICE_URL}/api/generate-schedule?departmentId=${departmentId}&curriculumId=${curriculumId}&semesterTypeId=${semesterTypeId}&academicPeriodId=${academicPeriodId}`
