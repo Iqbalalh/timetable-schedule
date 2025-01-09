@@ -104,12 +104,24 @@ export async function GET(request) {
               },
             },
             academicPeriodId: academicPeriodId
-            ? parseInt(academicPeriodId)
-            : undefined,
+              ? parseInt(academicPeriodId)
+              : undefined,
           },
         },
         include: {
-          class: true,
+          class: {
+            include: {
+              subSubject: {
+                include: {
+                  subject: {
+                    include: {
+                      semester: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       }),
       classes: await prisma.class.findMany({

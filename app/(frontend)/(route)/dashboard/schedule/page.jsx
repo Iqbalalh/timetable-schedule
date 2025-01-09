@@ -275,9 +275,9 @@ const ScheduleMatrix = () => {
         return scheduleItem ? (
           <div className="flex flex-col justify-center h-32 text-center items-center">
             <div className="text-lg font-bold">
-              {scheduleItem.classLecturer.class.subSubject.subject.subjectName}{" "}
-              {scheduleItem.classLecturer.class.subSubject.subjectType.typeName}{" "}
-              {scheduleItem.classLecturer.class.className}
+              {scheduleItem.classLecturer.class.subSubject.subject?.subjectName}{" "}
+              {scheduleItem.classLecturer.class.subSubject.subjectType?.typeName}{" "}
+              {scheduleItem.classLecturer.class.studyProgramClass?.className}
             </div>
             <div className="text-gray-500 text-sm">
               Dosen Pengampu:
@@ -285,7 +285,7 @@ const ScheduleMatrix = () => {
                 1. {scheduleItem.classLecturer.primaryLecturer?.lecturerName}
               </div>
               <div>
-                2. {scheduleItem.classLecturer.secondaryLecturer?.lecturerName}
+                 {!scheduleItem.classLecturer.secondaryLecturer ? null : `2. ${scheduleItem.classLecturer.secondaryLecturer?.lecturerName}`}
               </div>
             </div>
             <Popconfirm
