@@ -1,3 +1,4 @@
+import { Select } from "antd";
 import prisma from "../../lib/db";
 import { NextResponse } from "next/server";
 
@@ -21,19 +22,16 @@ export async function GET(request) {
           classes: true,
         },
       }),
-
       studyPrograms: await prisma.studyProgram.findMany({
         where: {
           departmentId: departmentId ? parseInt(departmentId) : undefined,
         },
       }),
-
       semesters: await prisma.semester.findMany({
         where: {
           semesterTypeId: semesterTypeId ? parseInt(semesterTypeId) : undefined,
         },
       }),
-
       studyProgramClasses: await prisma.studyProgramClass.findMany({
         where: {
           studyProgram: {
@@ -42,7 +40,6 @@ export async function GET(request) {
         },
         include: { studyProgram: true },
       }),
-
       assistants: await prisma.assistant.findMany({
         where: {
           studyProgramClass: {
@@ -52,7 +49,6 @@ export async function GET(request) {
           },
         },
       }),
-
       subjects: await prisma.subject.findMany({
         where: {
           curriculumId: curriculumId ? parseInt(curriculumId) : undefined,
@@ -66,7 +62,6 @@ export async function GET(request) {
           },
         },
       }),
-
       subSubjects: await prisma.subSubject.findMany({
         where: {
           subject: {
@@ -81,14 +76,15 @@ export async function GET(request) {
             },
           },
         },
+        include: {
+          subject: true,
+        },
       }),
-
       rooms: await prisma.room.findMany({
         where: {
           departmentId: departmentId ? parseInt(departmentId) : undefined,
         },
       }),
-
       classLecturers: await prisma.classLecturer.findMany({
         where: {
           class: {
@@ -97,10 +93,37 @@ export async function GET(request) {
                 departmentId: departmentId ? parseInt(departmentId) : undefined,
               },
             },
+            subSubject: {
+              subject: {
+                curriculumId: curriculumId ? parseInt(curriculumId) : undefined,
+                semester: {
+                  semesterTypeId: semesterTypeId
+                    ? parseInt(semesterTypeId)
+                    : undefined,
+                },
+              },
+            },
+            academicPeriodId: academicPeriodId
+              ? parseInt(academicPeriodId)
+              : undefined,
+          },
+        },
+        include: {
+          class: {
+            include: {
+              subSubject: {
+                include: {
+                  subject: {
+                    include: {
+                      semester: true,
+                    },
+                  },
+                },
+              },
+            },
           },
         },
       }),
-
       classes: await prisma.class.findMany({
         where: {
           studyProgramClass: {
@@ -112,17 +135,13 @@ export async function GET(request) {
             ? parseInt(academicPeriodId)
             : undefined,
         },
-        include: { academicPeriod: true },
       }),
-
       lecturers: await prisma.lecturer.findMany({
         where: {
           departmentId: departmentId ? parseInt(departmentId) : undefined,
         },
       }),
-
       scheduleSessions: await prisma.scheduleSession.findMany(),
-
       scheduleDays: await prisma.scheduleDay.findMany(),
     };
 

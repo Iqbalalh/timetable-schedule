@@ -199,6 +199,7 @@ const Lecturer = () => {
       title: "Email",
       dataIndex: "lecturerEmail",
       key: "lecturerEmail",
+      render: (text, record) => !record?.lecturerEmail ? "Data Kosong" : record.lecturerEmail,
     },
     {
       title: "Jurusan",

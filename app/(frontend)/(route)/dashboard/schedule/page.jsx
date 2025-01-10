@@ -22,6 +22,8 @@ import {
   API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD,
   API_CURRICULUM,
   API_SCHEDULE_BY_ID,
+  API_SEMESTER_TYPE,
+  AUTO_GENERATE_SERVICE,
 } from "@/app/(backend)/lib/endpoint";
 import PostSchedule from "@/app/(frontend)/(component)/PostSchedule";
 
@@ -30,6 +32,7 @@ const ScheduleMatrix = () => {
   const [sessionOptions, setSessionOptions] = useState([]);
   const [dayOptions, setDayOptions] = useState([]);
   const [academicPeriodOptions, setAcademicPeriodOptions] = useState([]);
+  const [semesterTypeOptions, setSemesterTypeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState(null);
   const [curriculumOptions, setCurriculumOptions] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
@@ -41,11 +44,13 @@ const ScheduleMatrix = () => {
   const [isDepartmentLoading, setIsDepartmentLoading] = useState(false);
   const [isFacultyLoading, setIsFacultyLoading] = useState(false);
   const [isPeriodLoading, setIsPeriodLoading] = useState(false);
+  const [isSemesterLoading, setIsCurrentSemesterLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentDayId, setCurrentDayId] = useState(null);
   const [currentSessionId, setCurrentSessionId] = useState(null);
   const [currentRoomId, setCurrentRoomId] = useState(null);
   const [currentRoomName, setCurrentRoomName] = useState(null);
+  const [currentSemesterId, setCurrentSemesterId] = useState(null);
   const [currentRoomCapacity, setCurrentRoomCapacity] = useState(null);
   const [currentPeriodId, setCurrentPeriodId] = useState(null);
   const [currentCurriculumId, setCurrentCurriculumId] = useState(null);
@@ -66,6 +71,7 @@ const ScheduleMatrix = () => {
         setDayOptions(dayResponse.data);
         setCurriculumOptions(curriculumResponse.data);
         setIsLoading(false);
+        setIsCurrentSemesterLoading(false);
       } catch (error) {
         message.error("Error fetching data");
         setIsLoading(false);
@@ -133,6 +139,22 @@ const ScheduleMatrix = () => {
     }
   };
 
+  const fetchSemesterTypes = async () => {
+    setIsCurrentSemesterLoading(true);
+    try {
+      const response = await axios.get(API_SEMESTER_TYPE);
+      const semester = response.data.map((per) => ({
+        value: per.id,
+        label: per.typeName,
+      }));
+      setSemesterTypeOptions(semester);
+      setIsCurrentSemesterLoading(false);
+    } catch (error) {
+      message.error("Gagal memuat data semester!");
+      setIsCurrentSemesterLoading(false);
+    }
+  };
+
   // Fetch faculties
   const loadFaculties = async () => {
     setIsFacultyLoading(true);
@@ -194,6 +216,30 @@ const ScheduleMatrix = () => {
     }
   };
 
+  const handlePostSchedule = async (
+    departmentId,
+    curriculumId,
+    semesterTypeId,
+    academicPeriodId
+  ) => {
+    setIsLoading(true);
+    try {
+      const postSchedule = await axios.get(
+        AUTO_GENERATE_SERVICE(
+          departmentId,
+          curriculumId,
+          semesterTypeId,
+          academicPeriodId
+        )
+      );
+      setIsLoading(false);
+      message.success("Jadwal berhasil di generate!");
+    } catch (error) {
+      setIsLoading(false);
+      message.error("Jadwal gagal di generate!");
+    }
+  };
+
   // Handle department selection and fetch rooms
   const handleDepartmentChange = (departmentId) => {
     setSelectedDepartment(departmentId);
@@ -229,15 +275,17 @@ const ScheduleMatrix = () => {
         return scheduleItem ? (
           <div className="flex flex-col justify-center h-32 text-center items-center">
             <div className="text-lg font-bold">
-              {scheduleItem.classLecturer.class.subSubject.subject.subjectName}{" "}
-              {scheduleItem.classLecturer.class.subSubject.subjectType.typeName}{" "}
-              {scheduleItem.classLecturer.class.className}
+              {scheduleItem.classLecturer.class.subSubject.subject?.subjectName}{" "}
+              {scheduleItem.classLecturer.class.subSubject.subjectType?.typeName}{" "}
+              {scheduleItem.classLecturer.class.studyProgramClass?.className}
             </div>
             <div className="text-gray-500 text-sm">
               Dosen Pengampu:
-              <div>1. {scheduleItem.classLecturer.lecturer.lecturerName}</div>
               <div>
-                2. {scheduleItem.classLecturer.secondaryLecturer.lecturerName}
+                1. {scheduleItem.classLecturer.primaryLecturer?.lecturerName}
+              </div>
+              <div>
+                 {!scheduleItem.classLecturer.secondaryLecturer ? null : `2. ${scheduleItem.classLecturer.secondaryLecturer?.lecturerName}`}
               </div>
             </div>
             <Popconfirm
@@ -337,7 +385,7 @@ const ScheduleMatrix = () => {
           <Select
             className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
             showSearch
-            placeholder={"Periode Akademik"}
+            placeholder={"Tahun Akademik"}
             value={currentPeriodId} // Show selected period
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
@@ -348,6 +396,7 @@ const ScheduleMatrix = () => {
               setSelectedFaculty(null);
               setSelectedDepartment(null);
               setSelectedDay(null);
+              fetchSemesterTypes();
               loadFaculties();
             }}
             notFoundContent={
@@ -355,6 +404,24 @@ const ScheduleMatrix = () => {
             }
             loading={isPeriodLoading}
             disabled={currentCurriculumId === null}
+          />
+          <Select
+            className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
+            showSearch
+            placeholder={"Semester"}
+            value={currentSemesterId} // Show selected period
+            filterOption={(input, option) =>
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+            }
+            options={semesterTypeOptions}
+            onChange={(value) => {
+              setCurrentSemesterId(value);
+            }}
+            notFoundContent={
+              isSemesterLoading ? <Spin size="small" /> : "Tidak ada data!"
+            }
+            loading={isSemesterLoading}
+            disabled={currentPeriodId === null}
           />
           <Select
             notFoundContent={
@@ -415,7 +482,19 @@ const ScheduleMatrix = () => {
                       {day.day}
                     </Button>
                   ))}
-                  <Button className="mr-2 mb-2 border-b-4 border-gray-600" type="primary">
+                  <Button
+                    onClick={() =>
+                      handlePostSchedule(
+                        selectedDepartment,
+                        currentCurriculumId,
+                        currentSemesterId,
+                        currentPeriodId
+                      )
+                    }
+                    className="mr-2 mb-2 border-b-4 border-gray-600"
+                    type="primary"
+                    disabled={!scheduleData || scheduleData?.length > 1}
+                  >
                     Buat Jadwal Otomatis
                   </Button>
                 </div>

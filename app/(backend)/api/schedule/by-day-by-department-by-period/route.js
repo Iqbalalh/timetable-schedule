@@ -52,6 +52,11 @@ export async function GET(req) {
                     subjectType: { select: { typeName: true, id: true } },
                   },
                 },
+                studyProgramClass: {
+                  select: {
+                    className: true,
+                  },
+                },
               },
             },
           },

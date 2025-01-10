@@ -163,7 +163,8 @@ const ClassLecturerPage = () => {
       title: "Prodi",
       dataIndex: ["subject", "subjectName"],
       key: "subjectId",
-      render: (_, record) => record.class.subSubject.subject.studyProgram.studyProgramName,
+      render: (_, record) =>
+        record.class.subSubject.subject.studyProgram.studyProgramName,
     },
     {
       title: "Dosen Pengampu 1",
@@ -176,6 +177,24 @@ const ClassLecturerPage = () => {
       dataIndex: ["secondaryLecturer", "lecturerName"],
       key: "secondaryLecturerId",
       render: (_, record) => record.secondaryLecturer?.lecturerName || "-",
+    },
+    {
+      title: "Asisten Dosen 1",
+      dataIndex: ["primaryAssistant", "assistantName"],
+      key: "primaryAssistantId",
+      render: (_, record) =>
+        !record.primaryAssistant
+          ? "Tidak ada asdos!"
+          : record.primaryAssistant?.assistantName,
+    },
+    {
+      title: "Asisten Dosen 2",
+      dataIndex: ["secondaryAssistant", "assistentName"],
+      key: "secondaryAssistantId",
+      render: (_, record) =>
+        !record.secondaryAssistant
+          ? "Tidak ada asdos!"
+          : record.secondaryAssistant?.assistantName || "-",
     },
     {
       title: "Kelas",
@@ -326,6 +345,20 @@ const ClassLecturerPage = () => {
           label="Dosen Pengampu 2"
           className="mb-2"
           name="secondaryLecturerId"
+          rules={[{ required: true, message: "Harus diisi!" }]}
+        >
+          <Select placeholder="Pilih salah satu">
+            {lecturers.map((lecturer) => (
+              <Select.Option key={lecturer.id} value={lecturer.id}>
+                {lecturer.lecturerName}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Asisten Dosen 1"
+          className="mb-2"
+          name="primaryAssistantId"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
           <Select placeholder="Pilih salah satu">
