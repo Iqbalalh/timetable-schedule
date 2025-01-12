@@ -117,8 +117,8 @@ export async function GET(request) {
                     include: {
                       semester: true,
                     },
-                    subjectType: true,
                   },
+                  subjectType: true,
                 },
               },
             },
