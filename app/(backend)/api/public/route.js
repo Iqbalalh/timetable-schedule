@@ -1,4 +1,4 @@
-import { Select } from "antd";
+// import { Select } from "antd";
 import prisma from "../../lib/db";
 import { NextResponse } from "next/server";
 
@@ -117,6 +117,7 @@ export async function GET(request) {
                     include: {
                       semester: true,
                     },
+                    subjectType: true,
                   },
                 },
               },
