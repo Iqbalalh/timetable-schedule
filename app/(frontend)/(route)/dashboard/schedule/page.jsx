@@ -493,7 +493,7 @@ const ScheduleMatrix = () => {
                     }
                     className="mr-2 mb-2 border-b-4 border-gray-600"
                     type="primary"
-                    disabled={!scheduleData || scheduleData?.length > 1}
+                    disabled={!scheduleData || scheduleData?.length > 1 || !selectedDay}
                   >
                     Buat Jadwal Otomatis
                   </Button>
