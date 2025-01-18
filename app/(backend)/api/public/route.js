@@ -120,7 +120,7 @@ export async function GET(request) {
                   },
                   subjectType: true,
                 },
-              },
+              }
             },
           },
         },
