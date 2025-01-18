@@ -220,7 +220,8 @@ const ScheduleMatrix = () => {
     departmentId,
     curriculumId,
     semesterTypeId,
-    academicPeriodId
+    academicPeriodId,
+    selectedDay
   ) => {
     setIsLoading(true);
     try {
@@ -233,9 +234,11 @@ const ScheduleMatrix = () => {
         )
       );
       setIsLoading(false);
+      loadScheduleByDay(selectedDay?.id);
       message.success("Jadwal berhasil di generate!");
     } catch (error) {
       setIsLoading(false);
+      loadScheduleByDay(selectedDay?.id);
       message.error("Jadwal gagal di generate!");
     }
   };
@@ -488,12 +491,13 @@ const ScheduleMatrix = () => {
                         selectedDepartment,
                         currentCurriculumId,
                         currentSemesterId,
-                        currentPeriodId
+                        currentPeriodId,
+                        selectedDay
                       )
                     }
                     className="mr-2 mb-2 border-b-4 border-gray-600"
                     type="primary"
-                    disabled={!scheduleData || scheduleData?.length > 1}
+                    disabled={!scheduleData || scheduleData?.length > 1 || !selectedDay}
                   >
                     Buat Jadwal Otomatis
                   </Button>
