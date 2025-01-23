@@ -8,6 +8,13 @@ export async function GET(req, { params }) {
       where: {
         curriculumId: curriculumId,
       },
+      include: {
+        semesterType: {
+          select: {
+            typeName: true
+          }
+        }
+      }
     });
 
     return NextResponse.json(periods, { status: 200 });
