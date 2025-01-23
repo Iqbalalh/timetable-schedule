@@ -3,32 +3,36 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-// GET: Fetch schedules filtered by dayId and departmentId
+// GET: Fetch schedules filtered by dayId, departmentId, academicPeriodId, and semesterTypeId
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
     const dayId = searchParams.get("dayId");
     const departmentId = searchParams.get("departmentId");
     const academicPeriodId = searchParams.get("academicPeriodId");
+    const semesterTypeId = searchParams.get("semesterTypeId");
 
-    // Ensure the query params are provided
-    if (!dayId || !departmentId || !academicPeriodId) {
+    // Ensure all required query params are provided
+    if (!dayId || !departmentId || !academicPeriodId || !semesterTypeId) {
       return NextResponse.json(
-        { error: "dayId, academicPeriodId, and departmentId are required" },
+        { error: "dayId, departmentId, academicPeriodId, and semesterTypeId are required" },
         { status: 400 }
       );
     }
 
-    // Fetch schedules based on dayId and departmentId
+    // Fetch schedules based on query params
     const schedules = await prisma.schedule.findMany({
       where: {
-        scheduleDayId: parseInt(dayId), // assuming dayId is an integer
+        scheduleDayId: parseInt(dayId), // Parse dayId as integer
         classLecturer: {
           primaryLecturer: {
-            departmentId: parseInt(departmentId), // assuming departmentId is an integer
+            departmentId: parseInt(departmentId), // Parse departmentId as integer
           },
           class: {
-            academicPeriodId: parseInt(academicPeriodId),
+            academicPeriodId: parseInt(academicPeriodId), // Parse academicPeriodId as integer
+            academicPeriod: {
+              semesterTypeId: parseInt(semesterTypeId), // Parse semesterTypeId as integer
+            },
           },
         },
       },
@@ -84,7 +88,7 @@ export async function GET(req) {
   } catch (error) {
     console.error("Error fetching schedules:", error);
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Something went wrong. Please try again later." },
       { status: 500 }
     );
   }

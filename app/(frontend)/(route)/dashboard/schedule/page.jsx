@@ -195,7 +195,8 @@ const ScheduleMatrix = () => {
         API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD(
           dayId,
           selectedDepartment,
-          currentPeriodId
+          currentPeriodId,
+          currentSemesterId,
         )
       );
       setScheduleData(scheduleResponse.data);
