@@ -147,6 +147,7 @@ model Room {
   isPracticum  Boolean
   isTheory     Boolean
   isResponse   Boolean
+  roomType     String
   departmentId Int
   department   Department @relation(fields: [departmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   createdAt    DateTime   @default(now())

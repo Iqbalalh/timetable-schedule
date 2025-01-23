@@ -126,6 +126,7 @@ async function main() {
             isTheory: row.isTheory,
             isResponse: row.isResponse,
             departmentId: row.departmentId,
+            roomType: row.roomType,
           })),
         });
         break;
