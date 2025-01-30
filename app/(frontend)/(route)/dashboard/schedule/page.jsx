@@ -129,31 +129,32 @@ const ScheduleMatrix = () => {
       );
       const periods = response.data.map((per) => ({
         value: per.id,
-        label: per.academicYear,
+        label: `${per.academicYear} ${per.semesterType.typeName}`,
+        semesterTypeId: per.semesterTypeId,
       }));
       setAcademicPeriodOptions(periods);
       setIsPeriodLoading(false);
     } catch (error) {
-      message.error("Gagal memuat data fakultas!");
+      message.error("Gagal memuat data periode akademik!");
       setIsPeriodLoading(false);
     }
   };
 
-  const fetchSemesterTypes = async () => {
-    setIsCurrentSemesterLoading(true);
-    try {
-      const response = await axios.get(API_SEMESTER_TYPE);
-      const semester = response.data.map((per) => ({
-        value: per.id,
-        label: per.typeName,
-      }));
-      setSemesterTypeOptions(semester);
-      setIsCurrentSemesterLoading(false);
-    } catch (error) {
-      message.error("Gagal memuat data semester!");
-      setIsCurrentSemesterLoading(false);
-    }
-  };
+  // const fetchSemesterTypes = async () => {
+  //   setIsCurrentSemesterLoading(true);
+  //   try {
+  //     const response = await axios.get(API_SEMESTER_TYPE);
+  //     const semester = response.data.map((per) => ({
+  //       value: per.id,
+  //       label: per.typeName,
+  //     }));
+  //     setSemesterTypeOptions(semester);
+  //     setIsCurrentSemesterLoading(false);
+  //   } catch (error) {
+  //     message.error("Gagal memuat data semester!");
+  //     setIsCurrentSemesterLoading(false);
+  //   }
+  // };
 
   // Fetch faculties
   const loadFaculties = async () => {
@@ -396,11 +397,14 @@ const ScheduleMatrix = () => {
             }
             options={academicPeriodOptions}
             onChange={(value) => {
-              setCurrentPeriodId(value);
+              const selectedPeriod = academicPeriodOptions.find((option) => option.value === value);
+              if (selectedPeriod) {
+                setCurrentPeriodId(value);
+                setCurrentSemesterId(selectedPeriod.semesterTypeId);
+              }
               setSelectedFaculty(null);
               setSelectedDepartment(null);
               setSelectedDay(null);
-              fetchSemesterTypes();
               loadFaculties();
             }}
             notFoundContent={
@@ -409,7 +413,7 @@ const ScheduleMatrix = () => {
             loading={isPeriodLoading}
             disabled={currentCurriculumId === null}
           />
-          <Select
+          {/* <Select
             className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
             showSearch
             placeholder={"Semester"}
@@ -426,7 +430,7 @@ const ScheduleMatrix = () => {
             }
             loading={isSemesterLoading}
             disabled={currentPeriodId === null}
-          />
+          /> */}
           <Select
             notFoundContent={
               isFacultyLoading ? <Spin size="small" /> : "Tidak ada data!"
