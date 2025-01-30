@@ -25,13 +25,18 @@ export async function GET(req) {
       where: {
         scheduleDayId: parseInt(dayId), // Parse dayId as integer
         classLecturer: {
-          primaryLecturer: {
-            departmentId: parseInt(departmentId), // Parse departmentId as integer
-          },
+          // primaryLecturer: {
+          //   departmentId: parseInt(departmentId), // Parse departmentId as integer
+          // },
           class: {
             academicPeriodId: parseInt(academicPeriodId), // Parse academicPeriodId as integer
             academicPeriod: {
               semesterTypeId: parseInt(semesterTypeId), // Parse semesterTypeId as integer
+            },
+            studyProgramClass: {
+              studyProgram: {
+                departmentId: departmentId ? parseInt(departmentId) : undefined,
+              },
             },
           },
         },

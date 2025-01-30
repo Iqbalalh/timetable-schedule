@@ -137,11 +137,7 @@ export async function GET(request) {
             : undefined,
         },
       }),
-      lecturers: await prisma.lecturer.findMany({
-        where: {
-          departmentId: departmentId ? parseInt(departmentId) : undefined,
-        },
-      }),
+      lecturers: await prisma.lecturer.findMany(),
       scheduleSessions: await prisma.scheduleSession.findMany(),
       scheduleDays: await prisma.scheduleDay.findMany(),
     };
