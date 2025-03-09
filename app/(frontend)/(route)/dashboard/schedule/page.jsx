@@ -7,7 +7,7 @@ import {
   message,
   ConfigProvider,
   Select,
-  Popconfirm,
+  Form,
 } from "antd";
 import axios from "axios";
 
@@ -21,18 +21,16 @@ import {
   API_ROOM_BY_DEPARTMENT,
   API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD,
   API_CURRICULUM,
-  API_SCHEDULE_BY_ID,
-  API_SEMESTER_TYPE,
   AUTO_GENERATE_SERVICE,
+  API_SCHEDULE_SWAP,
 } from "@/app/(backend)/lib/endpoint";
-import PostSchedule from "@/app/(frontend)/(component)/PostSchedule";
+import SwapModal from "@/app/(frontend)/(component)/SwapModal";
 
 const ScheduleMatrix = () => {
   const [roomOptions, setRoomOptions] = useState([]);
   const [sessionOptions, setSessionOptions] = useState([]);
   const [dayOptions, setDayOptions] = useState([]);
   const [academicPeriodOptions, setAcademicPeriodOptions] = useState([]);
-  const [semesterTypeOptions, setSemesterTypeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState(null);
   const [curriculumOptions, setCurriculumOptions] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
@@ -44,18 +42,11 @@ const ScheduleMatrix = () => {
   const [isDepartmentLoading, setIsDepartmentLoading] = useState(false);
   const [isFacultyLoading, setIsFacultyLoading] = useState(false);
   const [isPeriodLoading, setIsPeriodLoading] = useState(false);
-  const [isSemesterLoading, setIsCurrentSemesterLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentDayId, setCurrentDayId] = useState(null);
-  const [currentSessionId, setCurrentSessionId] = useState(null);
-  const [currentRoomId, setCurrentRoomId] = useState(null);
-  const [currentRoomName, setCurrentRoomName] = useState(null);
   const [currentSemesterId, setCurrentSemesterId] = useState(null);
-  const [currentRoomCapacity, setCurrentRoomCapacity] = useState(null);
   const [currentPeriodId, setCurrentPeriodId] = useState(null);
   const [currentCurriculumId, setCurrentCurriculumId] = useState(null);
-  const [isTheory, setIsTheory] = useState(null);
-  const [isPracticum, setIsPracticum] = useState(null);
+  const [isSwapOpen, setIsSwapOpen] = useState(false);
+  const [swapData, setSwapData] = useState(null);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -71,7 +62,6 @@ const ScheduleMatrix = () => {
         setDayOptions(dayResponse.data);
         setCurriculumOptions(curriculumResponse.data);
         setIsLoading(false);
-        setIsCurrentSemesterLoading(false);
       } catch (error) {
         message.error("Error fetching data");
         setIsLoading(false);
@@ -80,27 +70,23 @@ const ScheduleMatrix = () => {
     loadInitialData();
   }, []);
 
-  const handleAddButtonClick = (
-    dayId,
-    sessionId,
-    roomId,
-    isTheory,
-    isPracticum,
-    roomName,
-    roomCapacity
+  const loadSchedule = async (
+    departmentId,
+    academicPeriodId,
+    semesterTypeId
   ) => {
-    setCurrentDayId(dayId);
-    setCurrentSessionId(sessionId);
-    setCurrentRoomId(roomId);
-    setIsTheory(isTheory);
-    setIsPracticum(isPracticum);
-    setCurrentRoomName(roomName);
-    setCurrentRoomCapacity(roomCapacity);
-    setIsModalOpen(true); // Show modal when button is clicked
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
+    try {
+      const response = await axios.get(
+        API_SCHEDULE_SWAP(departmentId, academicPeriodId, semesterTypeId)
+      );
+      const sched = response.data.map((sch) => ({
+        value: sch.id,
+        label: sch.id,
+      }));
+      setSwapData(sched);
+    } catch (error) {
+      message.error("Gagal memuat data!");
+    }
   };
 
   // Fetch departments based on selected faculty
@@ -139,22 +125,6 @@ const ScheduleMatrix = () => {
       setIsPeriodLoading(false);
     }
   };
-
-  // const fetchSemesterTypes = async () => {
-  //   setIsCurrentSemesterLoading(true);
-  //   try {
-  //     const response = await axios.get(API_SEMESTER_TYPE);
-  //     const semester = response.data.map((per) => ({
-  //       value: per.id,
-  //       label: per.typeName,
-  //     }));
-  //     setSemesterTypeOptions(semester);
-  //     setIsCurrentSemesterLoading(false);
-  //   } catch (error) {
-  //     message.error("Gagal memuat data semester!");
-  //     setIsCurrentSemesterLoading(false);
-  //   }
-  // };
 
   // Fetch faculties
   const loadFaculties = async () => {
@@ -197,7 +167,7 @@ const ScheduleMatrix = () => {
           dayId,
           selectedDepartment,
           currentPeriodId,
-          currentSemesterId,
+          currentSemesterId
         )
       );
       setScheduleData(scheduleResponse.data);
@@ -205,16 +175,6 @@ const ScheduleMatrix = () => {
     } catch (error) {
       message.error("Error fetching schedule");
       setIsLoading(false);
-    }
-  };
-
-  const handleDeleteSchedule = async (scheduleId) => {
-    try {
-      const response = await axios.delete(API_SCHEDULE_BY_ID(scheduleId));
-      message.success("Schedule deleted successfully!");
-      loadScheduleByDay(currentDayId); // Reload the schedule data
-    } catch (error) {
-      message.error("Failed to delete schedule.");
     }
   };
 
@@ -279,9 +239,13 @@ const ScheduleMatrix = () => {
         );
         return scheduleItem ? (
           <div className="flex flex-col justify-center h-32 text-center items-center">
+            <>({scheduleItem?.id})</>
             <div className="text-lg font-bold">
               {scheduleItem.classLecturer.class.subSubject.subject?.subjectName}{" "}
-              {scheduleItem.classLecturer.class.subSubject.subjectType?.typeName}{" "}
+              {
+                scheduleItem.classLecturer.class.subSubject.subjectType
+                  ?.typeName
+              }{" "}
               {scheduleItem.classLecturer.class.studyProgramClass?.className}
             </div>
             <div className="text-gray-500 text-sm">
@@ -290,38 +254,15 @@ const ScheduleMatrix = () => {
                 1. {scheduleItem.classLecturer.primaryLecturer?.lecturerName}
               </div>
               <div>
-                 {!scheduleItem.classLecturer.secondaryLecturer ? null : `2. ${scheduleItem.classLecturer.secondaryLecturer?.lecturerName}`}
+                {!scheduleItem.classLecturer.secondaryLecturer
+                  ? null
+                  : `2. ${scheduleItem.classLecturer.secondaryLecturer?.lecturerName}`}
               </div>
             </div>
-            <Popconfirm
-              title="Apakah anda yakin?"
-              onConfirm={() => handleDeleteSchedule(scheduleItem.id)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button className="mt-2" size="small" danger>
-                Hapus
-              </Button>
-            </Popconfirm>
           </div>
         ) : (
           <div className="flex justify-center items-center rounded-lg h-32">
-            {/* <Button
-              onClick={() =>
-                handleAddButtonClick(
-                  selectedDay.id,
-                  record.sessionNumber,
-                  room.id,
-                  room.isTheory,
-                  room.isPracticum,
-                  room.roomName,
-                  room.roomCapacity
-                )
-              }
-            >
-              Tambah Data
-            </Button> */}
-            <Button>Kosong</Button>
+            <Button disabled>Kosong</Button>
           </div>
         );
       },
@@ -397,7 +338,9 @@ const ScheduleMatrix = () => {
             }
             options={academicPeriodOptions}
             onChange={(value) => {
-              const selectedPeriod = academicPeriodOptions.find((option) => option.value === value);
+              const selectedPeriod = academicPeriodOptions.find(
+                (option) => option.value === value
+              );
               if (selectedPeriod) {
                 setCurrentPeriodId(value);
                 setCurrentSemesterId(selectedPeriod.semesterTypeId);
@@ -413,24 +356,6 @@ const ScheduleMatrix = () => {
             loading={isPeriodLoading}
             disabled={currentCurriculumId === null}
           />
-          {/* <Select
-            className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
-            showSearch
-            placeholder={"Semester"}
-            value={currentSemesterId} // Show selected period
-            filterOption={(input, option) =>
-              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
-            }
-            options={semesterTypeOptions}
-            onChange={(value) => {
-              setCurrentSemesterId(value);
-            }}
-            notFoundContent={
-              isSemesterLoading ? <Spin size="small" /> : "Tidak ada data!"
-            }
-            loading={isSemesterLoading}
-            disabled={currentPeriodId === null}
-          /> */}
           <Select
             notFoundContent={
               isFacultyLoading ? <Spin size="small" /> : "Tidak ada data!"
@@ -491,18 +416,33 @@ const ScheduleMatrix = () => {
                     </Button>
                   ))}
                   <Button
+                    onClick={() => {
+                      loadSchedule(
+                        selectedDepartment,
+                        currentPeriodId,
+                        currentSemesterId
+                      );
+                      setIsSwapOpen(true);
+                    }}
+                    className="mr-2 mb-2 border-b-4 border-gray-600"
+                    type="primary"
+                  >
+                    Tukar Jadwal
+                  </Button>
+                  <Button
                     onClick={() =>
                       handlePostSchedule(
                         selectedDepartment,
                         currentCurriculumId,
                         currentSemesterId,
-                        currentPeriodId,
-                        selectedDay
+                        currentPeriodId
                       )
                     }
                     className="mr-2 mb-2 border-b-4 border-gray-600"
                     type="primary"
-                    disabled={!scheduleData || scheduleData?.length > 1 || !selectedDay}
+                    disabled={
+                      !scheduleData || scheduleData?.length > 1 || !selectedDay
+                    }
                   >
                     Buat Jadwal Otomatis
                   </Button>
@@ -540,23 +480,41 @@ const ScheduleMatrix = () => {
             )}
           </>
         )}
-
-        <PostSchedule
-          open={isModalOpen}
-          onClose={handleModalClose}
-          scheduleDayId={currentDayId}
-          scheduleSessionId={currentSessionId}
-          roomId={currentRoomId}
-          departmentId={selectedDepartment}
-          curriculumId={currentCurriculumId}
-          isTheory={isTheory}
-          isPracticum={isPracticum}
-          roomName={currentRoomName}
-          roomCapacity={currentRoomCapacity}
-          scheduleData={scheduleData}
-          onSuccess={() => loadScheduleByDay(currentDayId)}
-        />
       </div>
+      <SwapModal
+        isSwapOpen={isSwapOpen}
+        setIsSwapOpen={setIsSwapOpen}
+        title="Tukar Jadwal"
+      >
+        <Form.Item
+          label="Pertemuan 1"
+          name="scheduleId1"
+          rules={[{ required: true, message: "Pilih pertemuan pertama" }]}
+        >
+          <Select>
+            {swapData?.map((sch) => (
+              <Select.Option key={sch.value} value={sch.value}>
+                {sch.label}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          label="Pertemuan 2"
+          name="scheduleId2"
+          rules={[{ required: true, message: "Pilih pertemuan kedua" }]}
+        >
+          <Select>
+            {swapData?.map((sch) => (
+              <Select.Option key={sch.value} value={sch.value}>
+                {sch.label}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </SwapModal>
+      ;
     </ConfigProvider>
   );
 };

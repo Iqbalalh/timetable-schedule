@@ -238,8 +238,7 @@ const DashboardLayout = ({ children }) => {
           {children}
         </Content>
         <Footer className="bg-white h-12 flex text-center items-center justify-center">
-          Penjadwalan Unila ©{new Date().getFullYear()} dibuat oleh Iqbal Al
-          Hafidzu Rahman
+          Penjadwalan Unila ©{new Date().getFullYear()} CIJ Dev
         </Footer>
       </Layout>
     </Layout>
