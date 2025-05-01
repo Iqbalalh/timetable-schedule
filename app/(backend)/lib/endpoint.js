@@ -80,14 +80,15 @@ export const API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD = (
   semesterTypeId,
 ) =>
   `/api/schedule/by-day-by-department-by-period?dayId=${dayId}&departmentId=${departmentId}&academicPeriodId=${academicPeriodId}&semesterTypeId=${semesterTypeId}`;
-export const API_SCHEDULE_SWAP = (
-  departmentId,
-  academicPeriodId,
-  semesterTypeId,
+export const API_SWAP_SCHEDULE = "/api/schedule/swap-schedule";
+export const API_GET_SCHEDULE = (
+dayId,
+sessionId,
+roomId,
+academicPeriodId,
+departmentId
 ) =>
-  `/api/schedule/swap?departmentId=${departmentId}&academicPeriodId=${academicPeriodId}&semesterTypeId=${semesterTypeId}`;
-  export const API_SCHEDULE_SWAPDATA = "/api/schedule/swap/data";
-
+  `/api/schedule/get-schedule?scheduleDayId=${dayId}&scheduleSessionId=${sessionId}&roomId=${roomId}&academicPeriodId=${academicPeriodId}&departmentId=${departmentId}`
 
 // Schedule Day
 export const API_SCHEDULE_DAY = "/api/schedule-day/";
@@ -132,4 +133,9 @@ export const API_CURRICULUM = "/api/curriculum/";
 export const API_CURRICULUM_BY_ID = (id) => `/api/curriculum/${id}`;
 
 // Auto Generate Service
-export const AUTO_GENERATE_SERVICE = (departmentId, curriculumId, semesterTypeId, academicPeriodId) => `${process.env.NEXT_PUBLIC_AUTO_GENERATE_SERVICE_URL}/api/generate-schedule?departmentId=${departmentId}&curriculumId=${curriculumId}&semesterTypeId=${semesterTypeId}&academicPeriodId=${academicPeriodId}`
+export const AUTO_GENERATE_SERVICE = (departmentId, curriculumId, semesterTypeId, academicPeriodId) => 
+  `${process.env.NEXT_PUBLIC_AUTO_GENERATE_SERVICE_URL.replace(/\/$/, '')}/api/generate-schedule?departmentId=${departmentId}&curriculumId=${curriculumId}&semesterTypeId=${semesterTypeId}&academicPeriodId=${academicPeriodId}`;
+
+// Result Check Service
+export const RESULT_CHECK_SERVICE = (departmentId, semesterTypeId, academicPeriodId, constraintType) => 
+  `${process.env.NEXT_PUBLIC_AUTO_GENERATE_SERVICE_URL.replace(/\/$/, '')}/api/check-result?departmentId=${departmentId}&semesterTypeId=${semesterTypeId}&academicPeriodId=${academicPeriodId}&constraintType=${constraintType}`

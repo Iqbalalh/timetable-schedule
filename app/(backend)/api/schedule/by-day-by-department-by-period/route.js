@@ -54,16 +54,32 @@ export async function GET(req) {
             },
             class: {
               select: {
+                academicPeriodId: true,
+                classCapacity: true,
                 subSubject: {
                   select: {
                     subjectTypeId: true,
-                    subject: { select: { subjectName: true } },
+                    subject: { 
+                      select: { 
+                        subjectName: true,
+                        semester: {
+                          select: {
+                            semesterName: true
+                          }
+                        }
+                      } 
+                    },
                     subjectType: { select: { typeName: true, id: true } },
                   },
                 },
                 studyProgramClass: {
                   select: {
                     className: true,
+                    studyProgram: {
+                      select: {
+                        departmentId: true,
+                      }
+                    }
                   },
                 },
               },
@@ -73,6 +89,7 @@ export async function GET(req) {
         scheduleDay: { select: { day: true, id: true } },
         scheduleSession: {
           select: {
+            sessionNumber: true,
             startTime: true,
             endTime: true,
             id: true,
