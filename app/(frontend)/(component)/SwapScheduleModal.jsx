@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Select, Button, message, Spin } from "antd";
 import axios from "axios";
-import { API_SCHEDULE_SESSION, API_SCHEDULE_DAY, API_ROOM, API_SWAP_SCHEDULE, API_GET_SCHEDULE } from "@/app/(backend)/lib/endpoint";
+import { API_SCHEDULE_SESSION, API_SCHEDULE_DAY, API_ROOM, API_SWAP_SCHEDULE, API_GET} from "@/app/(backend)/lib/endpoint";
 
 const SwapScheduleModal = ({ open, onClose, schedule, onSwap }) => {
   const [availableDays, setAvailableDays] = useState([]);
