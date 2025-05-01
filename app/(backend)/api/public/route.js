@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(request) {
   try {
-    const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
     const departmentId = searchParams.get("departmentId");
     const curriculumId = searchParams.get("curriculumId");
     const semesterTypeId = searchParams.get("semesterTypeId");
@@ -120,7 +120,7 @@ export async function GET(request) {
                   },
                   subjectType: true,
                 },
-              }
+              },
             },
           },
         },
