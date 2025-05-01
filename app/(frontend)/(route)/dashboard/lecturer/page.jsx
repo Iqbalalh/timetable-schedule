@@ -298,7 +298,7 @@ const Lecturer = () => {
           name="lecturerName"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
-          <Input placeholder="cth. Jihan Haya" />
+          <Input placeholder="cth. Iqbal Alhafidzu" />
         </Form.Item>
         <Row gutter={20}>
           <Col span={12}>
@@ -397,7 +397,7 @@ const Lecturer = () => {
           name="lecturerName"
           rules={[{ required: true, message: "Harus diisi!" }]}
         >
-          <Input placeholder="cth. Jihan Haya" />
+          <Input placeholder="cth. Iqbal Alhafidzu" />
         </Form.Item>
         <Row gutter={20}>
           <Col span={12}>

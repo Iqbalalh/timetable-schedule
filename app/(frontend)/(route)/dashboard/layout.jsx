@@ -335,7 +335,7 @@ const DashboardLayout = ({ children }) => {
         </Header>
         <Content className="overflow-auto lg:p-8 md:p-8 p-4">{children}</Content>
         <Footer className="bg-white h-12 flex text-center items-center justify-center">
-          Penjadwalan Unila ©{new Date().getFullYear()} CIJ Dev
+          Penjadwalan Unila ©{new Date().getFullYear()} dibuat oleh Scheduler Team
         </Footer>
       </Layout>
     </Layout>

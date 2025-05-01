@@ -7,7 +7,7 @@ import {
   message,
   ConfigProvider,
   Select,
-  Form,
+  Popconfirm,
 } from "antd";
 import axios from "axios";
 
@@ -21,16 +21,19 @@ import {
   API_ROOM_BY_DEPARTMENT,
   API_SCHEDULE_BY_SCHEDULE_DAY_BY_DEPARTMENT_BY_PERIOD,
   API_CURRICULUM,
+  API_SCHEDULE_BY_ID,
+  API_SEMESTER_TYPE,
   AUTO_GENERATE_SERVICE,
-  API_SCHEDULE_SWAP,
 } from "@/app/(backend)/lib/endpoint";
-import SwapModal from "@/app/(frontend)/(component)/SwapModal";
+import SwapScheduleModal from "@/app/(frontend)/(component)/SwapScheduleModal";
+import PostSchedule from "@/app/(frontend)/(component)/PostSchedule";
 
 const ScheduleMatrix = () => {
   const [roomOptions, setRoomOptions] = useState([]);
   const [sessionOptions, setSessionOptions] = useState([]);
   const [dayOptions, setDayOptions] = useState([]);
   const [academicPeriodOptions, setAcademicPeriodOptions] = useState([]);
+  const [semesterTypeOptions, setSemesterTypeOptions] = useState([]);
   const [departmentOptions, setDepartmentOptions] = useState(null);
   const [curriculumOptions, setCurriculumOptions] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
@@ -42,11 +45,22 @@ const ScheduleMatrix = () => {
   const [isDepartmentLoading, setIsDepartmentLoading] = useState(false);
   const [isFacultyLoading, setIsFacultyLoading] = useState(false);
   const [isPeriodLoading, setIsPeriodLoading] = useState(false);
+  const [isSemesterLoading, setIsCurrentSemesterLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentDayId, setCurrentDayId] = useState(null);
+  const [currentSessionId, setCurrentSessionId] = useState(null);
+  const [currentRoomId, setCurrentRoomId] = useState(null);
+  const [currentRoomName, setCurrentRoomName] = useState(null);
   const [currentSemesterId, setCurrentSemesterId] = useState(null);
+  const [currentRoomCapacity, setCurrentRoomCapacity] = useState(null);
   const [currentPeriodId, setCurrentPeriodId] = useState(null);
   const [currentCurriculumId, setCurrentCurriculumId] = useState(null);
-  const [isSwapOpen, setIsSwapOpen] = useState(false);
-  const [swapData, setSwapData] = useState(null);
+  const [isTheory, setIsTheory] = useState(null);
+  const [isPracticum, setIsPracticum] = useState(null);
+  const [computeTime, setComputeTime] = useState(null); 
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isSwapModalOpen, setIsSwapModalOpen] = useState(false);
+  const [currentSchedule, setCurrentSchedule] = useState(null);
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -62,6 +76,7 @@ const ScheduleMatrix = () => {
         setDayOptions(dayResponse.data);
         setCurriculumOptions(curriculumResponse.data);
         setIsLoading(false);
+        setIsCurrentSemesterLoading(false);
       } catch (error) {
         message.error("Error fetching data");
         setIsLoading(false);
@@ -70,23 +85,29 @@ const ScheduleMatrix = () => {
     loadInitialData();
   }, []);
 
-  const loadSchedule = async (
-    departmentId,
-    academicPeriodId,
-    semesterTypeId
-  ) => {
+  const handleCellClick = (scheduleItem) => {
+    setCurrentSchedule(scheduleItem);
+    setIsSwapModalOpen(true);
+  };
+
+  const handleSwap = async (newDayId, newSessionId, newRoomId) => {
+    // Call your backend API to perform the swap
     try {
-      const response = await axios.get(
-        API_SCHEDULE_SWAP(departmentId, academicPeriodId, semesterTypeId)
-      );
-      const sched = response.data.map((sch) => ({
-        value: sch.id,
-        label: sch.id,
-      }));
-      setSwapData(sched);
+      await axios.post('/api/schedule/check-availability', {
+        currentScheduleId: currentSchedule.id,
+        newDayId,
+        newSessionId,
+        newRoomId,
+      });
+      message.success("Schedule swapped successfully!");
+      loadScheduleByDay(currentSchedule.dayId); // Reload the schedule
     } catch (error) {
-      message.error("Gagal memuat data!");
+      message.error("Failed to swap schedule.");
     }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
   // Fetch departments based on selected faculty
@@ -167,7 +188,7 @@ const ScheduleMatrix = () => {
           dayId,
           selectedDepartment,
           currentPeriodId,
-          currentSemesterId
+          currentSemesterId,
         )
       );
       setScheduleData(scheduleResponse.data);
@@ -186,6 +207,13 @@ const ScheduleMatrix = () => {
     selectedDay
   ) => {
     setIsLoading(true);
+    setElapsedTime(0);
+    const startTime = new Date();
+
+    const timer = setInterval(() => {
+      setElapsedTime((prev) => prev + 1);
+    }, 1000);
+
     try {
       const postSchedule = await axios.get(
         AUTO_GENERATE_SERVICE(
@@ -195,10 +223,18 @@ const ScheduleMatrix = () => {
           academicPeriodId
         )
       );
+      const endTime = new Date();
+      const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+      clearInterval(timer);
+      setComputeTime(duration);
       setIsLoading(false);
       loadScheduleByDay(selectedDay?.id);
-      message.success("Jadwal berhasil di generate!");
+      message.success(`Jadwal berhasil di generate dalam ${duration} detik!`);
+      setElapsedTime(0);
     } catch (error) {
+      clearInterval(timer);
+      setElapsedTime(0);
       setIsLoading(false);
       loadScheduleByDay(selectedDay?.id);
       message.error("Jadwal gagal di generate!");
@@ -229,7 +265,7 @@ const ScheduleMatrix = () => {
       render: (_, record) => <div className="text-center">{record.time}</div>,
     },
     ...roomOptions.map((room) => ({
-      title: <div className="text-center">{room.roomName}</div>,
+      title: <div className="text-center">{room.roomName} <br></br>({room.roomCapacity})</div>,
       dataIndex: room.id,
       width: 300,
       key: room.id,
@@ -238,15 +274,19 @@ const ScheduleMatrix = () => {
           (sch) => sch.roomId === room.id
         );
         return scheduleItem ? (
-          <div className="flex flex-col justify-center h-32 text-center items-center">
-            <>({scheduleItem?.id})</>
+          <div className="flex flex-col justify-center h-32 text-center items-center cursor-pointer" // Add cursor-pointer for visual feedback
+          onClick={() => handleCellClick(scheduleItem)} // Ensure this is set up correctly
+          >  
             <div className="text-lg font-bold">
               {scheduleItem.classLecturer.class.subSubject.subject?.subjectName}{" "}
-              {
-                scheduleItem.classLecturer.class.subSubject.subjectType
-                  ?.typeName
-              }{" "}
-              {scheduleItem.classLecturer.class.studyProgramClass?.className}
+              {scheduleItem.classLecturer.class.subSubject.subjectType?.typeName}{" "}
+              {scheduleItem.classLecturer.class.studyProgramClass?.className}{" "}
+            </div>
+            <div className="text-blue-500 text-sm">
+              Semester: {scheduleItem.classLecturer.class.subSubject.subject.semester?.semesterName}
+            </div>
+            <div className="text-blue-300 text-sm">
+              Kapasitas: {scheduleItem.classLecturer.class?.classCapacity}
             </div>
             <div className="text-gray-500 text-sm">
               Dosen Pengampu:
@@ -254,20 +294,19 @@ const ScheduleMatrix = () => {
                 1. {scheduleItem.classLecturer.primaryLecturer?.lecturerName}
               </div>
               <div>
-                {!scheduleItem.classLecturer.secondaryLecturer
-                  ? null
-                  : `2. ${scheduleItem.classLecturer.secondaryLecturer?.lecturerName}`}
+                 {!scheduleItem.classLecturer.secondaryLecturer ? null : `2. ${scheduleItem.classLecturer.secondaryLecturer?.lecturerName}`}
               </div>
             </div>
           </div>
         ) : (
           <div className="flex justify-center items-center rounded-lg h-32">
-            <Button disabled>Kosong</Button>
+            <Button>Kosong</Button>
           </div>
         );
       },
     })),
   ];
+
   // Prepare data for the table
   const dataSource = sessionOptions
     .sort((a, b) => a.sessionNumber - b.sessionNumber) // Sort by sessionNumber
@@ -332,15 +371,13 @@ const ScheduleMatrix = () => {
             className="mb-2 w-full shadow-lg border-b-4 border-blue-500"
             showSearch
             placeholder={"Tahun Akademik"}
-            value={currentPeriodId} // Show selected period
+            value={currentPeriodId}
             filterOption={(input, option) =>
               (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
             options={academicPeriodOptions}
             onChange={(value) => {
-              const selectedPeriod = academicPeriodOptions.find(
-                (option) => option.value === value
-              );
+              const selectedPeriod = academicPeriodOptions.find((option) => option.value === value);
               if (selectedPeriod) {
                 setCurrentPeriodId(value);
                 setCurrentSemesterId(selectedPeriod.semesterTypeId);
@@ -398,9 +435,17 @@ const ScheduleMatrix = () => {
         </div>
 
         {isLoading ? (
-          <Spin />
+          <div>
+            <Spin />
+            <div className="justify-end">Waktu berjalan: {elapsedTime} detik</div>
+          </div>
         ) : (
           <>
+          <div>
+            {computeTime && (
+              <p>Waktu komputasi: {computeTime} detik</p>
+            )}
+          </div>
             {/* Day buttons */}
             {selectedDepartment && (
               <>
@@ -416,33 +461,18 @@ const ScheduleMatrix = () => {
                     </Button>
                   ))}
                   <Button
-                    onClick={() => {
-                      loadSchedule(
-                        selectedDepartment,
-                        currentPeriodId,
-                        currentSemesterId
-                      );
-                      setIsSwapOpen(true);
-                    }}
-                    className="mr-2 mb-2 border-b-4 border-gray-600"
-                    type="primary"
-                  >
-                    Tukar Jadwal
-                  </Button>
-                  <Button
                     onClick={() =>
                       handlePostSchedule(
                         selectedDepartment,
                         currentCurriculumId,
                         currentSemesterId,
-                        currentPeriodId
+                        currentPeriodId,
+                        selectedDay
                       )
                     }
                     className="mr-2 mb-2 border-b-4 border-gray-600"
                     type="primary"
-                    disabled={
-                      !scheduleData || scheduleData?.length > 1 || !selectedDay
-                    }
+                    disabled={!scheduleData || scheduleData?.length > 1 || !selectedDay}
                   >
                     Buat Jadwal Otomatis
                   </Button>
@@ -480,41 +510,30 @@ const ScheduleMatrix = () => {
             )}
           </>
         )}
-      </div>
-      <SwapModal
-        isSwapOpen={isSwapOpen}
-        setIsSwapOpen={setIsSwapOpen}
-        title="Tukar Jadwal"
-      >
-        <Form.Item
-          label="Pertemuan 1"
-          name="scheduleId1"
-          rules={[{ required: true, message: "Pilih pertemuan pertama" }]}
-        >
-          <Select>
-            {swapData?.map((sch) => (
-              <Select.Option key={sch.value} value={sch.value}>
-                {sch.label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
 
-        <Form.Item
-          label="Pertemuan 2"
-          name="scheduleId2"
-          rules={[{ required: true, message: "Pilih pertemuan kedua" }]}
-        >
-          <Select>
-            {swapData?.map((sch) => (
-              <Select.Option key={sch.value} value={sch.value}>
-                {sch.label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-      </SwapModal>
-      ;
+        <PostSchedule
+          open={isModalOpen}
+          onClose={handleModalClose}
+          scheduleDayId={currentDayId}
+          scheduleSessionId={currentSessionId}
+          roomId={currentRoomId}
+          departmentId={selectedDepartment}
+          curriculumId={currentCurriculumId}
+          isTheory={isTheory}
+          isPracticum={isPracticum}
+          roomName={currentRoomName}
+          roomCapacity={currentRoomCapacity}
+          scheduleData={scheduleData}
+          onSuccess={() => loadScheduleByDay(currentDayId)}
+        />
+
+        <SwapScheduleModal
+          open={isSwapModalOpen}
+          onClose={() => setIsSwapModalOpen(false)}
+          schedule={currentSchedule}
+          onSwap={handleSwap}
+        />
+      </div>
     </ConfigProvider>
   );
 };
