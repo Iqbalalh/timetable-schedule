@@ -1,10 +1,11 @@
 // import { Select } from "antd";
-import prisma from "../../../lib/db";
+export const dynamic = "force-dynamic";
+import prisma from "@/app/(backend)/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(request) {
   try {
-    const { searchParams } = new URL(request.url);
+    const searchParams = request.nextUrl.searchParams;
     const departmentId = searchParams.get("departmentId");
     const semesterTypeId = searchParams.get("semesterTypeId");
     const academicPeriodId = searchParams.get("academicPeriodId");
