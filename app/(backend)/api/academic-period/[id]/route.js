@@ -1,4 +1,5 @@
-import prisma from "../../../lib/db";
+export const dynamic = "force-dynamic";
+import prisma from "@/app/(backend)/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(req, { params }) {
