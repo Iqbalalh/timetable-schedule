@@ -1,83 +1,83 @@
-import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+// import { NextResponse } from 'next/server';
+// import { getToken } from 'next-auth/jwt';
 
-export async function middleware(req) {
-  const { pathname } = req.nextUrl;
+// export async function middleware(req) {
+//   const { pathname } = req.nextUrl;
 
-  // Define protected paths based on user roles
-  const adminPaths = ['/dashboard'];
-  const nonAdminPaths = ['/lecturer'];
-  const apiPaths = ['/api'];
-  const authApiPaths = ['/api/auth'];
-  const publicApiPaths = ['/api/public'];
-  const homePagePath = '/'; // Path for the home page
+//   // Define protected paths based on user roles
+//   const adminPaths = ['/dashboard'];
+//   const nonAdminPaths = ['/lecturer'];
+//   const apiPaths = ['/api'];
+//   const authApiPaths = ['/api/auth'];
+//   const publicApiPaths = ['/api/public'];
+//   const homePagePath = '/'; // Path for the home page
 
-  // Check if the request is for a protected route (API or pages)
-  const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
-  const isNonAdminPath = nonAdminPaths.some((path) => pathname.startsWith(path));
-  const isApiPath = apiPaths.some((path) => pathname.startsWith(path));
-  const isAuthApiPaths = authApiPaths.some((path) => pathname.startsWith(path));
-  const isPublicApiPaths = publicApiPaths.some((path) => pathname.startsWith(path));
-  const isHomePage = pathname === homePagePath;
+//   // Check if the request is for a protected route (API or pages)
+//   const isAdminPath = adminPaths.some((path) => pathname.startsWith(path));
+//   const isNonAdminPath = nonAdminPaths.some((path) => pathname.startsWith(path));
+//   const isApiPath = apiPaths.some((path) => pathname.startsWith(path));
+//   const isAuthApiPaths = authApiPaths.some((path) => pathname.startsWith(path));
+//   const isPublicApiPaths = publicApiPaths.some((path) => pathname.startsWith(path));
+//   const isHomePage = pathname === homePagePath;
 
-  // Get the token from the request (using next-auth JWT)
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+//   // Get the token from the request (using next-auth JWT)
+//   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-  // Handle home page redirection for logged-in users
-  if (token && isHomePage) {
-    const dashboardUrl = new URL('/dashboard', req.url);
-    return NextResponse.redirect(dashboardUrl);
-  }
+//   // Handle home page redirection for logged-in users
+//   if (token && isHomePage) {
+//     const dashboardUrl = new URL('/dashboard', req.url);
+//     return NextResponse.redirect(dashboardUrl);
+//   }
 
-  // Allow access to Login API routes without authentication
-  if (isAuthApiPaths) {
-    return NextResponse.next();
-  }
+//   // Allow access to Login API routes without authentication
+//   if (isAuthApiPaths) {
+//     return NextResponse.next();
+//   }
 
-  // Allow access to Public API routes without authentication
-  if (isPublicApiPaths) {
-    return NextResponse.next();
-  }
+//   // Allow access to Public API routes without authentication
+//   if (isPublicApiPaths) {
+//     return NextResponse.next();
+//   }
 
-  if (token) {
-    const { role } = token;
+//   if (token) {
+//     const { role } = token;
 
-    // Block non-admin users from accessing admin paths
-    if (isAdminPath && role !== 'admin') {
-      const forbiddenUrl = new URL('/403', req.url);
-      return NextResponse.redirect(forbiddenUrl);
-    }
+//     // Block non-admin users from accessing admin paths
+//     if (isAdminPath && role !== 'admin') {
+//       const forbiddenUrl = new URL('/403', req.url);
+//       return NextResponse.redirect(forbiddenUrl);
+//     }
 
-    // Block admin users from accessing non-admin paths
-    if (isNonAdminPath && role === 'admin') {
-      const forbiddenUrl = new URL('/403', req.url);
-      return NextResponse.redirect(forbiddenUrl);
-    }
+//     // Block admin users from accessing non-admin paths
+//     if (isNonAdminPath && role === 'admin') {
+//       const forbiddenUrl = new URL('/403', req.url);
+//       return NextResponse.redirect(forbiddenUrl);
+//     }
 
-    // Allow API access only for logged-in users
-    if (isApiPath) {
-      return NextResponse.next();
-    }
+//     // Allow API access only for logged-in users
+//     if (isApiPath) {
+//       return NextResponse.next();
+//     }
 
-    // Continue to the requested route if the user has appropriate access
-    return NextResponse.next();
-  }
+//     // Continue to the requested route if the user has appropriate access
+//     return NextResponse.next();
+//   }
 
-  // If no token is present and the request is for an API route
-  if (isApiPath) {
-    return new NextResponse('Unauthorized', { status: 401 });
-  }
+//   // If no token is present and the request is for an API route
+//   if (isApiPath) {
+//     return new NextResponse('Unauthorized', { status: 401 });
+//   }
 
-  // If no token is present and the request is for a protected page route
-  if (isAdminPath || isNonAdminPath) {
-    const loginUrl = new URL('/', req.url);
-    return NextResponse.redirect(loginUrl);
-  }
+//   // If no token is present and the request is for a protected page route
+//   if (isAdminPath || isNonAdminPath) {
+//     const loginUrl = new URL('/', req.url);
+//     return NextResponse.redirect(loginUrl);
+//   }
 
-  return NextResponse.next();
-}
+//   return NextResponse.next();
+// }
 
-// Match both page routes and API routes
-export const config = {
-  matcher: ['/dashboard/:path*', '/lecturer/:path*', '/api/:path*', '/'],
-};
+// // Match both page routes and API routes
+// export const config = {
+//   matcher: ['/dashboard/:path*', '/lecturer/:path*', '/api/:path*', '/'],
+// };
